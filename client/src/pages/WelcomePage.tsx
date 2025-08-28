@@ -315,10 +315,10 @@ const WelcomePage: React.FC = () => {
           </div>
         )}
 
-        <div className="px-8 py-6">
+        <div className="px-8 py-8">
           {/* Step 1: Enhanced Welcome Screen */}
           {currentStep === 1 && (
-            <div className="text-center space-y-8 py-8">
+            <div className="text-center space-y-8 py-4">
               <div className="relative">
                 {/* Animated background elements */}
                 <div className="absolute inset-0 animate-pulse">
@@ -351,8 +351,8 @@ const WelcomePage: React.FC = () => {
           {/* Step 2: Enhanced Name and Age Collection */}
           {currentStep === 2 && (
             <div className="space-y-8 animate-fade-in">
-              <div className="text-center mb-8">
-                <div className="relative mb-6">
+              <div className="text-center mb-6">
+                <div className="relative mb-4">
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full w-20 h-20 mx-auto opacity-20 animate-pulse"></div>
                   <Rocket className="relative w-16 h-16 mx-auto text-indigo-500 mb-4 drop-shadow-sm" />
                 </div>
@@ -424,12 +424,12 @@ const WelcomePage: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
-                {["6th", "7th", "8th", "9th", "10th", "11th", "12th"].map(
+                {["9th", "10th", "11th", "12th"].map(
                   (grade, index) => (
                     <button
                       key={grade}
                       onClick={() => handleInputChange("grade", grade)}
-                      className={`group relative p-4 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
+                      className={`group relative p-4 shadow-lg shadow-black/20 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
                         userData.grade === grade
                           ? "border-indigo-500 bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700 shadow-md"
                           : "border-gray-200 hover:border-indigo-300 hover:bg-gradient-to-br hover:from-indigo-25 hover:to-white bg-white"
@@ -468,7 +468,7 @@ const WelcomePage: React.FC = () => {
 
           {/* Step 4: Enhanced Theme Selection */}
           {currentStep === 4 && (
-            <div className="space-y-8 max-w-4xl mx-auto animate-fade-in">
+            <div className="space-y-4 max-w-4xl mx-auto animate-fade-in">
               <div className="text-center">
                 <div className="relative mb-6">
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full w-20 h-20 mx-auto opacity-20 animate-pulse"></div>
@@ -482,7 +482,7 @@ const WelcomePage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
                 {themes.map((theme, index) => {
                   const Icon = theme.icon;
                   const isSelected = userData.theme === theme.id;
@@ -572,12 +572,12 @@ const WelcomePage: React.FC = () => {
           )}
 
           {/* Enhanced Navigation Buttons */}
-          <div className="mt-12 flex justify-center">
+          <div className="mt-6 flex justify-center">
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
                 disabled={!isStepValid()}
-                className={`px-10 py-4 rounded-2xl font-bold flex items-center space-x-3 transition-all duration-300 text-lg ${
+                className={`px-8 py-3 rounded-2xl font-bold flex items-center space-x-3 transition-all duration-300 text-lg ${
                   isStepValid()
                     ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transform hover:scale-105 shadow-lg hover:shadow-xl"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -612,7 +612,7 @@ const WelcomePage: React.FC = () => {
           </div>
 
           {/* Enhanced Step Indicator */}
-          <div className="flex justify-center mt-8 space-x-3">
+          <div className="flex justify-center mt-6 space-x-3">
             {[1, 2, 3, 4].map((step) => (
               <div
                 key={step}
