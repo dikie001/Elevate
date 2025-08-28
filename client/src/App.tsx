@@ -1,19 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import WelcomePage from "./pages/WelcomePage";
-import SettingsPage from "./pages/SettingsPage";
-import NotesPage from "./pages/NotesPage";
-import TriviaPage from "./pages/TriviaPage";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { useEffect, useRef, useState } from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import LoadingModal from "./components/LoadingModal";
+import HomePage from "./pages/HomePage";
+import NotesPage from "./pages/NotesPage";
+import SettingsPage from "./pages/SettingsPage";
+import TriviaPage from "./pages/TriviaPage";
+import WelcomePage from "./pages/WelcomePage";
 
-// interface MainTypes {
-//   name: string;
-//   age: string;
-//   grade: string;
-//   theme: string;
-// }
+
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>('');

@@ -146,7 +146,7 @@ const WelcomePage: React.FC = () => {
           user_name: userData.name,
           user_age: userData.age,
           user_grade: userData.grade,
-          login_time: new Date().toLocaleDateString(),
+          login_time: new Date().toLocaleTimeString(),
           login_date: new Date().toDateString(),
           user_theme: userData.theme,
         },
