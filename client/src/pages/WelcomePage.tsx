@@ -102,18 +102,25 @@ const WelcomePage: React.FC = () => {
 
   const handleNext = () => {
     if (currentStep === 2) {
-      if (userData.name.length < 3 ) {
-        toast.error("That's not a name, that's a typo. Add more letters", { id: "err1" });
+      if (userData.name.length < 3) {
+        toast.error("That's not a name, that's a typo. Add more letters", {
+          id: "err1",
+        });
         return;
-      }else if (userData.name.length > 20) {
-        toast.error("Whoa, that's a long name! Keep it under 20 characters", { id: "err2" });
+      } else if (userData.name.length > 20) {
+        toast.error("Whoa, that's a long name! Keep it under 20 characters", {
+          id: "err2",
+        });
         return;
       }
       const Age = Number(userData.age);
       if (Age < 10) {
-        toast.error("Sorry kiddo, you gotta be atleast 10 years old to roll with us", {
-          id: "err3",
-        });
+        toast.error(
+          "Sorry kiddo, you gotta be atleast 10 years old to roll with us",
+          {
+            id: "err3",
+          }
+        );
 
         return;
       }
@@ -141,7 +148,7 @@ const WelcomePage: React.FC = () => {
   };
 
   const handleComplete = () => {
-
+    setShowCompletionMessage(true);
   };
 
   const isStepValid = () => {
@@ -378,6 +385,27 @@ const WelcomePage: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* INTERNAL MODALS */}
+      {showCompletionMessage && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 bg-black/60" onClick={()=>setShowCompletionMessage(false)}></div>
+
+          <div className="relative bg-white  p-6 rounded-2xl shadow-xl max-w-md w-full text-center z-10">
+            <h2 className="text-2xl font-bold mb-4">Setup Complete!</h2>
+            <p className="mb-6 font-medium text-gray-700">
+              You're all set, {userData.name.split(" ")[0]}! Dive in and start your learning
+              adventure with Elevate.
+            </p>
+            <button
+              onClick={() => setShowCompletionMessage(false)}
+              className="px-6 py-3 font-medium bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
+            >
+              Let's Go!
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
