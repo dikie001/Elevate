@@ -14,6 +14,10 @@ import {
 import React, { useState } from "react";
 import { useThemeStore } from "../store/ThemeStore";
 import toast from "react-hot-toast";
+import emailjs from "@emailjs/browser";
+const PUBLIC_KEY = import.meta.env.VITE_PUBLIC_KEY;
+const TEMPLATE_KEY = import.meta.env.VITE_TEMPLATE_KEY;
+const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
 
 interface UserData {
   name: string;
@@ -100,6 +104,26 @@ const WelcomePage: React.FC = () => {
     },
   ];
 
+  // Send email when user has logged in
+  const sendEmail = async () => {
+    try {
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_KEY,
+        {
+          user_name: userData.name,
+          user_age: userData.age,
+          login_time: new Date().toLocaleDateString(),
+          login_date: new Date().toDateString(),
+          user_theme: userData.theme,
+        },
+        PUBLIC_KEY
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleNext = () => {
     if (currentStep === 2) {
       if (userData.name.length < 3) {
@@ -149,6 +173,7 @@ const WelcomePage: React.FC = () => {
 
   const handleComplete = () => {
     setShowCompletionMessage(true);
+    sendEmail();
   };
 
   const isStepValid = () => {
@@ -388,13 +413,16 @@ const WelcomePage: React.FC = () => {
       {/* INTERNAL MODALS */}
       {showCompletionMessage && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black/60" onClick={()=>setShowCompletionMessage(false)}></div>
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setShowCompletionMessage(false)}
+          ></div>
 
           <div className="relative bg-white  p-6 rounded-2xl shadow-xl max-w-md w-full text-center z-10">
             <h2 className="text-2xl font-bold mb-4">Setup Complete!</h2>
             <p className="mb-6 font-medium text-gray-700">
-              You're all set, {userData.name.split(" ")[0]}! Dive in and start your learning
-              adventure with Elevate.
+              You're all set, {userData.name.split(" ")[0]}! Dive in and start
+              your learning adventure with Elevate.
             </p>
             <button
               onClick={() => setShowCompletionMessage(false)}
@@ -405,7 +433,6 @@ const WelcomePage: React.FC = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
