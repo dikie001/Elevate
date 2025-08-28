@@ -260,6 +260,9 @@ const WelcomePage: React.FC = () => {
     setIsLoading(true);
     await sendEmail();
     setShowCompletionMessage(true);
+    localStorage.setItem("isFirstVisit", "false");
+    localStorage.setItem("userData", JSON.stringify(userData));
+
   };
 
   // Enhanced step validation
@@ -290,7 +293,7 @@ const WelcomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm border border-white/20">
+      <div className={`w-full max-w-2xl ${currentStep === 4 && 'max-w-3xl'} bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm border border-white/20`}>
         {/* Enhanced Progress Bar with Glow Effect */}
         <div className="h-3 bg-gray-100 relative overflow-hidden">
           <div
