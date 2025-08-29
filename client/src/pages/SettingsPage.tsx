@@ -86,7 +86,7 @@ const themes = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
-  const [selected, setSelected] = useState(theme);
+  const [selected, setSelected] = useState<any>(theme);
 
   const [notifications, setNotifications] = useState(true);
   const [focusTime, setFocusTime] = useState(25);

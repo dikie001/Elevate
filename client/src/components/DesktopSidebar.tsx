@@ -1,14 +1,13 @@
 import { BookOpen, Home, Settings, Trophy, User } from "lucide-react";
-import { useStateStore } from "../store/stateStore";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useStateStore } from "../store/stateStore";
 
-interface MainTypes {
-  name: string;
-  age: string;
-  grade: string;
-  theme: string;
-}
+// interface MainTypes {
+//   name: string;
+//   age: string;
+//   grade: string;
+//   theme: string;
+// }
 const DesktopSidebar = () => {
   const { user,currentRoute,setCurrentRoute } = useStateStore();
   const navigate = useNavigate();

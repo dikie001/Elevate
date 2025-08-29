@@ -24,6 +24,7 @@ const HomePage = () => {
       const data = localStorage.getItem("userData");
       if (data) {
         setUserData(JSON.parse(data));
+        console.log(userData);
         setUser(JSON.parse(data));
       }
     };

@@ -1,7 +1,7 @@
-import { Menu, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
-import { shortQuotes } from "./Quotes";
 import { useStateStore } from "../store/stateStore";
+import { shortQuotes } from "./Quotes";
 
 interface MainTypes {
   name: string;
@@ -13,7 +13,7 @@ interface MainTypes {
 const Navbar = () => {
   const [userData, setUserData] = useState<MainTypes>();
   const [quote, setQuote] = useState("");
-  const { greeting, setOpenMobileMenu, openMobileMenu } = useStateStore();
+  const { greeting, setOpenMobileMenu } = useStateStore();
 
   // Load user data
   useEffect(() => {
@@ -60,9 +60,9 @@ const Navbar = () => {
           </div>
           <button
             onClick={() => setOpenMobileMenu(true)}
-            className={`lg:hidden cursor-pointer p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg active:scale-95`}
+            className={`lg:hidden cursor-pointer p-3 rounded-2xl`}
           >
-            <Menu className={`w-5 h-5 text-white`} />
+            <img src="/images/menu.png"  className={`w-6 h-6 `} />
           </button>
         </div>
       </div>

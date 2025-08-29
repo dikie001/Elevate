@@ -1,5 +1,4 @@
 import { BookOpen, Home, Settings, Trophy, User } from "lucide-react";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useStateStore } from "../store/stateStore";
 
@@ -34,17 +33,23 @@ const MobileMenu = () => {
       <div
         onClick={(e) => e.stopPropagation()}
         className={`${
-          openMobileMenu ? "translate-x-10" : "-translate-x-full"
+          openMobileMenu ? "translate-x-10" : "-translate-x-10"
         } bg-white p-4 flex flex-col  rounded h-screen border-b border-gray-200 shadow-lg transition-all w-90 fixed right-0 duration-500 ease-in-out`}
       >
+          <button
+            onClick={() => setOpenMobileMenu(false)}
+            className={`absolute right-16 top-5 cursor-pointer p-3 rounded-2xl`}
+          >
+            <img src="/images/swords.png"  className={`w-6 h-6 `} />
+          </button>
         <img
           src="/images/bot1.png"
           alt="Bot image"
           width={200}
-          className="mx-auto   "
+          className="mx-auto mt-10  "
         />
 
-        <div className="px-4 py-2 space-y-1  flex-1  ">
+        <div className="px-4 py-2 max-w-72 space-y-1  flex-1  ">
           {links.map((link) => {
             const Icon = link.icon;
             const isActive = currentRoute === link.to;
@@ -55,7 +60,7 @@ const MobileMenu = () => {
                 onClick={() => handleLinkClick(link.to)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
                   isActive
-                    ? "text-blue-600 bg-blue-50 font-semibold"
+                    ? "text-blue-600 bg-blue-100 shadow-lg shadow-black/20 font-semibold"
                     : "text-gray-600 hover:text-blue-500 hover:bg-gray-50"
                 }`}
               >
