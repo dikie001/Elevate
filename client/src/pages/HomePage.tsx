@@ -4,6 +4,7 @@ import { act, useEffect, useState } from "react";
 import { SubjectSelectionModal } from "../modals/SelectSubjectModal";
 import { useStateStore } from "../store/stateStore";
 import MobileBottombar from "../components/MobileBottombar";
+import useIdle from "../hooks/useIdle";
 
 interface MainTypes {
   name: string;
@@ -17,6 +18,7 @@ const HomePage = () => {
   const [userData, setUserData] = useState<MainTypes>();
   const [greeting, setGreeting] = useState("");
   const [showSelectSubjectModal, setShowSubjectModal] = useState(false);
+  const  isIdle  = useIdle(3000);
   const greetings = [
     "Hi",
     "Hey",
@@ -96,7 +98,7 @@ const HomePage = () => {
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex`}
     >
       <DesktopSidebar />
-      <MobileBottombar/>
+     {!isIdle && <MobileBottombar />}
 
       {/* Main Content */}
       <div className={`flex-1 flex flex-col lg:ml-80`}>

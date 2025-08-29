@@ -11,7 +11,6 @@ interface MainTypes {
 const DesktopSidebar = () => {
   const { user } = useStateStore();
   const navigate = useNavigate();
-  console.log(user);
   return (
     <div>
       {/* Desktop Sidebar */}
