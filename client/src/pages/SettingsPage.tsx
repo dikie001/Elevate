@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { useThemeStore } from "../store/ThemeStore";
 import DesktopSidebar from "../components/DesktopSidebar";
+import Topbar from "../components/Navbar";
 
 type Theme =
   | "light"
@@ -92,111 +93,115 @@ const SettingsPage = () => {
   const [difficulty, setDifficulty] = useState("normal");
 
   return (
-    <div className="min-h-screen lg:ml-70 p-6 bg-white text-gray-900">
-      <h1 className="text-2xl font-bold mb-6">⚙️ Settings</h1>
+    <div className="min-h-screen lg:ml-70  bg-white text-gray-900">
       <DesktopSidebar />
-      {/* THEME SETTINGS */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">🎨 App Theme</h2>
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 md:gap-4">
-          {themes.map((t) => {
-            const Icon = t.icon;
-            return (
-              <button
-                key={t.id}
-                onClick={() => {
-                  setSelected(t.id);
-                  setTheme(t.id as Theme);
-                }}
-                className={`flex flex-col items-center justify-center p-2 rounded-2xl shadow-md border-2 transition ${
-                  selected === t.id
-                    ? "border-blue-500 scale-105"
-                    : "border-gray-200 hover:scale-105"
-                }`}
-              >
-                <div className={`w-16 h-16 rounded-xl ${t.preview} mb-2`}></div>
-                <Icon className={`w-5 h-5 ${t.color}`} />
-                <span className="text-sm mt-1">{t.name}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* NOTIFICATIONS */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">🔔 Notifications</h2>
-        <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
-          <div className="flex items-center space-x-2">
-            <Bell className="w-5 h-5 text-blue-500" />
-            <span>Study Reminders</span>
+      <Topbar />
+      <div className="p-6">
+        {/* THEME SETTINGS */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">🎨 App Theme</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 md:gap-4">
+            {themes.map((t) => {
+              const Icon = t.icon;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setSelected(t.id);
+                    setTheme(t.id as Theme);
+                  }}
+                  className={`flex flex-col items-center justify-center p-2 rounded-2xl shadow-md border-2 transition ${
+                    selected === t.id
+                      ? "border-blue-500 scale-105"
+                      : "border-gray-200 hover:scale-105"
+                  }`}
+                >
+                  <div
+                    className={`w-16 h-16 rounded-xl ${t.preview} mb-2`}
+                  ></div>
+                  <Icon className={`w-5 h-5 ${t.color}`} />
+                  <span className="text-sm mt-1">{t.name}</span>
+                </button>
+              );
+            })}
           </div>
-          <button
-            onClick={() => setNotifications(!notifications)}
-            className={`px-4 py-1 rounded-full text-sm ${
-              notifications
-                ? "bg-green-500 text-white"
-                : "bg-gray-300 text-gray-700"
-            }`}
-          >
-            {notifications ? "On" : "Off"}
-          </button>
-        </div>
-      </section>
+        </section>
 
-      {/* FOCUS TIMER */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">⏱️ Focus Timer</h2>
-        <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
-          <div className="flex items-center space-x-2">
-            <Clock className="w-5 h-5 text-yellow-500" />
-            <span>Default Session</span>
+        {/* NOTIFICATIONS */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">🔔 Notifications</h2>
+          <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
+            <div className="flex items-center space-x-2">
+              <Bell className="w-5 h-5 text-blue-500" />
+              <span>Study Reminders</span>
+            </div>
+            <button
+              onClick={() => setNotifications(!notifications)}
+              className={`px-4 py-1 rounded-full text-sm ${
+                notifications
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-300 text-gray-700"
+              }`}
+            >
+              {notifications ? "On" : "Off"}
+            </button>
           </div>
-          <select
-            value={focusTime}
-            onChange={(e) => setFocusTime(Number(e.target.value))}
-            className="bg-white border rounded-lg px-3 py-1 text-sm"
-          >
-            {[15, 25, 30, 45, 60].map((t) => (
-              <option key={t} value={t}>
-                {t} min
-              </option>
-            ))}
-          </select>
-        </div>
-      </section>
+        </section>
 
-      {/* STUDY PREFERENCES */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">📚 Study Preferences</h2>
-        <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
-          <span>Difficulty</span>
-          <select
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-            className="bg-white border rounded-lg px-3 py-1 text-sm"
-          >
-            <option value="easy">Easy</option>
-            <option value="normal">Normal</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-      </section>
+        {/* FOCUS TIMER */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">⏱️ Focus Timer</h2>
+          <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
+            <div className="flex items-center space-x-2">
+              <Clock className="w-5 h-5 text-yellow-500" />
+              <span>Default Session</span>
+            </div>
+            <select
+              value={focusTime}
+              onChange={(e) => setFocusTime(Number(e.target.value))}
+              className="bg-white border rounded-lg px-3 py-1 text-sm"
+            >
+              {[15, 25, 30, 45, 60].map((t) => (
+                <option key={t} value={t}>
+                  {t} min
+                </option>
+              ))}
+            </select>
+          </div>
+        </section>
 
-      {/* ACCOUNT */}
-      <section>
-        <h2 className="text-lg font-semibold mb-4">👤 Account</h2>
-        <div className="flex flex-col gap-3">
-          <button className="flex items-center gap-2 p-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition">
-            <User className="w-5 h-5 text-blue-500" />
-            <span>Manage Account</span>
-          </button>
-          <button className="flex items-center gap-2 p-4 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition">
-            <LogOut className="w-5 h-5" />
-            <span>Log Out</span>
-          </button>
-        </div>
-      </section>
+        {/* STUDY PREFERENCES */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">📚 Study Preferences</h2>
+          <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
+            <span>Difficulty</span>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
+              className="bg-white border rounded-lg px-3 py-1 text-sm"
+            >
+              <option value="easy">Easy</option>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </section>
+
+        {/* ACCOUNT */}
+        <section>
+          <h2 className="text-lg font-semibold mb-4">👤 Account</h2>
+          <div className="flex flex-col gap-3">
+            <button className="flex items-center gap-2 p-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition">
+              <User className="w-5 h-5 text-blue-500" />
+              <span>Manage Account</span>
+            </button>
+            <button className="flex items-center gap-2 p-4 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition">
+              <LogOut className="w-5 h-5" />
+              <span>Log Out</span>
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

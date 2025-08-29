@@ -16,7 +16,7 @@ import {
   Star,
 } from "lucide-react";
 import DesktopSidebar from "../components/DesktopSidebar";
-import Topbar from "../components/Topbar";
+import Topbar from "../components/Navbar";
 
 const SubjectsPage: React.FC = () => {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -158,10 +158,8 @@ const SubjectsPage: React.FC = () => {
         className={`min-h-screen lg:ml-70 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 `}
       >
         <DesktopSidebar />
-        <Topbar/>
-        <div
-          className={`max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8`}
-        >
+        <Topbar />
+        <div className={`max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8`}>
           {/* Header */}
           <div className={`text-center mb-8 sm:mb-12`}>
             <div

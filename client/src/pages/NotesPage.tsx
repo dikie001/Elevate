@@ -1,28 +1,22 @@
 import {
-  BookOpen,
   Calendar,
   Clock,
   Edit3,
   Eye,
   FileText,
-  Home,
-  Menu,
   Plus,
   Search,
   Star,
   Trash2,
-  Trophy,
-  User,
-  X,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
+import DesktopSidebar from "../components/DesktopSidebar";
+import Topbar from "../components/Navbar";
 
 const NotesPage = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [quickAction, setQuickActio] = useState("");
+  // const [quickAction, setQuickAction] = useState("");
 
   const subjects = [
     { name: "All", icon: "📚", color: "gray" },
@@ -110,8 +104,8 @@ const NotesPage = () => {
     return matchesSubject && matchesSearch;
   });
 
-  const getColorClasses = (color) => {
-    const colorMap = {
+  const getColorClasses = (color: string) => {
+    const colorMap: any = {
       blue: "from-blue-500 to-cyan-500",
       green: "from-green-500 to-emerald-500",
       purple: "from-purple-500 to-violet-500",
@@ -122,133 +116,15 @@ const NotesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex">
-      {/* Mobile Sidebar */}
-      {isSidebarOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsSidebarOpen(false)}
-          ></div>
-          <div className="absolute left-0 top-0 h-full w-80 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-all duration-300">
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Zap className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Elevate
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
-                >
-                  <X className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6">
-              <div className="space-y-4">
-                <button className="w-full flex items-center space-x-3 p-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
-                  <Home className="w-5 h-5" />
-                  <span className="font-semibold">Dashboard</span>
-                </button>
-                <button className="w-full flex items-center space-x-3 p-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
-                  <BookOpen className="w-5 h-5" />
-                  <span className="font-semibold">Subjects</span>
-                </button>
-                <button className="w-full flex items-center space-x-3 p-4 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 transition-all hover:scale-105">
-                  <FileText className="w-5 h-5" />
-                  <span className="font-semibold">Notes</span>
-                </button>
-                <button className="w-full flex items-center space-x-3 p-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
-                  <Trophy className="w-5 h-5" />
-                  <span className="font-semibold">Progress</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:flex lg:flex-col lg:w-80 bg-white/80 backdrop-blur-xl shadow-xl border-r border-gray-200/50">
-        <div className="p-8 border-b border-gray-100">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
-              <Zap className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-3xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Elevate
-            </span>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-6 space-y-3">
-          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
-            <Home className="w-6 h-6" />
-            <span className="font-semibold text-lg">Dashboard</span>
-          </button>
-          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
-            <BookOpen className="w-6 h-6" />
-            <span className="font-semibold text-lg">Subjects</span>
-          </button>
-          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 transition-all hover:scale-105 shadow-sm">
-            <FileText className="w-6 h-6" />
-            <span className="font-semibold text-lg">Notes</span>
-          </button>
-          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
-            <Trophy className="w-6 h-6" />
-            <span className="font-semibold text-lg">Progress</span>
-          </button>
-        </nav>
-
-        <div className="p-6 border-t border-gray-100">
-          <div className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-gray-50 cursor-pointer transition-all hover:scale-105">
-            <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <User className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900">{}</p>
-              <p className="text-sm text-gray-500">Grade 11</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen lg:ml-70 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <DesktopSidebar />
+      <Topbar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-xl px-6 lg:px-8 py-6 lg:py-8 shadow-sm border-b border-gray-100/50">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <button
-                className="lg:hidden p-3 rounded-2xl hover:bg-gray-100 transition-all hover:scale-110"
-                onClick={() => setIsSidebarOpen(true)}
-              >
-                <Menu className="w-6 h-6 text-gray-600" />
-              </button>
-
-              <div>
-                <h1 className="text-2xl lg:text-4xl font-black bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                  My Notes 📝
-                </h1>
-                <p className="text-gray-600 lg:text-lg mt-1">
-                  All your study notes in one place
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <button className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                <Plus className="w-5 h-5" />
-                <span className="font-semibold hidden sm:block">New Note</span>
-              </button>
-            </div>
-          </div>
+          <div className="flex items-center justify-between mb-6"></div>
 
           {/* Search and Filter Bar */}
           <div className="flex flex-col lg:flex-row gap-4">

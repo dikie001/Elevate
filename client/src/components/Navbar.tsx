@@ -1,8 +1,7 @@
+import { Menu, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
-import { shortQuotes } from "../components/Quotes";
-import { Trophy, User } from "lucide-react";
+import { shortQuotes } from "./Quotes";
 import { useStateStore } from "../store/stateStore";
-
 
 interface MainTypes {
   name: string;
@@ -11,10 +10,10 @@ interface MainTypes {
   theme: string;
 }
 
-const Topbar = () => {
+const Navbar = () => {
   const [userData, setUserData] = useState<MainTypes>();
   const [quote, setQuote] = useState("");
-  const {greeting}=useStateStore()
+  const { greeting, setOpenMobileMenu, openMobileMenu } = useStateStore();
 
   // Load user data
   useEffect(() => {
@@ -30,7 +29,6 @@ const Topbar = () => {
   // Randomize the greetings
   useEffect(() => {
     const Randomize = () => {
-
       const randomQ = Math.floor(Math.random() * shortQuotes.length);
       setQuote(shortQuotes[randomQ]);
     };
@@ -61,9 +59,10 @@ const Topbar = () => {
             <span className={`font-semibold text-indigo-600`}>Level 5</span>
           </div>
           <button
-            className={`lg:hidden p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg hover:scale-110 transition-transform`}
+            onClick={() => setOpenMobileMenu(true)}
+            className={`lg:hidden cursor-pointer p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg active:scale-95`}
           >
-            <User className={`w-5 h-5 text-white`} />
+            <Menu className={`w-5 h-5 text-white`} />
           </button>
         </div>
       </div>
@@ -71,4 +70,4 @@ const Topbar = () => {
   );
 };
 
-export default Topbar;
+export default Navbar;

@@ -1,11 +1,10 @@
-import { ChevronRight, Plus, Search, Trophy, User } from "lucide-react";
+import { ChevronRight, Plus, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
 import DesktopSidebar from "../components/DesktopSidebar";
-import { act, useEffect, useState } from "react";
-import { SubjectSelectionModal } from "../modals/SelectSubjectModal";
 import { useStateStore } from "../store/stateStore";
-import MobileBottombar from "../components/MobileBottombar";
-import useIdle from "../hooks/useIdle";
-import Topbar from "../components/Topbar";
+
+import { useNavigate } from "react-router-dom";
+import Topbar from "../components/Navbar";
 
 interface MainTypes {
   name: string;
@@ -15,14 +14,9 @@ interface MainTypes {
 }
 
 const HomePage = () => {
-  const { user, setUser } = useStateStore();
+  const { setUser } = useStateStore();
   const [userData, setUserData] = useState<MainTypes>();
-
-  const [showSelectSubjectModal, setShowSubjectModal] = useState(false);
-  const isIdle = useIdle(3000);
-
-
-
+  const navigate = useNavigate();
 
   // Load data
   useEffect(() => {
@@ -60,8 +54,10 @@ const HomePage = () => {
 
   // Handle Quick Actions
   const HandleQuickActions = (action: string) => {
-    if (action === "Start Quiz" || action === "Study Notes") {
-      setShowSubjectModal(true);
+    if (action === "Start Quiz") {
+      navigate("/trivia");
+    } else if (action === "Study Notes") {
+      navigate("/notes");
     }
   };
 
@@ -70,7 +66,6 @@ const HomePage = () => {
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex`}
     >
       <DesktopSidebar />
-      {!isIdle && <MobileBottombar />}
 
       {/* Main Content */}
       <div className={`flex-1 flex flex-col lg:ml-70`}>
@@ -209,7 +204,6 @@ const HomePage = () => {
       </div>
 
       {/* MODALS */}
-      {showSelectSubjectModal && <SubjectSelectionModal />}
     </div>
   );
 };

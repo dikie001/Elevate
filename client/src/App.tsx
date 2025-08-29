@@ -10,10 +10,11 @@ import WelcomePage from "./pages/WelcomePage";
 import SubjectsPage from "./pages/SubjectsPage";
 import ProgressPage from "./pages/ProgressPage";
 import { useStateStore } from "./store/stateStore";
+import MobileMenu from "./components/MobileMenu";
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");
-  const { setGreeting } = useStateStore();
+  const { setGreeting, openMobileMenu } = useStateStore();
   const greetings = [
     "Hi",
     "Hey",
@@ -55,6 +56,8 @@ const App = () => {
     <>
       <Toaster />
       <Router>
+        {openMobileMenu && <MobileMenu />}
+
         <Routes>
           <Route
             path="/"

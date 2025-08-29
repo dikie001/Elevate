@@ -16,6 +16,9 @@ interface StateStore {
 
   greeting: string;
   setGreeting: (value: string) => void;
+
+  openMobileMenu: boolean;
+  setOpenMobileMenu: (value: boolean) => void;
 }
 
 export const useStateStore = create<StateStore>((set) => ({
@@ -30,4 +33,8 @@ export const useStateStore = create<StateStore>((set) => ({
   // Greeting state
   greeting: "Hello",
   setGreeting: (value) => set({ greeting: value }),
+
+  // Menu state
+  openMobileMenu: false,
+  setOpenMobileMenu: (value) => set({ openMobileMenu: value }),
 }));

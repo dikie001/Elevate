@@ -1,6 +1,6 @@
 import { Trophy, BookOpen, Clock, Flame } from "lucide-react";
 import DesktopSidebar from "../components/DesktopSidebar";
-import Topbar from "../components/Topbar";
+import Topbar from "../components/Navbar";
 
 const ProgressPage = () => {
   const progress = {
