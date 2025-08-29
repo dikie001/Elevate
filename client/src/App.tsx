@@ -8,11 +8,10 @@ import SettingsPage from "./pages/SettingsPage";
 import TriviaPage from "./pages/TriviaPage";
 import WelcomePage from "./pages/WelcomePage";
 import SubjectsPage from "./pages/SubjectsPage";
-
-
+import ProgressPage from "./pages/ProgressPage";
 
 const App = () => {
-  const [isFirstVisit, setIsFirstVisit] = useState<string | null>('');
+  const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");
 
   useEffect(() => {
     loadUserData();
@@ -46,7 +45,7 @@ const App = () => {
           <Route path="/notes" element={<NotesPage />} />
           <Route path="/trivia" element={<TriviaPage />} />
           <Route path="/subjects" element={<SubjectsPage />} />
-          <Route path="/trivia" element={<TriviaPage />} />
+          <Route path="/progress" element={<ProgressPage />} />
           <Route path="/trivia" element={<TriviaPage />} />
         </Routes>
       </Router>
