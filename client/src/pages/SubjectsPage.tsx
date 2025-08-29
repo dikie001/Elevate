@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Star,
 } from "lucide-react";
+import DesktopSidebar from "../components/DesktopSidebar";
 
 const SubjectsPage: React.FC = () => {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -30,7 +31,7 @@ const SubjectsPage: React.FC = () => {
       textColor: "text-blue-600",
     },
     {
-      name: "Kiswahili or Kenyan Sign Language",
+      name: "Kiswahili ",
       description: "National language proficiency and cultural understanding",
       color: "from-green-500 to-green-600",
       bgColor: "bg-green-50",
@@ -74,7 +75,7 @@ const SubjectsPage: React.FC = () => {
       textColor: "text-teal-600",
     },
     {
-      name: "Religious Education (CRE, IRE, or HRE)",
+      name: "Religious Education ",
       description: "Moral values, spiritual development, and ethical reasoning",
       color: "from-indigo-500 to-indigo-600",
       bgColor: "bg-indigo-50",
@@ -154,7 +155,8 @@ const SubjectsPage: React.FC = () => {
     <div
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 px-4 sm:py-12 sm:px-6 lg:px-8`}
     >
-      <div className={`max-w-7xl mx-auto`}>
+      <DesktopSidebar/>
+      <div className={`max-w-7xl ml-70 mx-auto`}>
         {/* Header */}
         <div className={`text-center mb-8 sm:mb-12`}>
           <div
@@ -178,7 +180,7 @@ const SubjectsPage: React.FC = () => {
 
         {/* Subjects Grid */}
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-12`}
+          className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 mb-12`}
         >
           {subjects.map((subject, index) => (
             <div

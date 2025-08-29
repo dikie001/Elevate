@@ -101,7 +101,7 @@ const HomePage = () => {
      {!isIdle && <MobileBottombar />}
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col lg:ml-80`}>
+      <div className={`flex-1 flex flex-col lg:ml-70`}>
         {/* Header */}
         <div
           className={`bg-white/80 backdrop-blur-xl px-6 lg:px-8 py-6 lg:py-8 shadow-sm border-b border-gray-100/50`}
