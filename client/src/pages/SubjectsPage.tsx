@@ -16,6 +16,7 @@ import {
   Star,
 } from "lucide-react";
 import DesktopSidebar from "../components/DesktopSidebar";
+import Topbar from "../components/Topbar";
 
 const SubjectsPage: React.FC = () => {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -152,43 +153,47 @@ const SubjectsPage: React.FC = () => {
   };
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 px-4 sm:py-12 sm:px-6 lg:px-8`}
-    >
-      <DesktopSidebar/>
-      <div className={`max-w-7xl ml-70 mx-auto`}>
-        {/* Header */}
-        <div className={`text-center mb-8 sm:mb-12`}>
-          <div
-            className={`inline-flex items-center justify-center p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-6`}
-          >
-            <Star className={`w-8 h-8 text-white`} />
-          </div>
-          <h1
-            className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4`}
-          >
-            Kenyan Curriculum Subjects
-          </h1>
-          <p
-            className={`text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed`}
-          >
-            Discover the comprehensive range of subjects in Kenya's
-            Competency-Based Curriculum (CBC). Click on any subject to learn
-            more about what students explore.
-          </p>
-        </div>
-
-        {/* Subjects Grid */}
+    <>
+      <div
+        className={`min-h-screen lg:ml-70 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 `}
+      >
+        <DesktopSidebar />
+        <Topbar/>
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 mb-12`}
+          className={`max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8`}
         >
-          {subjects.map((subject, index) => (
+          {/* Header */}
+          <div className={`text-center mb-8 sm:mb-12`}>
             <div
-              key={index}
-              onClick={() => handleSubjectClick(subject.name)}
-              onMouseEnter={() => setHoveredSubject(subject.name)}
-              onMouseLeave={() => setHoveredSubject(null)}
-              className={`
+              className={`inline-flex items-center justify-center p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-6`}
+            >
+              <Star className={`w-8 h-8 text-white`} />
+            </div>
+            <h1
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4`}
+            >
+              Kenyan Curriculum Subjects
+            </h1>
+            <p
+              className={`text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed`}
+            >
+              Discover the comprehensive range of subjects in Kenya's
+              Competency-Based Curriculum (CBC). Click on any subject to learn
+              more about what students explore.
+            </p>
+          </div>
+
+          {/* Subjects Grid */}
+          <div
+            className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 mb-12`}
+          >
+            {subjects.map((subject, index) => (
+              <div
+                key={index}
+                onClick={() => handleSubjectClick(subject.name)}
+                onMouseEnter={() => setHoveredSubject(subject.name)}
+                onMouseLeave={() => setHoveredSubject(null)}
+                className={`
                 group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl 
                 transition-all duration-300 cursor-pointer border border-gray-100
                 transform hover:-translate-y-2 hover:scale-105 active:scale-95
@@ -199,40 +204,40 @@ const SubjectsPage: React.FC = () => {
                 }
                 ${hoveredSubject === subject.name ? "shadow-xl" : ""}
               `}
-            >
-              {/* Gradient overlay for selected state */}
-              {selectedSubject === subject.name && (
-                <div
-                  className={`absolute inset-0 bg-gradient-to-r ${subject.color} opacity-5 rounded-2xl`}
-                />
-              )}
-
-              <div className={`p-4 sm:p-6`}>
-                {/* Icon and Title */}
-                <div className={`flex items-start space-x-4 mb-4`}>
+              >
+                {/* Gradient overlay for selected state */}
+                {selectedSubject === subject.name && (
                   <div
-                    className={`flex-shrink-0 p-3 ${subject.bgColor} rounded-xl group-hover:scale-110 transition-transform duration-200`}
-                  >
-                    {getSubjectIcon(subject.name, subject.textColor)}
-                  </div>
-                  <div className={`flex-1 min-w-0`}>
-                    <h3
-                      className={`text-lg sm:text-xl font-bold text-gray-900 leading-tight mb-2 group-hover:${subject.textColor} transition-colors duration-200`}
-                    >
-                      {subject.name}
-                    </h3>
+                    className={`absolute inset-0 bg-gradient-to-r ${subject.color} opacity-5 rounded-2xl`}
+                  />
+                )}
+
+                <div className={`p-4 sm:p-6`}>
+                  {/* Icon and Title */}
+                  <div className={`flex items-start space-x-4 mb-4`}>
                     <div
-                      className={`flex items-center text-xs sm:text-sm ${subject.textColor} font-medium`}
+                      className={`flex-shrink-0 p-3 ${subject.bgColor} rounded-xl group-hover:scale-110 transition-transform duration-200`}
                     >
-                      <span
-                        className={`${subject.bgColor} px-2 py-1 rounded-full`}
-                      >
-                        Subject {index + 1}
-                      </span>
+                      {getSubjectIcon(subject.name, subject.textColor)}
                     </div>
-                  </div>
-                  <ChevronRight
-                    className={`
+                    <div className={`flex-1 min-w-0`}>
+                      <h3
+                        className={`text-lg sm:text-xl font-bold text-gray-900 leading-tight mb-2 group-hover:${subject.textColor} transition-colors duration-200`}
+                      >
+                        {subject.name}
+                      </h3>
+                      <div
+                        className={`flex items-center text-xs sm:text-sm ${subject.textColor} font-medium`}
+                      >
+                        <span
+                          className={`${subject.bgColor} px-2 py-1 rounded-full`}
+                        >
+                          Subject {index + 1}
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight
+                      className={`
                     w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-all duration-200
                     ${
                       selectedSubject === subject.name
@@ -240,12 +245,12 @@ const SubjectsPage: React.FC = () => {
                         : "group-hover:translate-x-1"
                     }
                   `}
-                  />
-                </div>
+                    />
+                  </div>
 
-                {/* Description - shown when selected */}
-                <div
-                  className={`
+                  {/* Description - shown when selected */}
+                  <div
+                    className={`
                   overflow-hidden transition-all duration-400 ease-in-out
                   ${
                     selectedSubject === subject.name
@@ -253,88 +258,99 @@ const SubjectsPage: React.FC = () => {
                       : "max-h-0 opacity-0"
                   }
                 `}
-                >
-                  <div className={`pt-4 border-t border-gray-100`}>
-                    <p className={`text-sm text-gray-600 leading-relaxed`}>
-                      {subject.description}
-                    </p>
-                  </div>
-                  <div
-                    className="mt-2  gap-4 flex absolute -translate-y-8 top-0 right-1/2 translate-x-1/2 "
-                    onClick={(e) => e.stopPropagation()}
                   >
-                    <button
-                      onClick={() => alert("hey")}
-                      className="bg-white px-4 py-3 ring-3 ring-blue-500 font-medium rounded-2xl shadow-lg"
+                    <div className={`pt-4 border-t border-gray-100`}>
+                      <p className={`text-sm text-gray-600 leading-relaxed`}>
+                        {subject.description}
+                      </p>
+                    </div>
+                    <div
+                      className="mt-2  gap-4 flex absolute -translate-y-8 top-0 right-1/2 translate-x-1/2 "
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Notes
-                    </button>
-                    <button className="ring-3 ring-blue-500 px-4 py-3 bg-white font-medium rounded-2xl shadow-lg">
-                      Trivia
-                    </button>
+                      <button
+                        onClick={() => alert("hey")}
+                        className="bg-white px-4 py-3 ring-3 ring-blue-500 font-medium rounded-2xl shadow-lg"
+                      >
+                        Notes
+                      </button>
+                      <button className="ring-3 ring-blue-500 px-4 py-3 bg-white font-medium rounded-2xl shadow-lg">
+                        Trivia
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* Click indicator */}
-                <div
-                  className={`
+                  {/* Click indicator */}
+                  <div
+                    className={`
                   absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200
                   ${selectedSubject === subject.name ? "opacity-100" : ""}
                 `}
-                >
-                  <div
-                    className={`w-2 h-2 bg-blue-500 rounded-full animate-pulse`}
-                  />
+                  >
+                    <div
+                      className={`w-2 h-2 bg-blue-500 rounded-full animate-pulse`}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Statistics */}
-        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8`}>
-          <div
-            className={`bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-100`}
-          >
-            <div className={`text-3xl font-bold text-blue-600 mb-2`}>
-              {subjects.length}
-            </div>
-            <div className={`text-gray-600 font-medium`}>Core Subjects</div>
-          </div>
-          <div
-            className={`bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-100`}
-          >
-            <div className={`text-3xl font-bold text-green-600 mb-2`}>100%</div>
-            <div className={`text-gray-600 font-medium`}>Competency-Based</div>
-          </div>
-          <div
-            className={`bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-100`}
-          >
-            <div className={`text-3xl font-bold text-purple-600 mb-2`}>CBC</div>
-            <div className={`text-gray-600 font-medium`}>Curriculum System</div>
-          </div>
-        </div>
-
-        {/* Footer Info */}
-        <div className={`text-center`}>
-          <div
-            className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-100`}
-          >
-            <h2 className={`text-xl sm:text-2xl font-bold text-gray-900 mb-4`}>
-              Interactive Learning Experience
-            </h2>
-            <p
-              className={`text-gray-600 leading-relaxed max-w-4xl mx-auto text-sm sm:text-base`}
+          {/* Statistics */}
+          <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8`}>
+            <div
+              className={`bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-100`}
             >
-              Click on any subject card above to explore detailed information
-              about what students learn. The CBC approach emphasizes practical
-              skills, critical thinking, and real-world application across all
-              these essential learning areas.
-            </p>
+              <div className={`text-3xl font-bold text-blue-600 mb-2`}>
+                {subjects.length}
+              </div>
+              <div className={`text-gray-600 font-medium`}>Core Subjects</div>
+            </div>
+            <div
+              className={`bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-100`}
+            >
+              <div className={`text-3xl font-bold text-green-600 mb-2`}>
+                100%
+              </div>
+              <div className={`text-gray-600 font-medium`}>
+                Competency-Based
+              </div>
+            </div>
+            <div
+              className={`bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-100`}
+            >
+              <div className={`text-3xl font-bold text-purple-600 mb-2`}>
+                CBC
+              </div>
+              <div className={`text-gray-600 font-medium`}>
+                Curriculum System
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Info */}
+          <div className={`text-center`}>
+            <div
+              className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-100`}
+            >
+              <h2
+                className={`text-xl sm:text-2xl font-bold text-gray-900 mb-4`}
+              >
+                Interactive Learning Experience
+              </h2>
+              <p
+                className={`text-gray-600 leading-relaxed max-w-4xl mx-auto text-sm sm:text-base`}
+              >
+                Click on any subject card above to explore detailed information
+                about what students learn. The CBC approach emphasizes practical
+                skills, critical thinking, and real-world application across all
+                these essential learning areas.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -29,7 +29,7 @@ const DesktopSidebar = () => {
     <div>
       {/* Desktop Sidebar */}
       <div className=" hidden lg:flex lg:flex-col lg:w-70 left-0 top-0 h-dvh fixed bg-white/80 backdrop-blur-xl shadow-xl border-r border-gray-200/50">
-        <div className="p-8 border-b border-gray-100">
+        <div className="p-7 border-b border-gray-100">
           <div className="flex items-center space-x-4">
             <div className=" ">
               <img

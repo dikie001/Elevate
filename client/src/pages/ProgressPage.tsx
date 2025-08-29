@@ -1,4 +1,5 @@
 import { Trophy, BookOpen, Clock, Flame } from "lucide-react";
+import DesktopSidebar from "../components/DesktopSidebar";
 
 const ProgressPage = () => {
   const progress = {
@@ -11,9 +12,9 @@ const ProgressPage = () => {
   const percent = Math.round((progress.completed / progress.goal) * 100);
 
   return (
-    <div className="min-h-screen p-6 bg-white text-gray-900">
+    <div className="min-h-screen p-6 bg-white text-gray-900 lg:ml-70">
       <h1 className="text-2xl font-bold mb-6">📈 Your Progress</h1>
-
+<DesktopSidebar/>
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 mb-8">
         <div className="bg-gray-100 p-4 rounded-2xl flex flex-col items-center shadow">

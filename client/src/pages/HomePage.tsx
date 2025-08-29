@@ -5,6 +5,7 @@ import { SubjectSelectionModal } from "../modals/SelectSubjectModal";
 import { useStateStore } from "../store/stateStore";
 import MobileBottombar from "../components/MobileBottombar";
 import useIdle from "../hooks/useIdle";
+import Topbar from "../components/Topbar";
 
 interface MainTypes {
   name: string;
@@ -16,41 +17,12 @@ interface MainTypes {
 const HomePage = () => {
   const { user, setUser } = useStateStore();
   const [userData, setUserData] = useState<MainTypes>();
-  const [greeting, setGreeting] = useState("");
+
   const [showSelectSubjectModal, setShowSubjectModal] = useState(false);
-  const  isIdle  = useIdle(3000);
-  const greetings = [
-    "Hi",
-    "Hey",
-    "Hello",
-    "Hola",
-    "Sup",
-    "Greetings",
-    "Howdy",
-    "Salutations",
-    "Hey there",
-    "Welcome",
-    "Yoho",
-    "Ahoy",
-    "Bonjour",
-    "Ciao",
-    "Halla",
-    "Hiya",
-    "Namaste",
-    "Shalom",
-    "Aloha",
-    "G'day",
-  ];
+  const isIdle = useIdle(3000);
 
-  // Randomize the greetings
-  useEffect(() => {
-    const Randomize = () => {
-      const random = Math.floor(Math.random() * 19);
-      setGreeting(greetings[random]);
-    };
 
-    Randomize();
-  }, []);
+
 
   // Load data
   useEffect(() => {
@@ -98,55 +70,11 @@ const HomePage = () => {
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex`}
     >
       <DesktopSidebar />
-     {!isIdle && <MobileBottombar />}
+      {!isIdle && <MobileBottombar />}
 
       {/* Main Content */}
       <div className={`flex-1 flex flex-col lg:ml-70`}>
-        {/* Header */}
-        <div
-          className={`bg-white/80 backdrop-blur-xl px-6 lg:px-8 py-6 lg:py-8 shadow-sm border-b border-gray-100/50`}
-        >
-          <div className={`flex items-center justify-between `}>
-            <div className={`flex items-center space-x-4`}>
-              <div>
-                <h1
-                  className={`text-2xl lg:text-4xl font-black bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent`}
-                >
-                  {greeting} {userData?.name.split(" ")[0] || "guest"}
-                </h1>
-                <p className={`text-gray-600 lg:text-lg mt-1`}>
-                  Ready to elevate your learning?
-                </p>
-              </div>
-            </div>
-
-            <div className={`flex items-center space-x-3`}>
-              <div
-                className={`hidden lg:flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl`}
-              >
-                <Trophy className={`w-5 h-5 text-indigo-600`} />
-                <span className={`font-semibold text-indigo-600`}>Level 5</span>
-              </div>
-              <button
-                className={`lg:hidden p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg hover:scale-110 transition-transform`}
-              >
-                <User className={`w-5 h-5 text-white`} />
-              </button>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          {/* <div className={`relative max-w-2xl`}>
-            <Search
-              className={`absolute left-6 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400`}
-            />
-            <input
-              type="text"
-              placeholder="Search anything you want to learn..."
-              className={`w-full pl-14 pr-6 py-4 bg-gray-50/80 backdrop-blur-sm rounded-2xl border-2 border-transparent focus:border-indigo-300 focus:bg-white transition-all outline-none text-lg`}
-            />
-          </div> */}
-        </div>
+        <Topbar />
 
         {/* Main Dashboard */}
         <div className={`flex-1 px-6 lg:px-8 py-8`}>
