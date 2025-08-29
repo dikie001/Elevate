@@ -1,6 +1,8 @@
 import { ChevronRight, Plus, Search, Trophy, User } from "lucide-react";
 import DesktopSidebar from "../components/DesktopSidebar";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
+import { SubjectSelectionModal } from "../modals/SelectSubjectModal";
+import { useStateStore } from "../store/stateStore";
 
 interface MainTypes {
   name: string;
@@ -10,8 +12,10 @@ interface MainTypes {
 }
 
 const HomePage = () => {
+  const { user, setUser } = useStateStore();
   const [userData, setUserData] = useState<MainTypes>();
   const [greeting, setGreeting] = useState("");
+  const [showSelectSubjectModal, setShowSubjectModal] = useState(false);
   const greetings = [
     "Hi",
     "Hey",
@@ -48,9 +52,11 @@ const HomePage = () => {
   // Load data
   useEffect(() => {
     const LoadData = () => {
-      const rawData = localStorage.getItem("userData");
-      const parsedData = rawData ? JSON.parse(rawData) : [];
-      setUserData(parsedData);
+      const data = localStorage.getItem("userData");
+      if (data) {
+        setUserData(JSON.parse(data));
+        setUser(JSON.parse(data));
+      }
     };
     LoadData();
   }, []);
@@ -77,6 +83,13 @@ const HomePage = () => {
     { title: "Progress", icon: "📊", gradient: "from-pink-500 to-rose-500" },
   ];
 
+  // Handle Quick Actions
+  const HandleQuickActions = (action: string) => {
+    if (action === "Start Quiz" || action === "Study Notes") {
+      setShowSubjectModal(true);
+    }
+  };
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex`}
@@ -89,7 +102,7 @@ const HomePage = () => {
         <div
           className={`bg-white/80 backdrop-blur-xl px-6 lg:px-8 py-6 lg:py-8 shadow-sm border-b border-gray-100/50`}
         >
-          <div className={`flex items-center justify-between mb-6`}>
+          <div className={`flex items-center justify-between `}>
             <div className={`flex items-center space-x-4`}>
               <div>
                 <h1
@@ -119,7 +132,7 @@ const HomePage = () => {
           </div>
 
           {/* Search Bar */}
-          <div className={`relative max-w-2xl`}>
+          {/* <div className={`relative max-w-2xl`}>
             <Search
               className={`absolute left-6 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400`}
             />
@@ -128,7 +141,7 @@ const HomePage = () => {
               placeholder="Search anything you want to learn..."
               className={`w-full pl-14 pr-6 py-4 bg-gray-50/80 backdrop-blur-sm rounded-2xl border-2 border-transparent focus:border-indigo-300 focus:bg-white transition-all outline-none text-lg`}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Main Dashboard */}
@@ -145,6 +158,7 @@ const HomePage = () => {
                 {quickActions.map((action, index) => (
                   <button
                     key={index}
+                    onClick={() => HandleQuickActions(action.title)}
                     className={`group relative p-6 lg:p-8 rounded-3xl bg-gradient-to-r ${action.gradient} text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 hover:-translate-y-2`}
                   >
                     <div
@@ -261,6 +275,9 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* MODALS */}
+      {showSelectSubjectModal && <SubjectSelectionModal />}
     </div>
   );
 };

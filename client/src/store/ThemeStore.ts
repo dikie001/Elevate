@@ -20,6 +20,8 @@ interface ThemeState {
   primaryButtonThemeColors: Record<Theme, string>;
   subTextThemeColors: Record<Theme, string>;
   secondaryButtonThemeColors: Record<Theme, string>;
+
+  
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({

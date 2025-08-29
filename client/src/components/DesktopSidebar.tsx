@@ -1,6 +1,15 @@
-import { BookOpen, Home, Trophy, User } from 'lucide-react';
+import { BookOpen, Home, Trophy, User } from "lucide-react";
+import { useStateStore } from "../store/stateStore";
 
+interface MainTypes {
+  name: string;
+  age: string;
+  grade: string;
+  theme: string;
+}
 const DesktopSidebar = () => {
+  const { user } = useStateStore();
+  console.log(user);
   return (
     <div>
       {/* Desktop Sidebar */}
@@ -8,7 +17,12 @@ const DesktopSidebar = () => {
         <div className="p-8 border-b border-gray-100">
           <div className="flex items-center space-x-4">
             <div className=" ">
-              <img src="/images/elevate-logo.png" alt="elevate logo" height={50} width={50}/>
+              <img
+                src="/images/elevate-logo.png"
+                alt="elevate logo"
+                height={50}
+                width={50}
+              />
             </div>
             <span className="text-3xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Elevate
@@ -37,14 +51,16 @@ const DesktopSidebar = () => {
               <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-gray-900">Alex Student</p>
-              <p className="text-sm text-gray-500">Grade 11</p>
+              <p className="font-semibold text-gray-900">
+                {user?.name}
+              </p>
+              <p className="text-sm text-gray-500"> Grade {user?.grade.slice(0,-2)}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default DesktopSidebar
+export default DesktopSidebar;

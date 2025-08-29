@@ -1,28 +1,28 @@
-import React, { useState } from "react";
 import {
   BookOpen,
-  Search,
-  User,
-  Home,
-  Trophy,
-  Plus,
-  Filter,
-  Menu,
-  X,
-  Zap,
   Calendar,
   Clock,
-  FileText,
-  Star,
   Edit3,
-  Trash2,
   Eye,
+  FileText,
+  Home,
+  Menu,
+  Plus,
+  Search,
+  Star,
+  Trash2,
+  Trophy,
+  User,
+  X,
+  Zap,
 } from "lucide-react";
+import { useState } from "react";
 
 const NotesPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [quickAction, setQuickActio] = useState("");
 
   const subjects = [
     { name: "All", icon: "📚", color: "gray" },
@@ -212,7 +212,7 @@ const NotesPage = () => {
               <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-gray-900">Alex Student</p>
+              <p className="font-semibold text-gray-900">{}</p>
               <p className="text-sm text-gray-500">Grade 11</p>
             </div>
           </div>
