@@ -1,5 +1,6 @@
 import { BookOpen, Home, Trophy, User } from "lucide-react";
 import { useStateStore } from "../store/stateStore";
+import { useNavigate } from "react-router-dom";
 
 interface MainTypes {
   name: string;
@@ -9,6 +10,7 @@ interface MainTypes {
 }
 const DesktopSidebar = () => {
   const { user } = useStateStore();
+  const navigate = useNavigate();
   console.log(user);
   return (
     <div>
@@ -35,26 +37,27 @@ const DesktopSidebar = () => {
             <Home className="w-6 h-6" />
             <span className="font-semibold text-lg">Dashboard</span>
           </button>
-          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
+          <button onClick={()=>navigate("/subjects")} className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 ">
             <BookOpen className="w-6 h-6" />
             <span className="font-semibold text-lg">Subjects</span>
           </button>
-          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all hover:scale-105">
+          <button className="w-full flex items-center space-x-4 px-6 py-4 rounded-2xl text-gray-600 hover:bg-gray-50 ">
             <Trophy className="w-6 h-6" />
             <span className="font-semibold text-lg">Progress</span>
           </button>
         </nav>
 
         <div className="p-6 border-t border-gray-100">
-          <div className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-gray-50 cursor-pointer transition-all hover:scale-105">
+          <div className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-gray-50 cursor-pointer ">
             <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
               <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-gray-900">
-                {user?.name}
+              <p className="font-semibold text-gray-900">{user?.name}</p>
+              <p className="text-sm text-gray-500">
+                {" "}
+                Grade {user?.grade.slice(0, -2)}
               </p>
-              <p className="text-sm text-gray-500"> Grade {user?.grade.slice(0,-2)}</p>
             </div>
           </div>
         </div>

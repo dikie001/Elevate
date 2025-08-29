@@ -7,6 +7,7 @@ import NotesPage from "./pages/NotesPage";
 import SettingsPage from "./pages/SettingsPage";
 import TriviaPage from "./pages/TriviaPage";
 import WelcomePage from "./pages/WelcomePage";
+import SubjectsPage from "./pages/SubjectsPage";
 
 
 
@@ -43,6 +44,9 @@ const App = () => {
           />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/notes" element={<NotesPage />} />
+          <Route path="/trivia" element={<TriviaPage />} />
+          <Route path="/subjects" element={<SubjectsPage />} />
+          <Route path="/trivia" element={<TriviaPage />} />
           <Route path="/trivia" element={<TriviaPage />} />
         </Routes>
       </Router>
