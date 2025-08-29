@@ -3,6 +3,7 @@ import DesktopSidebar from "../components/DesktopSidebar";
 import { act, useEffect, useState } from "react";
 import { SubjectSelectionModal } from "../modals/SelectSubjectModal";
 import { useStateStore } from "../store/stateStore";
+import MobileBottombar from "../components/MobileBottombar";
 
 interface MainTypes {
   name: string;
@@ -95,6 +96,7 @@ const HomePage = () => {
       className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex`}
     >
       <DesktopSidebar />
+      <MobileBottombar/>
 
       {/* Main Content */}
       <div className={`flex-1 flex flex-col lg:ml-80`}>

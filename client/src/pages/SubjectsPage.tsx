@@ -244,7 +244,7 @@ const SubjectsPage: React.FC = () => {
                 {/* Description - shown when selected */}
                 <div
                   className={`
-                  overflow-hidden transition-all duration-300 ease-in-out
+                  overflow-hidden transition-all duration-400 ease-in-out
                   ${
                     selectedSubject === subject.name
                       ? "max-h-32 opacity-100 mt-4"
@@ -257,11 +257,17 @@ const SubjectsPage: React.FC = () => {
                       {subject.description}
                     </p>
                   </div>
-                  <div className="mt-2 justify-end-safe gap-2 flex absolute -translate-y-8 top-0 right-1/2 translate-x-1/2 " onClick={(e)=>e.stopPropagation()}>
-                    <button onClick={()=>alert('hey')} className="bg-blue-500 px-4 py-2 text-white font-medium rounded-2xl shadow-lg">
+                  <div
+                    className="mt-2  gap-4 flex absolute -translate-y-8 top-0 right-1/2 translate-x-1/2 "
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={() => alert("hey")}
+                      className="bg-white px-4 py-3 ring-3 ring-blue-500 font-medium rounded-2xl shadow-lg"
+                    >
                       Notes
                     </button>
-                    <button className="bg-blue-500 px-4 py-2 text-white font-medium rounded-2xl shadow-lg">
+                    <button className="ring-3 ring-blue-500 px-4 py-3 bg-white font-medium rounded-2xl shadow-lg">
                       Trivia
                     </button>
                   </div>
