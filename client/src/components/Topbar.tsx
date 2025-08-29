@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { shortQuotes } from "../components/Quotes";
 import { Trophy, User } from "lucide-react";
+import { useStateStore } from "../store/stateStore";
 
 
 interface MainTypes {
@@ -11,32 +12,9 @@ interface MainTypes {
 }
 
 const Topbar = () => {
-  const [greeting, setGreeting] = useState("");
   const [userData, setUserData] = useState<MainTypes>();
   const [quote, setQuote] = useState("");
-
-  const greetings = [
-    "Hi",
-    "Hey",
-    "Hello",
-    "Hola",
-    "Sup",
-    "Greetings",
-    "Howdy",
-    "Salutations",
-    "Hey there",
-    "Welcome",
-    "Yoho",
-    "Ahoy",
-    "Bonjour",
-    "Ciao",
-    "Halla",
-    "Hiya",
-    "Namaste",
-    "Shalom",
-    "Aloha",
-    "G'day",
-  ];
+  const {greeting}=useStateStore()
 
   // Load user data
   useEffect(() => {
@@ -52,8 +30,6 @@ const Topbar = () => {
   // Randomize the greetings
   useEffect(() => {
     const Randomize = () => {
-      const random = Math.floor(Math.random() * 19);
-      setGreeting(greetings[random]);
 
       const randomQ = Math.floor(Math.random() * shortQuotes.length);
       setQuote(shortQuotes[randomQ]);

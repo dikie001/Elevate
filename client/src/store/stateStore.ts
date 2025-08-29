@@ -13,6 +13,9 @@ interface StateStore {
 
   currentRoute: string;
   setCurrentRoute: (Value: string) => void;
+
+  greeting: string;
+  setGreeting: (value: string) => void;
 }
 
 export const useStateStore = create<StateStore>((set) => ({
@@ -23,4 +26,8 @@ export const useStateStore = create<StateStore>((set) => ({
   // Current Route State
   currentRoute: "/",
   setCurrentRoute: (value) => set({ currentRoute: value }),
+
+  // Greeting state
+  greeting: "Hello",
+  setGreeting: (value) => set({ greeting: value }),
 }));

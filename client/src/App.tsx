@@ -9,18 +9,45 @@ import TriviaPage from "./pages/TriviaPage";
 import WelcomePage from "./pages/WelcomePage";
 import SubjectsPage from "./pages/SubjectsPage";
 import ProgressPage from "./pages/ProgressPage";
+import { useStateStore } from "./store/stateStore";
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");
+  const { setGreeting } = useStateStore();
+  const greetings = [
+    "Hi",
+    "Hey",
+    "Hello",
+    "Hola",
+    "Sup",
+    "Greetings",
+    "Howdy",
+    "Salutations",
+    "Hey there",
+    "Welcome",
+    "Yoho",
+    "Ahoy",
+    "Bonjour",
+    "Ciao",
+    "Halla",
+    "Hiya",
+    "Namaste",
+    "Shalom",
+    "Aloha",
+    "G'day",
+  ];
 
   useEffect(() => {
     loadUserData();
+
+    // Randomize greetings
+    const random = Math.floor(Math.random() * 19);
+    setGreeting(greetings[random]);
   }, []);
 
   // Load user data from local storage
   const loadUserData = () => {
     const visitStat = localStorage.getItem("isFirstVisit");
-    console.log(visitStat);
     setIsFirstVisit(visitStat);
   };
 
