@@ -1,6 +1,8 @@
 import { Trophy, BookOpen, Clock, Flame } from "lucide-react";
 import DesktopSidebar from "../components/DesktopSidebar";
 import Topbar from "../components/Navbar";
+import { useEffect } from "react";
+import axios from "axios";
 
 const ProgressPage = () => {
   const progress = {
@@ -11,6 +13,25 @@ const ProgressPage = () => {
   };
 
   const percent = Math.round((progress.completed / progress.goal) * 100);
+
+  useEffect(() => {
+
+async function fetchData() {
+  try {
+    const res = await fetch(
+      "https://cors-anywhere.herokuapp.com/https://www.jsondataai.com/api/fmqBLzw"
+    );
+    const data = await res.json();
+    console.log(data);
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+fetchData();
+
+  }, []);
+
 
   return (
     <div className="min-h-screen  bg-white text-gray-900 lg:ml-70">
