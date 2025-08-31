@@ -13,6 +13,7 @@ import { useStateStore } from "./store/stateStore";
 import MobileMenu from "./components/MobileMenu";
 import TriviaGame from "./pages/TriviaGame";
 import AuthPage from "./pages/AuthPage";
+import FileUpload from "./dropbox/FileUpload2";
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");
@@ -80,6 +81,7 @@ const App = () => {
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/trivia-game" element={<TriviaGame />} />
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/upload" element={<FileUpload />} />
         </Routes>
       </Router>
     </>
