@@ -3,9 +3,14 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
+import mongoose from "mongoose";
+import { fileModel } from "./models/fileModel.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
+const MONGODB = process.env.MONGODB_CONNECTION_STRING;
+mongoose.connect(MONGODB);
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -29,6 +34,14 @@ app.post("/api/image", upload.single("file"), async (req, res) => {
             console.error("Cloudinary Upload Error:", error);
             return res.status(500).json({ error: "Cloudinary upload failed" });
           }
+          const link = result.secure_url;
+          fileModel
+            .create({link: link})
+            .then(() => console.log("File link saved to DB"))
+            .catch((err) =>
+              console.error("Error saving file link to DB:", err)
+            );
+
           return res.status(200).json({
             message: "File uploaded successfully",
             url: result.secure_url,
