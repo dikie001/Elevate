@@ -11,6 +11,8 @@ import SubjectsPage from "./pages/SubjectsPage";
 import ProgressPage from "./pages/ProgressPage";
 import { useStateStore } from "./store/stateStore";
 import MobileMenu from "./components/MobileMenu";
+import TriviaGame from "./pages/TriviaGame";
+import AuthPage from "./pages/AuthPage";
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");
@@ -76,7 +78,8 @@ const App = () => {
           <Route path="/trivia" element={<TriviaPage />} />
           <Route path="/subjects" element={<SubjectsPage />} />
           <Route path="/progress" element={<ProgressPage />} />
-          <Route path="/trivia" element={<TriviaPage />} />
+          <Route path="/trivia-game" element={<TriviaGame />} />
+          <Route path="/auth" element={<AuthPage />} />
         </Routes>
       </Router>
     </>
