@@ -13,7 +13,7 @@ import { useStateStore } from "./store/stateStore";
 import MobileMenu from "./components/MobileMenu";
 import TriviaGame from "./pages/TriviaGame";
 import AuthPage from "./pages/AuthPage";
-import FileUpload from "./dropbox/FileUpload2";
+import FileUpload from "./pages/FileUpload";
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");

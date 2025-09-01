@@ -5,6 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import mongoose from "mongoose";
 import { fileModel } from "./models/fileModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -26,6 +27,9 @@ cloudinary.config({
 app.post("/api/image", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
+    const fileData = JSON.parse(req.body.data)
+    console.log(fileData)
+
     const result = await cloudinary.uploader
       .upload_stream(
         { folder: "elevate", resource_type: "raw" },
@@ -36,7 +40,7 @@ app.post("/api/image", upload.single("file"), async (req, res) => {
           }
           const link = result.secure_url;
           fileModel
-            .create({link: link})
+            .create({ id: uuidv4(), ...fileData, link })
             .then(() => console.log("File link saved to DB"))
             .catch((err) =>
               console.error("Error saving file link to DB:", err)

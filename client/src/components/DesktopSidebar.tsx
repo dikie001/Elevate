@@ -1,4 +1,4 @@
-import { BookOpen, Home, Settings, Trophy, User } from "lucide-react";
+import { BookOpen, Home, Settings, Trophy, UploadCloud, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useStateStore } from "../store/stateStore";
 
@@ -16,6 +16,7 @@ const DesktopSidebar = () => {
     { name: "Dashboard", icon: Home, to: "/" },
     { name: "Subjects", icon: BookOpen, to: "/subjects" },
     { name: "Progress", icon: Trophy, to: "/progress" },
+    { name: "Upload files", icon: UploadCloud, to: "/upload" },
     { name: "Settings", icon: Settings, to: "/settings" },
   ];
 
