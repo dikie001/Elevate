@@ -52,7 +52,7 @@ const FileUpload: React.FC = () => {
 
     try {
       setMessage("Please wait a sec...");
-      const response = await fetch("http://localhost:4000/api/image", {
+      const response = await fetch("http://localhost:4000/api/file", {
         method: "POST",
         body: formData,
       });

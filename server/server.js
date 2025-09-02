@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
-import multer from "multer";
 import mongoose from "mongoose";
 import { fileModel } from "./models/fileModel.js";
 import { v4 as uuidv4 } from "uuid";
+import multer from "multer";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -23,12 +23,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Get Image File from frontend
-app.post("/api/image", upload.single("file"), async (req, res) => {
+// Get  File from frontend
+app.post("/api/file", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
-    const fileData = JSON.parse(req.body.data)
-    console.log(fileData)
+    const fileData = JSON.parse(req.body.data);
+    console.log(fileData);
 
     const result = await cloudinary.uploader
       .upload_stream(
@@ -56,6 +56,16 @@ app.post("/api/image", upload.single("file"), async (req, res) => {
   } catch (err) {
     console.error("Error receiving file:", err);
     return res.status(500).json({ error: "Error receiving file" });
+  }
+});
+
+//Fetch Files from DB and send to frondend
+app.get("/api/subjects", async (req, res) => {
+  try {
+    const allFiles = await fileModel.find();
+    res.status(200).json(allFiles);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch data from database" });
   }
 });
 
