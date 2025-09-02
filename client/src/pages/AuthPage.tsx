@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User, Lock, Eye, EyeOff, Sparkles, Shield, Zap, Star, Heart, Trophy, LogIn, UserPlus, Brain } from 'lucide-react';
+import { Brain, Eye, EyeOff, Heart, Lock, LogIn, Shield, Sparkles, Star, Trophy, User, UserPlus, Zap } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface User {
   username: string;
