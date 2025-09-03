@@ -33,7 +33,7 @@ const DesktopSidebar = () => {
           <div className="flex items-center space-x-4">
             <div className=" ">
               <img
-                src="/images/elevate-logo.png"
+                src="/images/bot1.png"
                 alt="elevate logo"
                 height={50}
                 width={50}
