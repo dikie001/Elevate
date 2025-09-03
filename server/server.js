@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { fileModel } from "./models/fileModel.js";
 import { v4 as uuidv4 } from "uuid";
 import multer from "multer";
+import { userModel } from "./models/userModel.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -71,6 +72,25 @@ app.get("/api/subjects", async (req, res) => {
     res.status(200).json(allFiles);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch data from database" });
+  }
+});
+
+app.post("/api/auth", upload.none("new_user"), async (req, res) => {
+  const data = JSON.parse(req.body.new_user);
+  const {
+    user_id = uuidv4(),
+    full_name = data.name,
+    age = data.age,
+    school = data.school,
+    theme = data.theme,
+    joined_at = new Date().toDateString(),
+  } = data
+  try {
+    await userModel.create({user_id, full_name,age,school,theme,joined_at});
+    console.log('Users added to DB...')
+    res.status(201).json({message:'user created successfully', name:full_name})
+  } catch (err) {
+    res.status(500).json("Failed to save details", err);
   }
 });
 

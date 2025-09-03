@@ -11,10 +11,11 @@ import {
   Star,
   Sun,
   Trees,
-  Waves
+  Waves,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { useThemeStore } from "../store/ThemeStore";
 
 // Environment variables for EmailJS configuration
@@ -28,6 +29,7 @@ interface UserData {
   age: string;
   grade: string;
   theme: string;
+  school: string;
 }
 
 // Theme type definition for better type checking
@@ -44,13 +46,14 @@ type Theme =
 const WelcomePage: React.FC = () => {
   // State management for current step and user data
   const [currentStep, setCurrentStep] = useState(1);
-  const [showCompletionMessage, setShowCompletionMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData>({
     name: "",
     age: "",
-    grade: "",
-    theme: "",
+    grade: "9th",
+    theme: "dark",
+    school: "",
   });
 
   // Theme store hook for global theme management
@@ -152,13 +155,8 @@ const WelcomePage: React.FC = () => {
         },
         PUBLIC_KEY
       );
-      // toast.success("Welcome email sent successfully!", {
-      //   duration: 3000,
-      //   icon: "🎉",
-      // });
     } catch (err) {
       console.error("Email sending failed:", err);
-      // toast.error("Welcome email failed to send, but you can still continue!");
     } finally {
       setIsLoading(false);
     }
@@ -166,9 +164,9 @@ const WelcomePage: React.FC = () => {
 
   // Enhanced navigation with smooth transitions
   const handleNext = () => {
-    // Validation for step 2 (name and age)
+    // Validation for step 2 (name,school and age)
     if (currentStep === 2) {
-      if (userData.name.length < 2) {
+      if (userData.name.length < 3) {
         toast.error("Please enter a valid name (at least 2 characters)", {
           id: "name-error",
           icon: "📝",
@@ -177,6 +175,20 @@ const WelcomePage: React.FC = () => {
       } else if (userData.name.length > 25) {
         toast.error("Name is too long! Please keep it under 25 characters", {
           id: "name-long-error",
+          icon: "✂️",
+        });
+        return;
+      }
+
+      if (userData.school.length < 3) {
+        toast.error("Please enter a valid name (at least 2 characters)", {
+          id: "school-error",
+          icon: "📝",
+        });
+        return;
+      } else if (userData.school.length > 50) {
+        toast.error("Name is too long! Please keep it under 50 characters", {
+          id: "school-long-error",
           icon: "✂️",
         });
         return;
@@ -250,19 +262,43 @@ const WelcomePage: React.FC = () => {
       `${themes.find((t) => t.id === themeId)?.name} theme selected!`,
       {
         duration: 2000,
-        icon: "🎨",
       }
     );
   };
 
   // Enhanced completion handler with loading state
   const handleComplete = async () => {
+    const formData = new FormData();
+    formData.append("new_user", JSON.stringify(userData));
     setIsLoading(true);
-    await sendEmail();
-    setShowCompletionMessage(true);
-    localStorage.setItem("isFirstVisit", "false");
-    localStorage.setItem("userData", JSON.stringify(userData));
+    console.log(userData);
 
+    try {
+      const response = await fetch("http://localhost:4000/api/auth", {
+        method: "POST",
+        body: formData,
+      });
+      const res = await response.json();
+      console.log(res);
+      if (res.message === "user created successfully") {
+        // await sendEmail();
+        localStorage.setItem("isFirstVisit", "false");
+        localStorage.setItem("userData", JSON.stringify(userData));
+        setIsLoading(false);
+        window.location.reload()
+        toast.success("Account created successfully!", {
+          id: "account-created",
+        });
+      } else if (res.message !== "user created successfully") {
+        toast("Network error, connect to internet", { id: "internet_err" });
+        setIsLoading(false);
+        return;
+      }
+    } catch (err) {
+      toast.error("Error signing up, please try again", { id: "err-signing" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Enhanced step validation
@@ -293,7 +329,11 @@ const WelcomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className={`w-full max-w-2xl ${currentStep === 4 && 'max-w-3xl'} bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm border border-white/20`}>
+      <div
+        className={`w-full max-w-2xl ${
+          currentStep === 4 && "max-w-3xl"
+        } bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm border border-white/20`}
+      >
         {/* Enhanced Progress Bar with Glow Effect */}
         <div className="h-3 bg-gray-100 relative overflow-hidden">
           <div
@@ -367,7 +407,7 @@ const WelcomePage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Enhanced Name Input */}
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">
@@ -375,6 +415,7 @@ const WelcomePage: React.FC = () => {
                   </label>
                   <input
                     type="text"
+                    autoFocus
                     value={userData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
                     className="w-full px-6 py-4 border-2 border-gray-200 focus:outline-none rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all duration-300 text-lg placeholder-gray-400"
@@ -405,6 +446,24 @@ const WelcomePage: React.FC = () => {
                     Must be between 10-100 years old
                   </p>
                 </div>
+
+                {/* School input */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Whats the name of your school?
+                  </label>
+                  <input
+                    type="text"
+                    value={userData.school}
+                    onChange={(e) =>
+                      handleInputChange("school", e.target.value)
+                    }
+                    className="w-full px-6 py-4 border-2 border-gray-200 focus:outline-none rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all duration-300 text-lg placeholder-gray-400"
+                    placeholder="Your school's name"
+                    min="10"
+                    max="100"
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -427,44 +486,42 @@ const WelcomePage: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
-                {["9th", "10th", "11th", "12th"].map(
-                  (grade, index) => (
-                    <button
-                      key={grade}
-                      onClick={() => handleInputChange("grade", grade)}
-                      className={`group relative p-4 shadow-lg shadow-black/20 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                        userData.grade === grade
-                          ? "border-indigo-500 bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700 shadow-md"
-                          : "border-gray-200 hover:border-indigo-300 hover:bg-gradient-to-br hover:from-indigo-25 hover:to-white bg-white"
-                      }`}
-                      style={{
-                        animationDelay: `${index * 50}ms`,
-                      }}
-                    >
-                      <div className="flex flex-col items-center space-y-1">
-                        <span className="text-2xl font-bold">{grade}</span>
-                        <span className="text-xs text-gray-500 uppercase tracking-wider">
-                          Grade
-                        </span>
+                {["9th", "10th", "11th", "12th"].map((grade, index) => (
+                  <button
+                    key={grade}
+                    onClick={() => handleInputChange("grade", grade)}
+                    className={`group relative p-4 shadow-lg shadow-black/20 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
+                      userData.grade === grade
+                        ? "border-indigo-500 bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700 shadow-md"
+                        : "border-gray-200 hover:border-indigo-300 hover:bg-gradient-to-br hover:from-indigo-25 hover:to-white bg-white"
+                    }`}
+                    style={{
+                      animationDelay: `${index * 50}ms`,
+                    }}
+                  >
+                    <div className="flex flex-col items-center space-y-1">
+                      <span className="text-2xl font-bold">{grade}</span>
+                      <span className="text-xs text-gray-500 uppercase tracking-wider">
+                        Grade
+                      </span>
+                    </div>
+                    {userData.grade === grade && (
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center animate-bounce">
+                        <svg
+                          className="w-3 h-3 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
                       </div>
-                      {userData.grade === grade && (
-                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center animate-bounce">
-                          <svg
-                            className="w-3 h-3 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  )
-                )}
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -631,45 +688,6 @@ const WelcomePage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Enhanced Completion Modal */}
-      {showCompletionMessage && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowCompletionMessage(false)}
-          ></div>
-
-          <div className="relative bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center z-10 border border-white/20">
-            {/* Celebration elements */}
-            <div className="relative mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full w-20 h-20 mx-auto opacity-20 animate-pulse"></div>
-              <Sparkles className="relative w-16 h-16 mx-auto text-green-500 animate-bounce" />
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-bounce delay-300"></div>
-              <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-gradient-to-r from-pink-400 to-red-500 rounded-full animate-bounce delay-500"></div>
-            </div>
-
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-              Setup Complete! 🎉
-            </h2>
-            <p className="mb-8 font-medium text-gray-700 text-lg leading-relaxed">
-              You're all set,{" "}
-              <span className="text-indigo-600 font-bold">
-                {userData.name.split(" ")[0]}
-              </span>
-              !
-              <br />
-              Dive in and start your learning adventure with Elevate.
-            </p>
-            <button
-              onClick={() => setShowCompletionMessage(false)}
-              className="px-8 py-4 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 text-lg"
-            >
-              Let's Go! 🚀
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Custom CSS for animations */}
       <style>{`
