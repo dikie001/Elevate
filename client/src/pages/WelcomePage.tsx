@@ -281,14 +281,15 @@ const WelcomePage: React.FC = () => {
       const res = await response.json();
       console.log(res);
       if (res.message === "user created successfully") {
+          toast.success("Account created successfully!", {
+            id: "account-created",
+          });
         // await sendEmail();
         localStorage.setItem("isFirstVisit", "false");
         localStorage.setItem("userData", JSON.stringify(userData));
         setIsLoading(false);
         window.location.reload();
-        toast.success("Account created successfully!", {
-          id: "account-created",
-        });
+      
       } else if (res.message !== "user created successfully") {
         toast("Network error, connect to internet", { id: "internet_err" });
         setIsLoading(false);
@@ -437,7 +438,7 @@ const WelcomePage: React.FC = () => {
                     type="number"
                     value={userData.age}
                     onChange={(e) => handleInputChange("age", e.target.value)}
-                    className="w-full px-6 py-4 border-2 border-gray-200 focus:outline-none rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all duration-300 text-lg placeholder-gray-400"
+                    className="w-full px-6 py-4 border-2  border-gray-200 focus:outline-none rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all duration-300 text-lg placeholder-gray-400"
                     placeholder="Enter your age"
                     min="10"
                     max="100"

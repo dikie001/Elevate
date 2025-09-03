@@ -10,10 +10,11 @@ import {
   User,
   Waves,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useThemeStore } from "../store/ThemeStore";
 import DesktopSidebar from "../components/DesktopSidebar";
 import Topbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 type Theme =
   | "light"
@@ -83,14 +84,60 @@ const themes = [
     icon: Moon,
   },
 ];
+interface SettingsType {
+  theme: string;
+  allowNotifications: boolean;
+  focusTimer: number;
+  profileSettings: ProfileType;
+  studyPreferences: string;
+}
+interface ProfileType {
+  name: string;
+  passcode: string;
+  school: string;
+  nickName: string;
+}
+interface UserTypes {
+  age: string;
+  grade: string;
+  name: string;
+  school: string;
+  theme: string;
+}
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
   const [selected, setSelected] = useState<any>(theme);
-
+  const [settings, setSettings] = useState<SettingsType>({
+    theme: "",
+    allowNotifications: false,
+    focusTimer: 25,
+    studyPreferences: "medium",
+    profileSettings: {
+      name: "",
+      passcode: "",
+      school: "",
+      nickName: "",
+    },
+  });
   const [notifications, setNotifications] = useState(true);
   const [focusTime, setFocusTime] = useState(25);
   const [difficulty, setDifficulty] = useState("normal");
+  const [userData, setUserData] = useState<UserTypes>([]);
+
+  useEffect(() => {
+    const LoadUserData = () => {
+      try {
+        const rawData = localStorage.getItem("userData");
+        const parsed = rawData ? JSON.parse(rawData) : [];
+        setUserData(parsed);
+      } catch (err) {
+        toast.error("Ran into an error", { id: "error" });
+        console.error(err);
+        window.location.reload();
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen lg:ml-70  bg-white text-gray-900">
@@ -136,7 +183,14 @@ const SettingsPage = () => {
               <span>Study Reminders</span>
             </div>
             <button
-              onClick={() => setNotifications(!notifications)}
+              onClick={() => {
+                setNotifications(!notifications);
+                setSettings((prev) => ({
+                  ...prev,
+                  allowNotifications: notifications,
+                }));
+                console.log(settings);
+              }}
               className={`px-4 py-1 rounded-full text-sm ${
                 notifications
                   ? "bg-green-500 text-white"
@@ -158,7 +212,12 @@ const SettingsPage = () => {
             </div>
             <select
               value={focusTime}
-              onChange={(e) => setFocusTime(Number(e.target.value))}
+              onChange={(e) => {
+                setSettings((prev) => ({
+                  ...prev,
+                  focusTimer: Number(e.target.value),
+                }));
+              }}
               className="bg-white border rounded-lg px-3 py-1 text-sm"
             >
               {[15, 25, 30, 45, 60].map((t) => (
@@ -177,7 +236,13 @@ const SettingsPage = () => {
             <span>Difficulty</span>
             <select
               value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
+              onChange={(e) => {
+                setDifficulty(e.target.value);
+                setSettings((prev) => ({
+                  ...prev,
+                  studyPreferences: e.target.value,
+                }));
+              }}
               className="bg-white border rounded-lg px-3 py-1 text-sm"
             >
               <option value="easy">Easy</option>
