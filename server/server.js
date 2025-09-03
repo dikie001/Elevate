@@ -32,7 +32,12 @@ app.post("/api/file", upload.single("file"), async (req, res) => {
 
     const result = await cloudinary.uploader
       .upload_stream(
-        { folder: "elevate", resource_type: "raw" },
+        {
+          folder: "elevate",
+          resource_type: "raw",
+          public_id: `${uuidv4().pdf}`,
+          type: "upload",
+        },
         (error, result) => {
           if (error) {
             console.error("Cloudinary Upload Error:", error);
