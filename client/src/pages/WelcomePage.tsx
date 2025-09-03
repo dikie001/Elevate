@@ -285,7 +285,7 @@ const WelcomePage: React.FC = () => {
         localStorage.setItem("isFirstVisit", "false");
         localStorage.setItem("userData", JSON.stringify(userData));
         setIsLoading(false);
-        window.location.reload()
+        window.location.reload();
         toast.success("Account created successfully!", {
           id: "account-created",
         });
@@ -399,7 +399,7 @@ const WelcomePage: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full w-20 h-20 mx-auto opacity-20 animate-pulse"></div>
                   <Rocket className="relative w-16 h-16 mx-auto text-indigo-500 mb-4 drop-shadow-sm" />
                 </div>
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-3">
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-3">
                   Let's get to know you!
                 </h2>
                 <p className="text-lg text-gray-600">
@@ -410,8 +410,8 @@ const WelcomePage: React.FC = () => {
               <div className="space-y-4">
                 {/* Enhanced Name Input */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    What's your name? ✨
+                  <label className="block  font-medium text-gray-700">
+                    What's your name champ? 
                   </label>
                   <input
                     type="text"
@@ -423,15 +423,15 @@ const WelcomePage: React.FC = () => {
                     maxLength={25}
                   />
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>Minimum 2 characters</span>
+                    <span>Minimum 3 characters</span>
                     <span>{userData.name.length}/25</span>
                   </div>
                 </div>
 
                 {/* Enhanced Age Input */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    How old are you? 🎂
+                  <label className="block font-medium text-gray-700">
+                    How old are you? 
                   </label>
                   <input
                     type="number"
@@ -443,13 +443,13 @@ const WelcomePage: React.FC = () => {
                     max="100"
                   />
                   <p className="text-xs text-gray-500">
-                    Must be between 10-100 years old
+                    Must be above 10 years old
                   </p>
                 </div>
 
                 {/* School input */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
+                  <label className="block  font-medium text-gray-700">
                     Whats the name of your school?
                   </label>
                   <input
@@ -476,8 +476,8 @@ const WelcomePage: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full w-20 h-20 mx-auto opacity-20 animate-pulse"></div>
                   <BookOpen className="relative w-16 h-16 mx-auto text-indigo-500 mb-4 drop-shadow-sm" />
                 </div>
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                  What grade are you in?
+                <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+                  What grade are you in {userData.name.split(" ")[0]}?
                 </h2>
                 <p className="text-lg text-gray-600 max-w-md mx-auto">
                   This helps us customize your learning experience perfectly for
@@ -534,7 +534,7 @@ const WelcomePage: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full w-20 h-20 mx-auto opacity-20 animate-pulse"></div>
                   <Palette className="relative w-16 h-16 mx-auto text-indigo-500 mb-4 drop-shadow-sm" />
                 </div>
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
                   Choose your theme
                 </h2>
                 <p className="text-lg text-gray-600 max-w-md mx-auto">
@@ -542,7 +542,7 @@ const WelcomePage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 ">
                 {themes.map((theme, index) => {
                   const Icon = theme.icon;
                   const isSelected = userData.theme === theme.id;
@@ -550,7 +550,7 @@ const WelcomePage: React.FC = () => {
                     <button
                       key={theme.id}
                       onClick={() => handleThemeSelect(theme.id as Theme)}
-                      className={`group relative p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                      className={`group relative p-4 md:p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                         isSelected
                           ? "border-indigo-500 shadow-2xl bg-white ring-4 ring-indigo-100"
                           : "border-gray-200 hover:border-indigo-300 bg-white hover:shadow-lg"
