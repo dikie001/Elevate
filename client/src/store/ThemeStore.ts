@@ -20,7 +20,6 @@ interface ThemeState {
   primaryButtonThemeColors: Record<Theme, string>;
   subTextThemeColors: Record<Theme, string>;
   secondaryButtonThemeColors: Record<Theme, string>;
-
   
 }
 

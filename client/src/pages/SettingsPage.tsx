@@ -10,7 +10,7 @@ import {
   User,
   Waves,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useThemeStore } from "../store/ThemeStore";
 import DesktopSidebar from "../components/DesktopSidebar";
 import Topbar from "../components/Navbar";
@@ -25,6 +25,31 @@ type Theme =
   | "forest"
   | "ocean"
   | "dracula";
+
+interface SettingsType {
+  theme: Theme;
+  allowNotifications: boolean;
+  focusTimer: number;
+  profileSettings: ProfileType;
+  studyPreferences: string;
+}
+interface ProfileType {
+  name: string;
+  passcode: string;
+  school: string;
+  age: string;
+  grade: string;
+  nickName: string;
+}
+interface UserTypes {
+  age: string;
+  grade: string;
+  name: string;
+  school: string;
+  theme: string;
+}
+
+const SETTINGS = "elevate-settings";
 
 const themes = [
   {
@@ -84,69 +109,76 @@ const themes = [
     icon: Moon,
   },
 ];
-interface SettingsType {
-  theme: string;
-  allowNotifications: boolean;
-  focusTimer: number;
-  profileSettings: ProfileType;
-  studyPreferences: string;
-}
-interface ProfileType {
-  name: string;
-  passcode: string;
-  school: string;
-  nickName: string;
-}
-interface UserTypes {
-  age: string;
-  grade: string;
-  name: string;
-  school: string;
-  theme: string;
-}
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
-  const [selected, setSelected] = useState<any>(theme);
+  const [selected, setSelected] = useState<string>(theme);
   const [settings, setSettings] = useState<SettingsType>({
-    theme: "",
+    theme: "dark",
     allowNotifications: false,
     focusTimer: 25,
     studyPreferences: "medium",
     profileSettings: {
       name: "",
+      age: "",
+      grade: "",
       passcode: "",
       school: "",
       nickName: "",
     },
   });
   const [notifications, setNotifications] = useState(true);
-  const [focusTime, setFocusTime] = useState(25);
-  const [difficulty, setDifficulty] = useState("normal");
-  const [userData, setUserData] = useState<UserTypes>([]);
+  const [userData, setUserData] = useState<UserTypes>();
 
   useEffect(() => {
     const LoadUserData = () => {
       try {
-        const rawData = localStorage.getItem("userData");
-        const parsed = rawData ? JSON.parse(rawData) : [];
-        setUserData(parsed);
+        // Get the user data
+        const rawUserData = localStorage.getItem("userData");
+        const parsedUserData = rawUserData ? JSON.parse(rawUserData) : {};
+        setUserData(parsedUserData);
+
+        //  Get the settings details
+        const rawSettingsData = localStorage.getItem(SETTINGS);
+        const parsedSettingsData:SettingsType = rawSettingsData
+          ? JSON.parse(rawSettingsData)
+          : {};
+        if (parsedSettingsData) {
+          setSettings(parsedSettingsData);
+          setTheme(parsedSettingsData.theme)
+          setSelected(parsedSettingsData.theme)
+        }
       } catch (err) {
         toast.error("Ran into an error", { id: "error" });
         console.error(err);
         window.location.reload();
       }
     };
+    LoadUserData();
   }, []);
 
+  // HAndle setting items click
+  const handleClickSettings = (
+    name: string,
+    value: string | React.ChangeEvent<HTMLSelectElement> | boolean
+  ) => {
+    setSettings((prev) => ({ ...prev, [name]: value }));
+    if (name === "theme") setTheme(value as Theme);
+  };
+
+  //Save settings to localstorag when settings change
+  useEffect(() => {
+    localStorage.setItem(SETTINGS, JSON.stringify(settings));
+  }, [settings]);
+
   return (
-    <div className="min-h-screen lg:ml-70  bg-white text-gray-900">
+    <div className="min-h-screen max-w-3xl lg:ml-70  bg-white text-gray-900">
       <DesktopSidebar />
       <Topbar />
       <div className="p-6">
         {/* THEME SETTINGS */}
         <section className="mb-8">
-          <h2 className="text-lg font-semibold mb-4">🎨 App Theme</h2>
+          <h2 className="text-lg font-semibold mb-4"> App Theme</h2>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 md:gap-4">
             {themes.map((t) => {
               const Icon = t.icon;
@@ -155,7 +187,7 @@ const SettingsPage = () => {
                   key={t.id}
                   onClick={() => {
                     setSelected(t.id);
-                    setTheme(t.id as Theme);
+                    handleClickSettings("theme", t.id);
                   }}
                   className={`flex flex-col items-center justify-center p-2 rounded-2xl shadow-md border-2 transition ${
                     selected === t.id
@@ -185,11 +217,7 @@ const SettingsPage = () => {
             <button
               onClick={() => {
                 setNotifications(!notifications);
-                setSettings((prev) => ({
-                  ...prev,
-                  allowNotifications: notifications,
-                }));
-                console.log(settings);
+                handleClickSettings("allowNotifications", notifications);
               }}
               className={`px-4 py-1 rounded-full text-sm ${
                 notifications
@@ -211,12 +239,9 @@ const SettingsPage = () => {
               <span>Default Session</span>
             </div>
             <select
-              value={focusTime}
+              value={settings.focusTimer}
               onChange={(e) => {
-                setSettings((prev) => ({
-                  ...prev,
-                  focusTimer: Number(e.target.value),
-                }));
+                handleClickSettings("focusTimer", e.target.value);
               }}
               className="bg-white border rounded-lg px-3 py-1 text-sm"
             >
@@ -235,13 +260,9 @@ const SettingsPage = () => {
           <div className="flex items-center justify-between bg-gray-100 p-4 rounded-2xl">
             <span>Difficulty</span>
             <select
-              value={difficulty}
+              value={settings.studyPreferences}
               onChange={(e) => {
-                setDifficulty(e.target.value);
-                setSettings((prev) => ({
-                  ...prev,
-                  studyPreferences: e.target.value,
-                }));
+                handleClickSettings("studyPreferences", e.target.value);
               }}
               className="bg-white border rounded-lg px-3 py-1 text-sm"
             >
@@ -260,7 +281,7 @@ const SettingsPage = () => {
               <User className="w-5 h-5 text-blue-500" />
               <span>Manage Account</span>
             </button>
-            <button className="flex items-center gap-2 p-4 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition">
+            <button className="flex items-center gap-2 p-4 bg-red-500/80 text-white rounded-2xl hover:bg-red-600 transition">
               <LogOut className="w-5 h-5" />
               <span>Log Out</span>
             </button>
