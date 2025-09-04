@@ -30,6 +30,7 @@ type Theme =
   | "dracula";
 
 interface SettingsType {
+  user_id: string;
   theme: Theme;
   allowNotifications: boolean;
   focusTimer: number;
@@ -116,6 +117,7 @@ const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
   const [selected, setSelected] = useState<string>(theme);
   const [settings, setSettings] = useState<SettingsType>({
+    user_id: "",
     theme: "dark",
     allowNotifications: false,
     focusTimer: 25,

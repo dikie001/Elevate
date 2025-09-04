@@ -95,28 +95,38 @@ app.post("/api/auth", upload.none("new_user"), async (req, res) => {
       theme,
       joined_at,
     });
-    console.log("Users added to DB...");
-    res
-      .status(201)
-      .json({ message: "user created successfully", name: full_name });
+    console.log(`User with id: ${user_id} added to Database...`);
+    res.status(201).json({
+      message: "user created successfully",
+      name: full_name,
+      user_id: user_id,
+    });
   } catch (err) {
     res.status(500).json("Failed to save details", err);
   }
 });
 
 // Update User Details
-app.post("/api/update_user", upload.none('change_password') ,(req,res)=>{
-  console.log('server hit..')
-  console.log(req.body.changePassword)
-
-})
-
-// Create New PAsscode
-app.post("/api/update_user/create_passcode", upload.none("create_passcode"), (req, res) => {
+app.post("/api/update_user", upload.none("change_password"), (req, res) => {
   console.log("server hit..");
-  console.log(req.body.create_passcode);
+  console.log(req.body.changePassword);
 });
 
+// Create New PAsscode
+app.post(
+  "/api/update_user/create_passcode:id",
+  upload.none("create_passcode"),
+  async (req, res) => {
+    console.log("server hit..");
+    const passcode = req.body.create_passcode;
+    const user_id = req.params.id;
+    // const user = await userModel.findByIdAndUpdate(user_id, {
+    //   passcode,
+    // });
+    const user = await userModel.findOneAndUpdate({user_id, passcode})
+    console.log(user);
+  }
+);
 
 app.listen(PORT, (req, res) => {
   console.log(`Server running on http://localhost:${PORT}`);

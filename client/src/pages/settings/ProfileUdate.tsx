@@ -1,10 +1,19 @@
 import { School, Shield, Trash2, User, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DesktopSidebar from "../../components/DesktopSidebar";
 import Navbar from "../../components/Navbar";
 import toast from "react-hot-toast";
 
 interface ProfileTypes {
+  email: string;
+  grade: string;
+  nickName: string;
+  passcode: string;
+  school: string;
+}
+
+interface UserDataTypes {
+  user_id: string;
   email: string;
   grade: string;
   nickName: string;
@@ -19,6 +28,14 @@ const AccountModal = () => {
   const [isSecured, setIsSecured] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const userDataRef = useRef<UserDataTypes>({
+    user_id: "",
+    email: "",
+    grade: "",
+    nickName: "",
+    passcode: "",
+    school: "",
+  });
   const [currentPassword, setCurrentPassword] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [profileSettings, setProfileSettings] = useState<ProfileTypes>({
@@ -35,6 +52,10 @@ const AccountModal = () => {
         const rawData = localStorage.getItem("elevate-settings");
         const parsedData = rawData && JSON.parse(rawData);
         setProfileSettings(parsedData.profileSettings);
+
+        // USer DATA
+        const rawUserData = localStorage.getItem("userData");
+        userDataRef.current = rawUserData && JSON.parse(rawUserData);
         if (parsedData && parsedData.profileSettings.passcode !== "") {
           setIsSecured(true);
         } else {
@@ -61,22 +82,21 @@ const AccountModal = () => {
       if (profileSettings.passcode !== confirmPassword) {
         toast.error("Make sure the passwords match", { id: "password-error1" });
         return;
-      } 
-           formData.append("create_passcode", profileSettings.passcode);
-           try {
-             const response = await fetch(
-               "http://localhost:4000/api/update_user/create_passcode",
-               {
-                 method: "POST",
-                 body: formData,
-               }
-             );
-             const res = await response.json();
-             console.log(res);
-           } catch (err) {
-             console.error(err);
-           }
-      
+      }
+      formData.append("create_passcode", profileSettings.passcode);
+      try {
+        const response = await fetch(
+          `http://localhost:4000/api/update_user/create_passcode${userDataRef.current.user_id}`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const res = await response.json();
+        console.log(res);
+      } catch (err) {
+        console.error(err);
+      }
 
       // Changing password Validation
     } else if (params === "changePassword") {

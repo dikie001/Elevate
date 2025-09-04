@@ -25,6 +25,7 @@ const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
 
 // User data interface for type safety
 interface UserData {
+  user_id: string;
   name: string;
   age: string;
   grade: string;
@@ -49,6 +50,7 @@ const WelcomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData>({
+    user_id: "",
     name: "",
     age: "",
     grade: "9th",
@@ -281,15 +283,17 @@ const WelcomePage: React.FC = () => {
       const res = await response.json();
       console.log(res);
       if (res.message === "user created successfully") {
-          toast.success("Account created successfully!", {
-            id: "account-created",
-          });
+        toast.success("Account created successfully!", {
+          id: "account-created",
+        });
         // await sendEmail();
+        userData.user_id = res.user_id;
+        console.log(res)
+        
         localStorage.setItem("isFirstVisit", "false");
         localStorage.setItem("userData", JSON.stringify(userData));
         setIsLoading(false);
         window.location.reload();
-      
       } else if (res.message !== "user created successfully") {
         toast("Network error, connect to internet", { id: "internet_err" });
         setIsLoading(false);
@@ -412,7 +416,7 @@ const WelcomePage: React.FC = () => {
                 {/* Enhanced Name Input */}
                 <div className="space-y-2">
                   <label className="block  font-medium text-gray-700">
-                    What's your name champ? 
+                    What's your name champ?
                   </label>
                   <input
                     type="text"
@@ -432,7 +436,7 @@ const WelcomePage: React.FC = () => {
                 {/* Enhanced Age Input */}
                 <div className="space-y-2">
                   <label className="block font-medium text-gray-700">
-                    How old are you? 
+                    How old are you?
                   </label>
                   <input
                     type="number"
