@@ -2,11 +2,11 @@ import { School, Shield, Trash2, User, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import DesktopSidebar from "../../components/DesktopSidebar";
 import Navbar from "../../components/Navbar";
+import toast from "react-hot-toast";
 
 interface ProfileTypes {
   email: string;
   grade: string;
-  name: string;
   nickName: string;
   passcode: string;
   school: string;
@@ -16,11 +16,14 @@ const AccountModal = () => {
   const [showMyInfo, setShowMyInfo] = useState(false);
   const [showSchool, setShowSchool] = useState(false);
   const [showSecurity, setShowSecurity] = useState(false);
+  const [isSecured, setIsSecured] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [profileSettings, setProfileSettings] = useState<ProfileTypes>({
     email: "",
     grade: "",
-    name: "",
     nickName: "",
     passcode: "",
     school: "",
@@ -28,17 +31,108 @@ const AccountModal = () => {
 
   useEffect(() => {
     const LoadSettingsData = () => {
-      const rawData = localStorage.getItem("elevate-settings");
-      const parsedData = rawData && JSON.parse(rawData);
-      setProfileSettings(parsedData.profileSettings);
+      try {
+        const rawData = localStorage.getItem("elevate-settings");
+        const parsedData = rawData && JSON.parse(rawData);
+        setProfileSettings(parsedData.profileSettings);
+        if (parsedData && parsedData.profileSettings.passcode !== "") {
+          setIsSecured(true);
+        } else {
+          setIsSecured(false);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     };
     LoadSettingsData();
   }, []);
 
-//   Upldate the profile settings object
-const handleInputChange=()=>{
+  //   Upldate the profile settings object
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProfileSettings((prev) => ({ ...prev, [name]: value }));
+  };
 
-}
+  // Save changes made
+  const HandleSaveChanges = async (params: string) => {
+    const formData = new FormData();
+    //1. Creating password Validation
+    if (params === "createPassword") {
+      if (profileSettings.passcode !== confirmPassword) {
+        toast.error("Make sure the passwords match", { id: "password-error1" });
+        return;
+      } 
+           formData.append("create_passcode", profileSettings.passcode);
+           try {
+             const response = await fetch(
+               "http://localhost:4000/api/update_user/create_passcode",
+               {
+                 method: "POST",
+                 body: formData,
+               }
+             );
+             const res = await response.json();
+             console.log(res);
+           } catch (err) {
+             console.error(err);
+           }
+      
+
+      // Changing password Validation
+    } else if (params === "changePassword") {
+      if (currentPassword !== profileSettings.passcode) {
+        toast.error("You have entered the wrong password", {
+          id: "password-error2",
+        });
+        return;
+      }
+      // SEND TO BACKEND
+      console.log("Correct! moving on....");
+      formData.append("change_passcode", profileSettings.passcode);
+      try {
+        const response = await fetch("http://localhost:4000/api/update_user", {
+          method: "POST",
+          body: formData,
+        });
+        const res = await response.json();
+        console.log(res);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    // My Info inputs validation
+    else if (params === "myInfo") {
+      // Email validation
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const isValid = regex.test(profileSettings.email);
+
+      if (profileSettings.nickName.trim() === "") {
+        toast.error("Please enter your nick name", { id: "nickname-error" });
+        return;
+      } else if (profileSettings.email.trim() === "") {
+        toast.error("Please enter your email", { id: "email-error" });
+        return;
+      }
+      if (!isValid) {
+        toast.error("The email is incorrect, try again", { id: "email-error" });
+        return;
+      }
+    }
+
+    // School inputs validation
+    else if (params === "school") {
+      if (profileSettings.school.trim() === "") {
+        toast.error("Enter your school's name", { id: "school-error" });
+        return;
+      } else if (profileSettings.grade.trim() === "") {
+        toast.error("Enter your current grade", { id: "grade-error" });
+        return;
+      }
+    }
+
+    console.log(profileSettings);
+    console.log(confirmPassword);
+  };
   return (
     <div className="min-h-screen lg:ml-70 bg-gray-50 text-gray-900">
       <DesktopSidebar />
@@ -95,7 +189,10 @@ const handleInputChange=()=>{
                   />
                 </div>
                 <div className="flex justify-end pt-4">
-                  <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                  <button
+                    onClick={() => HandleSaveChanges("myInfo")}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  >
                     Save Changes
                   </button>
                 </div>
@@ -130,6 +227,7 @@ const handleInputChange=()=>{
                   <input
                     type="text"
                     name="school"
+                    value={profileSettings.school}
                     onChange={handleInputChange}
                     placeholder="Enter your school"
                     className="w-full px-4 py-3 focus:outline-0 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
@@ -141,12 +239,16 @@ const handleInputChange=()=>{
                   </label>
                   <input
                     type="text"
+                    value={profileSettings.grade}
                     placeholder="Enter your grade"
                     className="w-full px-4 py-3 border focus:outline-0 border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="flex justify-end pt-4">
-                  <button className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">
+                  <button
+                    onClick={() => HandleSaveChanges("school")}
+                    className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                  >
                     Save Changes
                   </button>
                 </div>
@@ -172,15 +274,20 @@ const handleInputChange=()=>{
               />
             </button>
 
-            {showSecurity && (
+            {/* If user has password protection */}
+            {showSecurity && isSecured && (
               <div className="p-6 space-y-4 bg-gray-50 shadow-lg rounded-2xl">
+                <h3 className="text-lg font-medium text-center">
+                  Change your password
+                </h3>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Current Password
+                    Enter Current Password
                   </label>
                   <input
                     name="passcode"
-                    onChange={handleInputChange}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                     type="password"
                     placeholder="Enter current password"
                     className="w-full px-4 py-3 border focus:outline-0 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
@@ -192,14 +299,60 @@ const handleInputChange=()=>{
                   </label>
                   <input
                     type="password"
-                    name="passcode"
-                    onChange={handleInputChange}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Enter new password"
                     className="w-full px-4 py-3 border focus:outline-0 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="flex justify-end pt-4">
-                  <button className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                  <button
+                    onClick={() => HandleSaveChanges("changePassword")}
+                    className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* If user lacks password protection */}
+
+            {showSecurity && !isSecured && (
+              <div className="p-6 space-y-4 bg-gray-50 shadow-lg rounded-2xl">
+                <h3 className="text-lg font-medium text-center">
+                  Secure your account
+                </h3>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Create a Password
+                  </label>
+                  <input
+                    name="passcode"
+                    onChange={handleInputChange}
+                    value={profileSettings.passcode}
+                    type="password"
+                    placeholder="Enter current password"
+                    className="w-full px-4 py-3 border focus:outline-0 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm your password
+                  </label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    className="w-full px-4 py-3 border focus:outline-0 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div className="flex justify-end pt-4">
+                  <button
+                    onClick={() => HandleSaveChanges("createPassword")}
+                    className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                  >
                     Save Changes
                   </button>
                 </div>

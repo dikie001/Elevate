@@ -75,6 +75,7 @@ app.get("/api/subjects", async (req, res) => {
   }
 });
 
+// Create a New User
 app.post("/api/auth", upload.none("new_user"), async (req, res) => {
   const data = JSON.parse(req.body.new_user);
   const {
@@ -84,15 +85,38 @@ app.post("/api/auth", upload.none("new_user"), async (req, res) => {
     school = data.school,
     theme = data.theme,
     joined_at = new Date().toDateString(),
-  } = data
+  } = data;
   try {
-    await userModel.create({user_id, full_name,age,school,theme,joined_at});
-    console.log('Users added to DB...')
-    res.status(201).json({message:'user created successfully', name:full_name})
+    await userModel.create({
+      user_id,
+      full_name,
+      age,
+      school,
+      theme,
+      joined_at,
+    });
+    console.log("Users added to DB...");
+    res
+      .status(201)
+      .json({ message: "user created successfully", name: full_name });
   } catch (err) {
     res.status(500).json("Failed to save details", err);
   }
 });
+
+// Update User Details
+app.post("/api/update_user", upload.none('change_password') ,(req,res)=>{
+  console.log('server hit..')
+  console.log(req.body.changePassword)
+
+})
+
+// Create New PAsscode
+app.post("/api/update_user/create_passcode", upload.none("create_passcode"), (req, res) => {
+  console.log("server hit..");
+  console.log(req.body.create_passcode);
+});
+
 
 app.listen(PORT, (req, res) => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -37,10 +37,9 @@ interface SettingsType {
   studyPreferences: string;
 }
 interface ProfileType {
-  name: string;
   passcode: string;
   school: string;
-  age: string;
+  email: string;
   grade: string;
   nickName: string;
 }
@@ -122,8 +121,7 @@ const SettingsPage = () => {
     focusTimer: 25,
     studyPreferences: "medium",
     profileSettings: {
-      name: "",
-      age: "",
+      email: "",
       grade: "",
       passcode: "",
       school: "",
@@ -131,8 +129,6 @@ const SettingsPage = () => {
     },
   });
   const [notifications, setNotifications] = useState(true);
-  const [account, setAccount] = useState("");
-  const [showAccountModal, setShowAccountModal] = useState(false);
   const [userData, setUserData] = useState<UserTypes>();
   const navigate = useNavigate();
 
@@ -146,9 +142,9 @@ const SettingsPage = () => {
 
         //  Get the settings details
         const rawSettingsData = localStorage.getItem(SETTINGS);
-        const parsedSettingsData: SettingsType = rawSettingsData
-          ? JSON.parse(rawSettingsData)
-          : {};
+        const parsedSettingsData: SettingsType =
+          rawSettingsData && JSON.parse(rawSettingsData);
+
         if (parsedSettingsData) {
           setSettings(parsedSettingsData);
           setTheme(parsedSettingsData.theme);
@@ -284,7 +280,7 @@ const SettingsPage = () => {
           <h2 className="text-lg font-semibold mb-4">👤 Account</h2>
           <div className="flex flex-col gap-3">
             <button
-            onClick={()=>navigate('/profile-update')}
+              onClick={() => navigate("/profile-update")}
               className="flex relative items-center gap-2 p-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition"
             >
               <User className="w-5 h-5 text-blue-500" />
@@ -303,7 +299,6 @@ const SettingsPage = () => {
         </section>
 
         {/* MODALS */}
-     
       </div>
     </div>
   );
