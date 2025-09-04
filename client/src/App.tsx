@@ -4,7 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import LoadingModal from "./components/LoadingModal";
 import HomePage from "./pages/HomePage";
 import NotesPage from "./pages/NotesPage";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./pages/settings/SettingsPage";
 import TriviaPage from "./pages/TriviaPage";
 import WelcomePage from "./pages/WelcomePage";
 import SubjectsPage from "./pages/SubjectsPage";
@@ -15,6 +15,7 @@ import TriviaGame from "./pages/TriviaGame";
 import AuthPage from "./pages/AuthPage";
 import FileUpload from "./pages/FileUpload";
 import Subjects from "./pages/Subjects";
+import ProfileUpdate from "./pages/settings/ProfileUdate";
 
 const App = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<string | null>("");
@@ -84,6 +85,7 @@ const App = () => {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/upload" element={<FileUpload />} />
           <Route path="/subs" element={<Subjects />} />
+          <Route path="/profile-update" element={<ProfileUpdate />} />
         </Routes>
       </Router>
     </>

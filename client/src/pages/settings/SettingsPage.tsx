@@ -1,5 +1,7 @@
 import {
   Bell,
+  ChevronDown,
+  ChevronRight,
   Clock,
   LogOut,
   Moon,
@@ -11,10 +13,11 @@ import {
   Waves,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { useThemeStore } from "../store/ThemeStore";
-import DesktopSidebar from "../components/DesktopSidebar";
-import Topbar from "../components/Navbar";
+import { useThemeStore } from "../../store/ThemeStore";
+import DesktopSidebar from "../../components/DesktopSidebar";
+import Topbar from "../../components/Navbar";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 type Theme =
   | "light"
@@ -128,7 +131,10 @@ const SettingsPage = () => {
     },
   });
   const [notifications, setNotifications] = useState(true);
+  const [account, setAccount] = useState("");
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const [userData, setUserData] = useState<UserTypes>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const LoadUserData = () => {
@@ -140,13 +146,13 @@ const SettingsPage = () => {
 
         //  Get the settings details
         const rawSettingsData = localStorage.getItem(SETTINGS);
-        const parsedSettingsData:SettingsType = rawSettingsData
+        const parsedSettingsData: SettingsType = rawSettingsData
           ? JSON.parse(rawSettingsData)
           : {};
         if (parsedSettingsData) {
           setSettings(parsedSettingsData);
-          setTheme(parsedSettingsData.theme)
-          setSelected(parsedSettingsData.theme)
+          setTheme(parsedSettingsData.theme);
+          setSelected(parsedSettingsData.theme);
         }
       } catch (err) {
         toast.error("Ran into an error", { id: "error" });
@@ -172,10 +178,10 @@ const SettingsPage = () => {
   }, [settings]);
 
   return (
-    <div className="min-h-screen max-w-3xl lg:ml-70  bg-white text-gray-900">
+    <div className="min-h-screen  lg:ml-70   bg-white text-gray-900">
       <DesktopSidebar />
       <Topbar />
-      <div className="p-6">
+      <div className="p-6 ">
         {/* THEME SETTINGS */}
         <section className="mb-8">
           <h2 className="text-lg font-semibold mb-4"> App Theme</h2>
@@ -277,16 +283,27 @@ const SettingsPage = () => {
         <section>
           <h2 className="text-lg font-semibold mb-4">👤 Account</h2>
           <div className="flex flex-col gap-3">
-            <button className="flex items-center gap-2 p-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition">
+            <button
+            onClick={()=>navigate('/profile-update')}
+              className="flex relative items-center gap-2 p-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition"
+            >
               <User className="w-5 h-5 text-blue-500" />
+              <div className="absolute right-4">
+                {" "}
+                <ChevronRight />
+              </div>
               <span>Manage Account</span>
             </button>
             <button className="flex items-center gap-2 p-4 bg-red-500/80 text-white rounded-2xl hover:bg-red-600 transition">
               <LogOut className="w-5 h-5" />
               <span>Log Out</span>
             </button>
+            <div></div>
           </div>
         </section>
+
+        {/* MODALS */}
+     
       </div>
     </div>
   );
