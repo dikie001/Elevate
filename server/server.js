@@ -108,12 +108,6 @@ app.post("/api/auth", upload.none("new_user"), async (req, res) => {
   }
 });
 
-// Update User Details
-app.post("/api/update_user", upload.none("change_password"), (req, res) => {
-  console.log("server hit..");
-  console.log(req.body.changePassword);
-});
-
 // Create New PAsscode
 app.post(
   "/api/update_user/create_passcode/:id",
@@ -138,6 +132,67 @@ app.post(
       });
     } catch (err) {
       res.status(500).json({ messsage: err });
+    }
+  }
+);
+
+// Change the current passcode
+app.post(
+  "/api/update_user/change_passcode/:id",
+  upload.none(),
+  async (req, res) => {
+    const user_id = req.params.id;
+    const plainPasscode = req.body.change_passcode;
+
+    try {
+      const user = await userModel.findOne({ user_id });
+      const hashedPasscode = user && user.passcode;
+
+      if (!hashedPasscode) {
+        res.status(404).json({ message: "No password available" });
+        return;
+      }
+
+      // Compare the hash with the pass
+      bcrypt.compare(
+        plainPasscode,
+        hashedPasscode,
+        async function (err, result) {
+          if (err) {
+            res.status(404).json({ err });
+            console.log(err);
+            return;
+          }
+          res.status(200).json({ result });
+          console.log(result);
+
+          // Store the new passcode to DB
+          if (result) {
+            console.log("moving on to update pass");
+            bcrypt.genSalt(saltRounds, function (err, salt) {
+              bcrypt.hash(plainPasscode, salt, async function (err, hash) {
+                err && console.log(err);
+                try {
+                  await userModel.findOneAndUpdate(
+                    { user_id },
+                    { passcode: hash },
+                    { new: true }
+                  );
+                  res
+                    .status(201)
+                    .json({ message: "Passcode updated successfully" });
+                } catch (err) {
+                  // res.status(500).json({ err });
+                  console.log(err);
+                }
+              });
+            });
+          }
+        }
+      );
+    } catch (err) {
+      //   res.status(500).json({ err });
+      console.log(err);
     }
   }
 );

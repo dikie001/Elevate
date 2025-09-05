@@ -53,14 +53,17 @@ const AccountModal = () => {
         const parsedData = rawData && JSON.parse(rawData);
         setProfileSettings(parsedData.profileSettings);
 
+        // Does the user have a passcode
+        const pass = localStorage.getItem("isSecured");
+        if (!pass) {
+          setIsSecured(false);
+        } else {
+          setIsSecured(true);
+        }
+
         // USer DATA
         const rawUserData = localStorage.getItem("userData");
         userDataRef.current = rawUserData && JSON.parse(rawUserData);
-        if (parsedData && parsedData.profileSettings.passcode !== "") {
-          setIsSecured(true);
-        } else {
-          setIsSecured(false);
-        }
       } catch (err) {
         console.error(err);
       }
@@ -93,29 +96,49 @@ const AccountModal = () => {
           }
         );
         const res = await response.json();
-        console.log(res);
+        if (res.message === "Passsword created successfully") {
+          profileSettings.passcode = params;
+          localStorage.setItem("isSecured", "true");
+          setIsSecured(true);
+          toast.success("Password created successfully", {
+            id: "password-success",
+          });
+        }
       } catch (err) {
         console.error(err);
       }
 
       // Changing password Validation
     } else if (params === "changePassword") {
-      if (currentPassword !== profileSettings.passcode) {
-        toast.error("You have entered the wrong password", {
+      if (currentPassword.trim() === "") {
+        toast.error("Please enter your current passcode", {
           id: "password-error2",
+        });
+        return;
+      } else if (newPassword.trim() === "") {
+        toast.error("Please enter your new passcode", {
+          id: "password-error3",
         });
         return;
       }
       // SEND TO BACKEND
-      console.log("Correct! moving on....");
-      formData.append("change_passcode", profileSettings.passcode);
+      formData.append("change_passcode", currentPassword);
+      formData.append("new_password", newPassword);
       try {
-        const response = await fetch("http://localhost:4000/api/update_user", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          `http://localhost:4000/api/update_user/change_passcode/${userDataRef.current.user_id}`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
         const res = await response.json();
-        console.log(res);
+        if (res.message === "Passcode updated successfully") {
+          toast.success(res.message);
+        } else {
+          toast.error("Wrong password!");
+          console.log(res);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -149,9 +172,6 @@ const AccountModal = () => {
         return;
       }
     }
-
-    console.log(profileSettings);
-    console.log(confirmPassword);
   };
   return (
     <div className="min-h-screen lg:ml-70 bg-gray-50 text-gray-900">
