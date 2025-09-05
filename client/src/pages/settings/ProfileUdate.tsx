@@ -100,6 +100,8 @@ const AccountModal = () => {
           profileSettings.passcode = params;
           localStorage.setItem("isSecured", "true");
           setIsSecured(true);
+          setConfirmPassword('')
+          setShowSecurity(false)
           toast.success("Password created successfully", {
             id: "password-success",
           });
@@ -135,6 +137,9 @@ const AccountModal = () => {
         const res = await response.json();
         if (res.message === "Passcode updated successfully") {
           toast.success(res.message);
+          setNewPassword('')
+          setCurrentPassword('')
+          setShowSecurity(false)
         } else {
           toast.error("Wrong password!");
           console.log(res);

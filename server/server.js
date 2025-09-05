@@ -84,15 +84,14 @@ app.post("/api/auth", upload.none("new_user"), async (req, res) => {
     user_id: uuidv4(),
     full_name: data.name,
     age: data.age,
+    grade: data.grade,
     school: data.school,
     theme: data.theme,
     joined_at: new Date().toDateString(),
   };
-  console.log(newUser)
+  console.log(newUser);
   try {
-    await userModel.create({
-      newUser,
-    });
+    await userModel.create(newUser);
     console.log(`User with id: ${newUser.user_id} added to Database...`);
     res.status(201).json({
       message: "user created successfully",
@@ -101,7 +100,7 @@ app.post("/api/auth", upload.none("new_user"), async (req, res) => {
     });
   } catch (err) {
     // res.status(500).json("Failed to save details", err);
-    console.log(err)
+    console.log(err);
   }
 });
 
@@ -147,6 +146,7 @@ app.post(
 
       if (!hashedPasscode) {
         res.status(404).json({ message: "No password available" });
+        console.log("No passsword for this user");
         return;
       }
 
@@ -156,11 +156,10 @@ app.post(
         hashedPasscode,
         async function (err, result) {
           if (err) {
-            res.status(404).json({ err });
             console.log(err);
             return;
           }
-          res.status(200).json({ result });
+          if (!result) res.status(401).json({ result });
           console.log(result);
 
           // Store the new passcode to DB
