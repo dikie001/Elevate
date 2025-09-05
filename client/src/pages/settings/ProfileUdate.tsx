@@ -86,7 +86,7 @@ const AccountModal = () => {
       formData.append("create_passcode", profileSettings.passcode);
       try {
         const response = await fetch(
-          `http://localhost:4000/api/update_user/create_passcode${userDataRef.current.user_id}`,
+          `http://localhost:4000/api/update_user/create_passcode/${userDataRef.current.user_id}`,
           {
             method: "POST",
             body: formData,

@@ -7,11 +7,13 @@ import { fileModel } from "./models/fileModel.js";
 import { v4 as uuidv4 } from "uuid";
 import multer from "multer";
 import { userModel } from "./models/userModel.js";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 const PORT = process.env.PORT;
 const MONGODB = process.env.MONGODB_CONNECTION_STRING;
 mongoose.connect(MONGODB);
+const saltRounds = 10;
 
 const app = express();
 app.use(cors());
@@ -114,17 +116,29 @@ app.post("/api/update_user", upload.none("change_password"), (req, res) => {
 
 // Create New PAsscode
 app.post(
-  "/api/update_user/create_passcode:id",
+  "/api/update_user/create_passcode/:id",
   upload.none("create_passcode"),
   async (req, res) => {
     console.log("server hit..");
     const passcode = req.body.create_passcode;
     const user_id = req.params.id;
-    // const user = await userModel.findByIdAndUpdate(user_id, {
-    //   passcode,
-    // });
-    const user = await userModel.findOneAndUpdate({user_id, passcode})
-    console.log(user);
+    try {
+      // Generate Encrypted pass
+      bcrypt.genSalt(saltRounds, function (err, salt) {
+        bcrypt.hash(passcode, salt, async function (err, hash) {
+          // Update the user Schema with the encrypted password pass
+          const user = await userModel.findOneAndUpdate(
+            { user_id },
+            { passcode: hash },
+            { new: true }
+          );
+          console.log(user);
+          res.status(201).json({ message: "Passsword created successfully" });
+        });
+      });
+    } catch (err) {
+      res.status(500).json({ messsage: err });
+    }
   }
 );
 
