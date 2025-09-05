@@ -80,31 +80,28 @@ app.get("/api/subjects", async (req, res) => {
 // Create a New User
 app.post("/api/auth", upload.none("new_user"), async (req, res) => {
   const data = JSON.parse(req.body.new_user);
-  const {
-    user_id = uuidv4(),
-    full_name = data.name,
-    age = data.age,
-    school = data.school,
-    theme = data.theme,
-    joined_at = new Date().toDateString(),
-  } = data;
+  const newUser = {
+    user_id: uuidv4(),
+    full_name: data.name,
+    age: data.age,
+    school: data.school,
+    theme: data.theme,
+    joined_at: new Date().toDateString(),
+  };
+  console.log(newUser)
   try {
     await userModel.create({
-      user_id,
-      full_name,
-      age,
-      school,
-      theme,
-      joined_at,
+      newUser,
     });
-    console.log(`User with id: ${user_id} added to Database...`);
+    console.log(`User with id: ${newUser.user_id} added to Database...`);
     res.status(201).json({
       message: "user created successfully",
-      name: full_name,
-      user_id: user_id,
+      name: newUser.full_name,
+      user_id: newUser.user_id,
     });
   } catch (err) {
-    res.status(500).json("Failed to save details", err);
+    // res.status(500).json("Failed to save details", err);
+    console.log(err)
   }
 });
 
