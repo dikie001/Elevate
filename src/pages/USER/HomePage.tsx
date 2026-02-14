@@ -47,56 +47,13 @@ const HomePage: React.FC = () => {
   // 2. Other Sections
   const otherSections = [
     {
-      name: "Quick Challenges",
-      icon: <Zap />,
-      description: "Fast logic hits to sharpen your mind",
-      color: "from-purple-500 to-indigo-600",
-      bgGradient:
-        "from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20",
-      to: "/quick-challenges",
-    },
-    {
-      name: "Flash Stories",
-      icon: <FileText />,
-      description: "Short, powerful stories to spark ideas",
-      color: "from-emerald-500 to-teal-600",
-      bgGradient:
-        "from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20",
-      to: "/flash-stories",
-    },
-    {
-      name: "Life Gems",
-      icon: <Sparkles />,
-      description: "Quick life tips to level up your mindset",
-      color: "from-amber-500 to-orange-600",
-      bgGradient:
-        "from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20",
-      to: "/life-gems",
-    },
-    {
-      name: "Clear Speech",
-      icon: <Mic />,
-      description: "Improve fluency and pronunciation",
-      color: "from-pink-500 to-rose-600",
-      bgGradient:
-        "from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20",
-      to: "/clear-speech",
-    },
-    {
-      name: "Fun Facts",
-      icon: <Lightbulb />,
-      description: "Cool and surprising facts",
-      color: "from-violet-500 to-purple-600",
-      bgGradient:
-        "from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20",
-      to: "/fun-facts",
-    },
-    {
-      name: "Word Power",
+      name: "Subjects",
       icon: <BookOpen />,
-      description: "Level up your language skills",
-      color: "from-gray-900 to-orange-900 shadow-lg",
-      to: "/word-power",
+      description: "All subjects for quizzes and notes",
+      color: "from-indigo-500 to-blue-600",
+      bgGradient:
+        "from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20",
+      to: "/subjects",
     },
   ];
 

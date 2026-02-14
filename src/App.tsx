@@ -1,35 +1,30 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import { Toaster } from "sonner";
 import { lazy, Suspense, useEffect } from "react";
-import LoadingPage from "./pages/USER/LoadinPage";
-import About from "./pages/SUPPORT/About";
-import Help from "./pages/SUPPORT/Help";
-import Results from "./pages/USER/Results";
-import AdminDashboard from "./pages/ADMIN/AdminDashboard";
-import { trackDailyLogin } from "./lib/trackDailyLogin";
+import { Toaster } from "sonner";
+import PWAInstallModal from "./components/PWAInstall";
 import { USER_INFO } from "./constants";
+import { useUpdateListener } from "./hooks/useUpdateListener";
 import { syncQuizResultsToFirebase } from "./lib/syncQuizResultsToFirebase";
+import { trackDailyLogin } from "./lib/trackDailyLogin";
+import AdminDashboard from "./pages/ADMIN/AdminDashboard";
 import AdminAuth from "./pages/ADMIN/Auth";
 import AdminMessages from "./pages/ADMIN/Messages";
-import UsersPage from "./pages/ADMIN/Users";
-import AdminSettings from "./pages/ADMIN/Settings";
-import AdminReports from "./pages/ADMIN/Reports";
 import AdminNotifications from "./pages/ADMIN/Notifications";
-import PracticeCommunication from "./pages/DEV/PracticeCommunication";
-import { useUpdateListener } from "./hooks/useUpdateListener";
-import WordPower from "./pages/USER/WordPower";
-import PWAInstallModal from "./components/PWAInstall";
-import BrilliaAI from "./pages/USER/Brillia";
-const FactFrenzy = lazy(() => import("./pages/USER/FunFacts"));
-const BrainTeasers = lazy(() => import("./pages/USER/QuickChallenges"));
+import AdminReports from "./pages/ADMIN/Reports";
+import AdminSettings from "./pages/ADMIN/Settings";
+import UsersPage from "./pages/ADMIN/Users";
+import About from "./pages/SUPPORT/About";
+import Help from "./pages/SUPPORT/Help";
+import LoadingPage from "./pages/USER/LoadinPage";
+import Results from "./pages/USER/Results";
+import ShortNotesPage from "./pages/USER/ShortNotes";
+import SubjectPage from "./pages/USER/SubjectPage";
+import SubjectsPage from "./pages/USER/Subjects";
 const HomePage = lazy(() => import("./pages/USER/HomePage"));
-const MiniStories = lazy(() => import("./pages/USER/FlashStories"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const QuizQuest = lazy(() => import("./pages/USER/QuickQuiz"));
 const SettingsPage = lazy(() => import("./pages/USER/Settings"));
-const TongueTwisters = lazy(() => import("./pages/USER/ClearSpeech"));
-const WisdomNuggets = lazy(() => import("./pages/USER/LifeGems"));
 const ContactDeveloper = lazy(() => import("./pages/SUPPORT/ContactDeveloper"));
 
 const App = () => {
@@ -56,28 +51,23 @@ const App = () => {
       <Suspense fallback={<LoadingPage />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/quick-challenges" element={<BrainTeasers />} />{" "}
-          <Route path="/flash-stories" element={<MiniStories />} />{" "}
-          <Route path="/quick-quiz" element={<QuizQuest />} />{" "}
-          <Route path="/life-gems" element={<WisdomNuggets />} />{" "}
-          <Route path="/clear-speech" element={<TongueTwisters />} />
-          <Route path="/fun-facts" element={<FactFrenzy />} />
+          <Route path="/subjects" element={<SubjectsPage />} />
+          <Route path="/subject/:subject" element={<SubjectPage />} />
+          <Route path="/short-notes/:subject" element={<ShortNotesPage />} />
+          <Route path="/quick-quiz" element={<QuizQuest />} />
           <Route path="/results" element={<Results />} />
-          <Route path="/communication" element={<PracticeCommunication />} />
-          <Route path="/word-power" element={<WordPower />} />
           <Route path="/contact-developer" element={<ContactDeveloper />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/help" element={<Help />} />
-          <Route path="/brillia-ai" element={<BrilliaAI />} />
           <Route path="/admin-auth" element={<AdminAuth />} />
           <Route path="/admin/messages" element={<AdminMessages />} />
           <Route path="/admin/users" element={<UsersPage />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/admin/reports" element={<AdminReports />} />
           <Route path="/admin/notifications" element={<AdminNotifications />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </Router>
