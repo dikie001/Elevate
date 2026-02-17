@@ -1,3 +1,4 @@
+import Sidebar from "@/components/app/Sidebar";
 import BottomNav from "@/components/app/BottomNav";
 import { TEST_RESULTS } from "@/constants";
 import useSound from "@/hooks/useSound";
@@ -182,7 +183,8 @@ const HomePage: React.FC = () => {
   const firstName = user?.name?.split(" ")[0] || "Learner";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
+    <Sidebar>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 sticky top-0 h-screen overflow-y-auto">
         <div className="p-6">
@@ -537,14 +539,15 @@ const HomePage: React.FC = () => {
         />
       )}
 
-      <style>{`
-        @keyframes wave {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(20deg); }
-          75% { transform: rotate(-10deg); }
-        }
-      `}</style>
-    </div>
+        <style>{`
+          @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-10deg); }
+          }
+        `}</style>
+      </div>
+    </Sidebar>
   );
 };
 

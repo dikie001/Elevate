@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-import Footer from "@/components/app/Footer";
-import Navbar from "@/components/app/Navbar";
+import Sidebar from "@/components/app/Sidebar";
+import BottomNav from "@/components/app/BottomNav";
 import { FIREBASE_TEST_RESULTS, STORAGE_KEYS } from "@/constants";
 import quizData from "@/jsons/quizData";
 import ResetModal from "@/modals/Delete";
@@ -484,14 +484,13 @@ const QuizApp: React.FC = () => {
   // Home Screen: Displays welcome, user stats, and action buttons for starting or viewing results
   if (state.gameState === "home") {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative transition-colors duration-300">
-        <Navbar currentPage="Quick Quiz" />
+      <Sidebar>
+        <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
+          {openResetModal && (
+            <ResetModal open={openResetModal} setOpen={setOpenResetModal} />
+          )}
 
-        {openResetModal && (
-          <ResetModal open={openResetModal} setOpen={setOpenResetModal} />
-        )}
-
-        <main className="flex-1 flex flex-col  justify-center w-full max-w-5xl mx-auto px-4 sm:px-6 py-20 sm:py-24 relative z-10">
+          <main className="max-w-5xl mx-auto px-5 lg:px-8 py-8">
           {/* Header Section */}
           <div className="text-center mb-10 sm:mb-12 space-y-4 animate-in fade-in slide-in-from-top-4 duration-700">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
@@ -998,8 +997,11 @@ const QuizApp: React.FC = () => {
             </div>
           </div>
         </div>
-        <Footer />
+        <div className="lg:hidden">
+          <BottomNav />
+        </div>
       </div>
+    </Sidebar>
     );
   }
 

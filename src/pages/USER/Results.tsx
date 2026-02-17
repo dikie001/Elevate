@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Navbar from "@/components/app/Navbar";
+import Sidebar from "@/components/app/Sidebar";
+import BottomNav from "@/components/app/BottomNav";
 import { TEST_RESULTS } from "@/constants";
 import { FileCheck, Loader2, TrendingUp, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -57,7 +58,7 @@ const Results = () => {
     // Calculate Average
     const totalScoreSum = results.reduce(
       (sum, item) => sum + item.percentage,
-      0
+      0,
     );
     const avgScore =
       totalTests > 0 ? Math.round(totalScoreSum / totalTests) : 0;
@@ -83,16 +84,24 @@ const Results = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-      </div>
+      <Sidebar>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        </div>
+      </Sidebar>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-      <Navbar />
-      <div className="max-w-7xl mx-auto">
+    <Sidebar>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
+        <div className="px-5 lg:px-8 py-6 border-b border-gray-200/50 dark:border-gray-800/50">
+          <div className="flex items-center gap-3">
+            <Trophy className="w-7 h-7 text-purple-500" />
+            <h1 className="text-xl lg:text-2xl font-bold">Learning Results</h1>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-8">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500">
@@ -228,7 +237,11 @@ const Results = () => {
           {/* SCROLL WRAPPER END */}
         </div>
       </div>
-    </div>
+        <div className="lg:hidden">
+          <BottomNav />
+        </div>
+      </div>
+    </Sidebar>
   );
 };
 
@@ -305,15 +318,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             score >= 90
               ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
               : score >= 70
-              ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
-              : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
+                : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
           }`}
         >
           {score >= 90
             ? "Excellent!"
             : score >= 70
-            ? "Good Job"
-            : "Keep Trying"}
+              ? "Good Job"
+              : "Keep Trying"}
         </span>
       </div>
     );

@@ -1,5 +1,5 @@
-import Footer from "@/components/app/Footer";
-import Navbar from "@/components/app/Navbar";
+import Sidebar from "@/components/app/Sidebar";
+import BottomNav from "@/components/app/BottomNav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -136,17 +136,17 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 font-sans">
-      <Navbar currentPage="Settings" />
-      <Toaster richColors position="top-center" />
+    <Sidebar>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
+        <Toaster richColors position="top-center" />
 
-      {/* Background Decor */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-rose-500/5 dark:bg-rose-500/10 rounded-full blur-[120px]" />
-      </div>
+        {/* Background Decor */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px]" />
+        </div>
 
-      <main className="relative container max-w-5xl mx-auto px-4 py-24 z-10">
+        <main className="relative max-w-5xl mx-auto px-5 lg:px-8 py-8 z-10">
         <div className="flex flex-col gap-2 mb-10">
           <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
             Settings
@@ -401,12 +401,15 @@ export default function SettingsPage() {
             </div>
             <DialogFooter>
                <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="rounded-xl">Cancel</Button>
-               <Button onClick={handleSaveProfile} className="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white">Save Changes</Button>
+               <Button onClick={handleSaveProfile} className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white">Save Changes</Button>
             </DialogFooter>
          </DialogContent>
       </Dialog>
 
-      <Footer />
-    </div>
+        <div className="lg:hidden">
+          <BottomNav />
+        </div>
+      </div>
+    </Sidebar>
   );
 }

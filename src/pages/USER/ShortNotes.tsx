@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "@/components/app/Navbar";
-import Footer from "@/components/app/Footer";
+import Sidebar from "@/components/app/Sidebar";
+import BottomNav from "@/components/app/BottomNav";
 import { shortNotes } from "@/jsons/shortNotes";
 import { useParams } from "react-router-dom";
 
@@ -11,34 +11,45 @@ const ShortNotesPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex flex-col">
-      <Navbar currentPage="Short Notes" />
-      <main className="flex-1 max-w-2xl w-full mx-auto px-4 py-24">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Short Notes: {subject}
-        </h1>
-        {notes.length === 0 ? (
-          <p className="text-center text-gray-500">
-            No notes available for this subject.
-          </p>
-        ) : (
-          <div className="space-y-6">
-            {notes.map((note) => (
-              <div
-                key={note.id}
-                className="rounded-xl bg-white dark:bg-gray-900 shadow p-6 border border-gray-100 dark:border-gray-800"
-              >
-                <h2 className="text-lg font-semibold mb-2">{note.title}</h2>
-                <p className="text-gray-700 dark:text-gray-200">
-                  {note.content}
-                </p>
-              </div>
-            ))}
+    <Sidebar>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
+        <header className="px-5 lg:px-8 py-6 border-b border-gray-200/50 dark:border-gray-800/50">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl lg:text-2xl font-bold">
+              Short Notes: {subject}
+            </h1>
           </div>
-        )}
-      </main>
-      <Footer />
-    </div>
+        </header>
+        <main className="max-w-4xl mx-auto px-5 lg:px-8 pt-8">
+          {notes.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400">
+                No notes available for this subject.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {notes.map((note) => (
+                <div
+                  key={note.id}
+                  className="rounded-2xl bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100 dark:border-gray-800"
+                >
+                  <h2 className="text-lg font-bold mb-3 text-purple-600 dark:text-purple-400">
+                    {note.title}
+                  </h2>
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {note.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+        <div className="lg:hidden">
+          <BottomNav />
+        </div>
+      </div>
+    </Sidebar>
   );
 };
 
