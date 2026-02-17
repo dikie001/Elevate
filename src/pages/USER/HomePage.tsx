@@ -1,66 +1,123 @@
-import Footer from "@/components/app/Footer";
-import Navbar from "@/components/app/Navbar";
+import BottomNav from "@/components/app/BottomNav";
 import { TEST_RESULTS } from "@/constants";
 import useSound from "@/hooks/useSound";
+import { subjects } from "@/jsons/subjects";
 import LearnerModal from "@/modals/Welcome";
 import {
   ArrowRight,
   BookOpen,
-  CircleHelp,
-  FileText,
+  Brain,
+  Calculator,
+  ChevronRight,
+  Flame,
+  FlaskConical,
+  Globe,
+  GraduationCap,
+  LayoutDashboard,
   Lightbulb,
-  Mic,
-  Play,
+  Medal,
+  Mic2,
+  Palette,
+  Pencil,
+  Search,
+  Settings,
   Sparkles,
+  Sprout,
+  Star,
+  Target,
   TrendingUp,
   Trophy,
+  Utensils,
+  Wrench,
   Zap,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Animation from "../../components/animation/Animation";
 
-const READ_STORIES = "read-stories";
+interface TestResult {
+  testNumber: number;
+  score: number;
+  totalQuestions: number;
+  percentage: number;
+  date: string;
+  subject: string;
+}
 
-type Complete = {
-  stories: number;
-  quiz: number;
+interface UserInfo {
+  name: string;
+  grade?: string;
+  hobby?: string;
+}
+
+const subjectMeta: Record<
+  string,
+  { icon: React.ReactNode; color: string; bg: string }
+> = {
+  Mathematics: {
+    icon: <Calculator className="w-5 h-5" />,
+    color: "from-blue-500 to-indigo-600",
+    bg: "bg-blue-50 dark:bg-blue-950/30",
+  },
+  English: {
+    icon: <Pencil className="w-5 h-5" />,
+    color: "from-emerald-500 to-teal-600",
+    bg: "bg-emerald-50 dark:bg-emerald-950/30",
+  },
+  Kiswahili: {
+    icon: <Globe className="w-5 h-5" />,
+    color: "from-orange-500 to-red-600",
+    bg: "bg-orange-50 dark:bg-orange-950/30",
+  },
+  Science: {
+    icon: <FlaskConical className="w-5 h-5" />,
+    color: "from-purple-500 to-violet-600",
+    bg: "bg-purple-50 dark:bg-purple-950/30",
+  },
+  "Social Studies": {
+    icon: <Globe className="w-5 h-5" />,
+    color: "from-amber-500 to-yellow-600",
+    bg: "bg-amber-50 dark:bg-amber-950/30",
+  },
+  Agriculture: {
+    icon: <Sprout className="w-5 h-5" />,
+    color: "from-green-500 to-lime-600",
+    bg: "bg-green-50 dark:bg-green-950/30",
+  },
+  "Home Science": {
+    icon: <Utensils className="w-5 h-5" />,
+    color: "from-pink-500 to-rose-600",
+    bg: "bg-pink-50 dark:bg-pink-950/30",
+  },
+  "Creative Arts": {
+    icon: <Palette className="w-5 h-5" />,
+    color: "from-fuchsia-500 to-pink-600",
+    bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30",
+  },
+  "Pre-Technical Studies": {
+    icon: <Wrench className="w-5 h-5" />,
+    color: "from-slate-500 to-zinc-600",
+    bg: "bg-slate-100 dark:bg-slate-800/30",
+  },
+  "Sports & Physical Education": {
+    icon: <Mic2 className="w-5 h-5" />,
+    color: "from-cyan-500 to-sky-600",
+    bg: "bg-cyan-50 dark:bg-cyan-950/30",
+  },
 };
+
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { playSend } = useSound();
   const [openLearnerModal, setOpenLearnerModal] = useState(false);
-  const [completed, setCompleted] = useState<Complete>({ stories: 0, quiz: 0 });
-
-  // 1. Separate Quick Quiz specific data
-  const quizSection = {
-    name: "Quick Quiz",
-    icon: <CircleHelp />,
-    description: "Test yourself with fast, fun questions.",
-    color: "from-cyan-500 to-blue-600",
-    bgGradient:
-      "from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20",
-    to: "quick-quiz",
-  };
-
-  // 2. Other Sections
-  const otherSections = [
-    {
-      name: "Subjects",
-      icon: <BookOpen />,
-      description: "All subjects for quizzes and notes",
-      color: "from-indigo-500 to-blue-600",
-      bgGradient:
-        "from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20",
-      to: "/subjects",
-    },
-  ];
-
-  const HandleCategoryClick = (destination: string) => {
-    playSend();
-    navigate(destination);
-  };
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [results, setResults] = useState<TestResult[]>([]);
 
   useEffect(() => {
     const isFirstTime = localStorage.getItem("first-time");
@@ -68,178 +125,409 @@ const HomePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const rawData = localStorage.getItem(READ_STORIES);
-    const completedStories = rawData ? JSON.parse(rawData).length : 0;
+    const raw = localStorage.getItem("user-info");
+    if (raw) setUser(JSON.parse(raw));
 
-    const rawQuizData = localStorage.getItem(TEST_RESULTS);
-    const completedQuizes = rawQuizData ? JSON.parse(rawQuizData).length : 0;
-
-    setCompleted({ stories: completedStories, quiz: completedQuizes });
+    const rawResults = localStorage.getItem(TEST_RESULTS);
+    if (rawResults) setResults(JSON.parse(rawResults));
   }, []);
 
-  const totalProgress = completed.stories + completed.quiz;
+  // Stats
+  const totalTests = results.length;
+  const avgScore =
+    totalTests > 0
+      ? Math.round(results.reduce((s, r) => s + r.percentage, 0) / totalTests)
+      : 0;
+  const bestScore =
+    totalTests > 0 ? Math.max(...results.map((r) => r.percentage)) : 0;
+
+  // Subjects with quiz counts
+  const subjectStats = useMemo(() => {
+    const map: Record<string, number> = {};
+    results.forEach((r) => {
+      map[r.subject] = (map[r.subject] || 0) + 1;
+    });
+    return map;
+  }, [results]);
+
+  // Recent results (last 4 for desktop balance)
+  const recentResults = results.slice(-4).reverse();
+
+  // Current streak
+  const streak = useMemo(() => {
+    if (results.length === 0) return 0;
+    const dates = [
+      ...new Set(
+        results
+          .filter((r) => r.date)
+          .map((r) => new Date(r.date).toDateString()),
+      ),
+    ].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    let count = 1;
+    for (let i = 0; i < dates.length - 1; i++) {
+      const diff =
+        (new Date(dates[i]).getTime() - new Date(dates[i + 1]).getTime()) /
+        86400000;
+      if (diff <= 1) count++;
+      else break;
+    }
+    return count;
+  }, [results]);
+
+  const handleNav = (path: string) => {
+    playSend();
+    navigate(path);
+  };
+
+  const firstName = user?.name?.split(" ")[0] || "Learner";
 
   return (
-    <div className="min-h-screen text-gray-900 dark:text-white bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex flex-col relative overflow-hidden transition-colors duration-500">
-      <Animation />
-
-      <Navbar />
-
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24  pb-12">
-        {/* Header Section */}
-        <div className="text-center mb-6 md:mb-10 space-y-2 md:space-y-4 animate-in fade-in duration-700">
-          {totalProgress > 0 && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-700 to-indigo-800 text-white rounded-3xl shadow-md text-sm font-semibold mb-4">
-              <TrendingUp className="w-4 h-4" />
-              <span>{totalProgress} Activities Completed!</span>
-            </div>
-          )}
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Learn. Grow. Excel.
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-64 flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 sticky top-0 h-screen overflow-y-auto">
+        <div className="p-6">
+          <h1 className="text-2xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Dikie<span className="text-purple-600">.</span>
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-            Daily challenges to sharpen your mind.
-          </p>
         </div>
+        <nav className="flex-1 px-4 space-y-2">
+          {[
+            { icon: LayoutDashboard, label: "Dashboard", active: true },
+            { icon: BookOpen, label: "Subjects", path: "/subjects" },
+            { icon: Trophy, label: "Results", path: "/results" },
+            { icon: Settings, label: "Settings", path: "/settings" },
+          ].map((item) => (
+            <button
+              key={item.label}
+              onClick={() => item.path && handleNav(item.path)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${item.active ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"}`}
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </button>
+          ))}
+        </nav>
+        <div className="p-4 mt-auto">
+          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white">
+            <p className="font-bold text-sm mb-1">Go Pro</p>
+            <p className="text-xs text-purple-100 mb-3">
+              Get unlimited access to all subjects.
+            </p>
+            <button className="w-full bg-white text-purple-600 text-xs font-bold py-2 rounded-lg">
+              Upgrade Now
+            </button>
+          </div>
+        </div>
+      </aside>
 
-        {/* --- FEATURED HERO BANNER --- */}
-        <div className="mb-4 md:mb-6  flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          <button
-            onClick={() => HandleCategoryClick(quizSection.to)}
-            className="group cursor-pointer relative w-full max-w-4xl mx-auto overflow-hidden rounded-3xl bg-white/80 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 backdrop-blur-sm"
-          >
-            {/* Top gradient bar */}
-            <div
-              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${quizSection.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}
-            />
+      <div className="flex-1 min-h-screen relative flex flex-col">
+        {/* Header */}
+        <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
+          <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="md:hidden w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                {firstName.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {getGreeting()}
+                </p>
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
+                  {firstName}{" "}
+                  <span className="inline-block animate-[wave_1.5s_ease-in-out_infinite]">
+                    👋
+                  </span>
+                </h1>
+              </div>
+            </div>
 
-            {/* Background gradient on hover */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${quizSection.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-            />
+            <div className="flex items-center gap-4">
+              {/* Search Bar - Desktop Only */}
+              <div className="hidden md:flex items-center bg-gray-100 dark:bg-gray-900 px-4 py-2.5 rounded-full w-64 focus-within:ring-2 ring-purple-500/20 transition-all">
+                <Search className="w-4 h-4 text-gray-400 mr-2" />
+                <input
+                  placeholder="Search for a topic..."
+                  className="bg-transparent border-none outline-none text-sm w-full"
+                />
+              </div>
 
-            {/* Banner Layout: Row on Mobile and Desktop */}
-            <div className="relative py-10 md:py-10 p-4 md:p-6 flex items-center justify-between gap-4 md:gap-8 text-left">
-              {/* Content Group: Icon + Text */}
-              <div className="flex items-center gap-4 md:gap-6 flex-1 min-w-0">
-                {/* Left: Icon & Gradient Blob */}
-                <div className="relative flex-shrink-0">
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-r ${quizSection.color} rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500`}
-                  />
-                  <div
-                    className={`relative p-3 md:p-4 rounded-2xl bg-gradient-to-r ${quizSection.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}
-                  >
-                    {React.cloneElement(quizSection.icon, {
-                      className: "w-6 h-6 md:w-9 md:h-9 text-white",
-                    })}
+              {user?.grade && (
+                <div className="px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800">
+                  <span className="text-xs font-bold text-purple-700 dark:text-purple-300">
+                    {user.grade}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-7xl mx-auto px-5 pt-6 pb-24 md:pb-10 w-full space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+            {/* Left Column: Stats & Main Actions */}
+            <div className="lg:col-span-8 space-y-8">
+              {/* Hero Stats Cards */}
+              <div className="grid grid-cols-3 gap-3 md:gap-5">
+                <div
+                  onClick={() => handleNav("/results")}
+                  className="group bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-4 md:p-6 shadow-xl shadow-purple-200/50 dark:shadow-none cursor-pointer active:scale-95 transition-transform"
+                >
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <Target className="w-5 h-5 md:w-6 md:h-6 text-white" />
                   </div>
+                  <p className="text-2xl md:text-3xl font-black text-white">
+                    {totalTests}
+                  </p>
+                  <p className="text-xs md:text-sm font-medium text-purple-100 mt-0.5">
+                    Tests Taken
+                  </p>
                 </div>
 
-                {/* Middle: Text Content */}
-                <div className="flex-col flex gap-1 overflow-hidden">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl md:text-3xl font-extrabold text-gray-900 dark:text-white truncate group-hover:bg-gradient-to-r group-hover:from-cyan-600 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent transition-colors duration-300">
-                      {quizSection.name}
-                    </h3>
-                    {/* Mobile-only Tiny Stat */}
-                    {completed.quiz > 0 && (
-                      <span className="md:hidden flex-shrink-0 text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/30 px-2 py-0.5 rounded-full">
-                        {completed.quiz} Done
-                      </span>
-                    )}
+                <div
+                  onClick={() => handleNav("/results")}
+                  className="group bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-4 md:p-6 shadow-xl shadow-blue-200/50 dark:shadow-none cursor-pointer active:scale-95 transition-transform"
+                >
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <Trophy className="w-5 h-5 md:w-6 md:h-6 text-white" />
                   </div>
+                  <p className="text-2xl md:text-3xl font-black text-white">
+                    {avgScore}%
+                  </p>
+                  <p className="text-xs md:text-sm font-medium text-blue-100 mt-0.5">
+                    Avg Score
+                  </p>
+                </div>
 
-                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300 line-clamp-1 md:line-clamp-2">
-                    {quizSection.description}
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl p-4 md:p-6 shadow-xl shadow-orange-200/50 dark:shadow-none">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <Flame className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  </div>
+                  <p className="text-2xl md:text-3xl font-black text-white">
+                    {streak}
+                  </p>
+                  <p className="text-xs md:text-sm font-medium text-orange-100 mt-0.5">
+                    Day Streak
                   </p>
                 </div>
               </div>
 
-              {/* Right: Action / Stats */}
-              <div className="flex-shrink-0 flex items-center gap-4">
-                {/* Desktop Stats */}
-                {completed.quiz > 0 && (
-                  <span className="hidden md:block flex-shrink-0 text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/30 px-4 py-2 rounded-full">
-                    {completed.quiz} Done
-                  </span>
-                )}
-
-                {/* Desktop Play Button visual */}
-                <div
-                  className={`
-                  hidden md:flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300
-                  bg-gradient-to-r ${quizSection.color} shadow-lg opacity-90 group-hover:opacity-100 group-hover:translate-x-1
-                `}
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+                <button
+                  onClick={() => handleNav("/quick-quiz")}
+                  className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 p-6 md:p-8 text-left shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
                 >
-                  <span>Start</span>
-                  <Play className="w-4 h-4 fill-current" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl -translate-y-8 translate-x-8" />
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <div className="w-12 h-12 rounded-2xl bg-gray-800 dark:bg-gray-700 flex items-center justify-center mb-4 text-purple-400">
+                        <Brain className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-1">
+                        Quick Quiz
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        Test your knowledge now
+                      </p>
+                    </div>
+                    <div className="h-12 w-12 rounded-full border border-gray-700 flex items-center justify-center group-hover:bg-purple-600 group-hover:border-purple-600 transition-colors">
+                      <ArrowRight className="w-5 h-5 text-white -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => handleNav("/subjects")}
+                  className="group relative overflow-hidden rounded-3xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 md:p-8 text-left shadow-sm hover:shadow-xl transition-all active:scale-[0.98]"
+                >
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4 text-emerald-600 dark:text-emerald-400">
+                        <BookOpen className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        Study Mode
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Explore all subjects
+                      </p>
+                    </div>
+                    <div className="h-12 w-12 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:border-emerald-600 group-hover:text-white transition-colors">
+                      <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              {/* Popular Subjects Grid */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                    <GraduationCap className="w-5 h-5 text-purple-500" />
+                    Popular Subjects
+                  </h2>
+                  <button
+                    onClick={() => handleNav("/subjects")}
+                    className="text-sm font-semibold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-3 py-1.5 rounded-lg transition-all"
+                  >
+                    View All
+                  </button>
                 </div>
 
-                {/* Simple Arrow for Mobile */}
-                <div className="md:hidden p-2 rounded-full bg-gray-100 dark:bg-gray-700/50 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
-                  <ArrowRight className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-4">
+                  {subjects.slice(0, 6).map((sub, index) => {
+                    const meta = subjectMeta[sub] || {
+                      icon: <Lightbulb className="w-5 h-5" />,
+                      color: "from-gray-500 to-gray-600",
+                      bg: "bg-gray-100 dark:bg-gray-800",
+                    };
+                    const quizCount = subjectStats[sub] || 0;
+
+                    return (
+                      <button
+                        key={sub}
+                        onClick={() =>
+                          handleNav(`/subject/${encodeURIComponent(sub)}`)
+                        }
+                        className="group bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:border-purple-200 dark:hover:border-purple-800 transition-all text-left"
+                      >
+                        <div
+                          className={`w-12 h-12 rounded-xl ${meta.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          {React.cloneElement(meta.icon as React.ReactElement, {
+                            className: "w-6 h-6",
+                          })}
+                        </div>
+                        <p className="font-bold text-sm leading-tight line-clamp-2 mb-2 h-10 flex items-center">
+                          {sub}
+                        </p>
+                        {quizCount > 0 ? (
+                          <div className="flex items-center gap-1.5 text-xs text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-md w-fit">
+                            <Zap className="w-3 h-3 fill-current" />
+                            <span>{quizCount}</span>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                            Start
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
-          </button>
-        </div>
-        {/* --- END FEATURED HERO BANNER --- */}
 
-        {/* Grid for other items */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {otherSections.map((section, index) => {
-            const hasCompleted = section.name === "Flash Stories";
-            const completionCount = completed.stories;
+            {/* Right Column: Sidebar content on Desktop */}
+            <div className="lg:col-span-4 space-y-6">
+              {/* Achievement Banner */}
+              {bestScore > 0 && (
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 p-[2px] shadow-xl">
+                  <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 flex items-center gap-4">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+                      <Medal className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-current" />
+                        Personal Best
+                      </p>
+                      <p className="text-3xl font-black bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                        {bestScore}%
+                      </p>
+                    </div>
+                    <Sparkles className="w-6 h-6 text-amber-400 animate-pulse" />
+                  </div>
+                </div>
+              )}
 
-            return (
-              <button
-                key={section.name}
-                onClick={() => HandleCategoryClick(section.to)}
-                className="group cursor-pointer relative p-4 md:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm overflow-hidden flex flex-col items-center text-center"
-                style={{
-                  animationDelay: `${index * 100}ms`,
-                  animation: "slideUp 0.6s ease-out forwards",
-                  opacity: 0,
-                }}
-              >
-                <div
-                  className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${section.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`}
-                />
+              {/* Study Tip */}
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-3xl p-6 border border-purple-100 dark:border-purple-900/30">
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 p-3 bg-purple-100 dark:bg-purple-900/30 rounded-2xl">
+                    <Lightbulb className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-purple-700 dark:text-purple-300 mb-1">
+                      Daily Tip
+                    </p>
+                    <p className="text-sm text-purple-600/80 dark:text-purple-300/70 leading-relaxed">
+                      Consistency beats intensity. Just 15 minutes daily makes a
+                      huge difference in retention!
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-                <div className="mb-4 relative">
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-r ${section.color} blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
-                  />
-                  <div
-                    className={`relative p-3 rounded-xl bg-gradient-to-r ${section.color} shadow-md group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    {React.cloneElement(section.icon, {
-                      className: "w-6 h-6 text-white",
+              {/* Recent Activity List */}
+              {recentResults.length > 0 && (
+                <div className="bg-white dark:bg-gray-900/50 rounded-3xl p-5 border border-gray-100 dark:border-gray-800">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-base font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                      <TrendingUp className="w-4 h-4 text-purple-500" />
+                      Recent Activity
+                    </h2>
+                  </div>
+
+                  <div className="space-y-3">
+                    {recentResults.map((r, i) => {
+                      const scoreColor =
+                        r.percentage >= 80
+                          ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-100"
+                          : r.percentage >= 50
+                            ? "text-amber-500 bg-amber-50 dark:bg-amber-950/30 border-amber-100"
+                            : "text-red-500 bg-red-50 dark:bg-red-950/30 border-red-100";
+                      return (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-default"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-10 h-10 rounded-xl flex items-center justify-center ${subjectMeta[r.subject]?.bg || "bg-gray-100 dark:bg-gray-800"}`}
+                            >
+                              {subjectMeta[r.subject]?.icon || (
+                                <BookOpen className="w-5 h-5 text-gray-500" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white line-clamp-1">
+                                {r.subject}
+                              </p>
+                              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                                {r.date
+                                  ? new Date(r.date).toLocaleDateString(
+                                      "en-GB",
+                                      {
+                                        day: "numeric",
+                                        month: "short",
+                                      },
+                                    )
+                                  : "—"}
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            className={`px-2.5 py-1 rounded-lg border ${scoreColor}`}
+                          >
+                            <p className="font-bold text-xs">{r.percentage}%</p>
+                          </div>
+                        </div>
+                      );
                     })}
                   </div>
                 </div>
+              )}
+            </div>
+          </div>
+        </main>
 
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {section.name}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                  {section.description}
-                </p>
-
-                {hasCompleted && completionCount > 0 && (
-                  <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1 rounded-full">
-                    <Trophy className="w-3 h-3" />
-                    <span>{completionCount} Read</span>
-                  </div>
-                )}
-              </button>
-            );
-          })}
+        {/* Mobile Navigation - Hidden on Desktop */}
+        <div className="md:hidden">
+          <BottomNav />
         </div>
-      </main>
+      </div>
 
-      <Footer />
       {openLearnerModal && (
         <LearnerModal
           onClose={() => {
@@ -250,9 +538,10 @@ const HomePage: React.FC = () => {
       )}
 
       <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes wave {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(20deg); }
+          75% { transform: rotate(-10deg); }
         }
       `}</style>
     </div>

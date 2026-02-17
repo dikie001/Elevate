@@ -182,7 +182,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
       >
         {/* Header - Only show on non-success/non-welcome pages for navigation */}
         {view !== "welcome" && view !== "success" && (
-          <div className="bg-muted/30 p-4 -mt-6 flex items-center gap-3 border-b">
+          <div className="bg-muted/30 p-5 -mt-6 flex items-center gap-3 border-b">
             <Button
               variant="ghost"
               size="icon"
@@ -190,7 +190,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 if (view === "register-2") setView("register-1");
                 else setView("welcome");
               }}
-              className="h-8 w-8 rounded-full hover:bg-background"
+              className="h-10 w-10 rounded-full hover:bg-background"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
@@ -262,7 +262,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                    <User className="absolute left-3 top-4 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="name"
                       autoFocus
@@ -271,7 +271,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                       onChange={(e) =>
                         handleInputChange("name", e.target.value)
                       }
-                      className="pl-9 h-11 rounded-xl"
+                      className="pl-9 h-12 rounded-xl"
                     />
                   </div>
                 </div>
@@ -282,7 +282,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
-                        className={`w-full justify-between h-11 px-3 rounded-xl ${!formData.grade && "text-muted-foreground"}`}
+                        className={`w-full justify-between h-12 px-3 rounded-xl ${!formData.grade && "text-muted-foreground"}`}
                       >
                         {formData.grade || "Select Grade"}
                         <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
@@ -321,7 +321,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full mt-4 group rounded-xl"
+                  className="w-full mt-4 group rounded-xl h-14 text-lg"
                 >
                   Continue{" "}
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -342,13 +342,13 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <div className="space-y-2">
                   <Label>Username </Label>
                   <div className="relative">
-                    <Hash className="absolute left-3 top-3 w-4 h-4 text-emerald-500" />
+                    <Hash className="absolute left-3 top-4 w-4 h-4 text-emerald-500" />
                     <Input
                       value={formData.username}
                       onChange={(e) =>
                         handleInputChange("username", e.target.value)
                       }
-                      className="pl-9 h-11 border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl"
+                      className="pl-9 h-12 border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl"
                     />
                   </div>
                 </div>
@@ -361,7 +361,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                     </span>
                   </div>
                   <div className="relative group">
-                    <Lock className="absolute left-3 top-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                    <Lock className="absolute left-3 top-4 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                     <Input
                       id="pin"
                       type={showPin ? "text" : "password"}
@@ -370,7 +370,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                       placeholder="****"
                       value={formData.pin}
                       onChange={(e) => handleInputChange("pin", e.target.value)}
-                      className="pl-9 pr-10 font-mono text-lg tracking-[0.5em] h-11 rounded-xl"
+                      className="pl-9 pr-10 font-mono text-lg tracking-[0.5em] h-12 rounded-xl"
                     />
                     <Button
                       type="button"
@@ -395,7 +395,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full mt-4 rounded-xl"
+                  className="w-full mt-4 rounded-xl h-14 text-lg"
                   disabled={loading || formData.pin.length !== 4}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -417,7 +417,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <div className="space-y-2">
                   <Label htmlFor="login-user">Username</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                    <User className="absolute left-3 top-4 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="login-user"
                       placeholder="e.g. kamau123"
@@ -425,7 +425,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                       onChange={(e) =>
                         handleLoginChange("username", e.target.value)
                       }
-                      className="pl-9 h-11 rounded-xl"
+                      className="pl-9 h-12 rounded-xl"
                     />
                   </div>
                 </div>
@@ -433,7 +433,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <div className="space-y-2">
                   <Label htmlFor="login-pin">4-Digit PIN</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-4 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="login-pin"
                       type={showPin ? "text" : "password"}
@@ -442,7 +442,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                       placeholder="****"
                       value={loginData.pin}
                       onChange={(e) => handleLoginChange("pin", e.target.value)}
-                      className="pl-9 pr-10 font-mono text-lg tracking-[0.5em] h-11 rounded-xl"
+                      className="pl-9 pr-10 font-mono text-lg tracking-[0.5em] h-12 rounded-xl"
                     />
                     <Button
                       type="button"
@@ -463,7 +463,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full mt-4 rounded-xl"
+                  className="w-full mt-4 rounded-xl h-14 text-lg"
                   disabled={loading || loginData.pin.length !== 4}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -500,7 +500,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
                 <Button
                   onClick={handleClose}
                   size="lg"
-                  className="w-full  rounded-xl"
+                  className="w-full text-lg  rounded-xl h-14"
                 >
                   Start Learning
                 </Button>

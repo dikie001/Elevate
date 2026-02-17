@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Navbar from "@/components/app/Navbar";
-import { STORIES_READ, TEST_RESULTS } from "@/constants";
+import { TEST_RESULTS } from "@/constants";
 import { FileCheck, Loader2, TrendingUp, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -25,7 +25,6 @@ interface TestResult {
 
 interface UserStats {
   testsDone: number;
-  storiesRead: number;
   averageScore: number;
 }
 
@@ -41,7 +40,6 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<UserStats>({
     testsDone: 0,
-    storiesRead: 0,
     averageScore: 0,
   });
   const [graphData, setGraphData] = useState<unknown[]>([]);
@@ -49,12 +47,9 @@ const Results = () => {
   useEffect(() => {
     // 1. Fetch Data from LocalStorage
     const rawResults = localStorage.getItem(TEST_RESULTS);
-    // const rawUserInfo = localStorage.getItem("user-info");
-    const rawStories = localStorage.getItem(STORIES_READ);
 
     // 2. Parse Data
     const results: TestResult[] = rawResults ? JSON.parse(rawResults) : [];
-    const storiesCount = rawStories ? JSON.parse(rawStories).length : 0;
 
     // 3. Calculate Stats
     const totalTests = results.length;
@@ -69,7 +64,6 @@ const Results = () => {
 
     setStats({
       testsDone: totalTests,
-      storiesRead: storiesCount,
       averageScore: avgScore,
     });
 
