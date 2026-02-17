@@ -20,7 +20,9 @@ const SubjectsPage: React.FC = () => {
             {subjects.map((subject, idx) => (
               <button
                 key={subject}
-                onClick={() => navigate(`/subject/${encodeURIComponent(subject)}`)}
+                onClick={() =>
+                  navigate(`/subject/${encodeURIComponent(subject)}`)
+                }
                 className="group bg-white dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 transition-all text-left flex flex-col items-start"
                 style={{ animationDelay: `${idx * 40}ms` }}
               >

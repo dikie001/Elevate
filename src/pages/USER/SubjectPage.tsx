@@ -50,7 +50,9 @@ const SubjectPage: React.FC = () => {
                 <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-1">View Short Notes</h3>
+                <h3 className="text-lg font-bold text-white mb-1">
+                  View Short Notes
+                </h3>
                 <p className="text-xs text-emerald-100">Study by subject</p>
                 <div className="mt-4 flex items-center gap-1 text-white">
                   <span className="text-xs font-semibold">Explore</span>

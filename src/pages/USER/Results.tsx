@@ -102,141 +102,143 @@ const Results = () => {
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-8">
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500">
-            Learning Results
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Overview of your tests and reading milestones.
-          </p>
-        </div>
+          {/* Header */}
+          <div className="mb-10">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500">
+              Learning Results
+            </h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              Overview of your tests and reading milestones.
+            </p>
+          </div>
 
-        {/* --- STATS ROW --- */}
-        <div className="grid grid-cols-2 gap-4 md:gap-6n mb-8">
-          <StatCard
-            title="Tests Completed"
-            value={stats.testsDone}
-            icon={FileCheck}
-            color="indigo"
-          />
-          {/* <StatCard
+          {/* --- STATS ROW --- */}
+          <div className="grid grid-cols-2 gap-4 md:gap-6n mb-8">
+            <StatCard
+              title="Tests Completed"
+              value={stats.testsDone}
+              icon={FileCheck}
+              color="indigo"
+            />
+            {/* <StatCard
             title="Stories Read"
             value={stats.storiesRead}
             icon={BookOpen}
             color="pink"
           /> */}
-          <StatCard
-            title="Average Score"
-            value={`${stats.averageScore}%`}
-            icon={Trophy}
-            color="amber"
-          />
-        </div>
-
-        {/* --- MAIN GRAPH: MARKS PER TEST --- */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-xl shadow-indigo-100/50 dark:shadow-none border border-gray-100 dark:border-gray-800">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                Test Performance History
-              </h2>
-            </div>
-
-            {/* Legend for color coding */}
-            <div className="hidden sm:flex gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-emerald-400" />{" "}
-                Excellent
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-indigo-500" /> Good
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-amber-400" /> Average
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-red-400" /> Low
-              </div>
-            </div>
+            <StatCard
+              title="Average Score"
+              value={`${stats.averageScore}%`}
+              icon={Trophy}
+              color="amber"
+            />
           </div>
 
-          {/* SCROLL WRAPPER START */}
-          <div className="w-full overflow-x-auto pb-4">
-            <div
-              className="h-[400px]"
-              // Dynamic width: If > 6 items, use 60px per item. Else, fit to screen (100%).
-              style={{
-                width:
-                  graphData.length > 6 ? `${graphData.length * 60}px` : "100%",
-                minWidth: "100%",
-              }}
-            >
-              {graphData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={graphData as any}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      vertical={false}
-                      strokeOpacity={0.1}
-                    />
-                    <XAxis
-                      dataKey="name"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: "#6b7280", fontSize: 12 }}
-                      dy={10}
-                      interval={0} // Forces all labels to show
-                    />
-                    <YAxis
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: "#6b7280", fontSize: 12 }}
-                      domain={[0, 100]}
-                    />
-                    <Tooltip
-                      content={<CustomTooltip />}
-                      cursor={{ fill: "transparent" }}
-                    />
-                    <ReferenceLine
-                      y={50}
-                      stroke="#ef4444"
-                      strokeDasharray="3 3"
-                      strokeOpacity={0.5}
-                    />
-                    <Bar
-                      dataKey="score"
-                      radius={[8, 8, 8, 8]}
-                      barSize={40} // Fixed bar size looks better when scrolling
-                      animationDuration={1500}
-                    >
-                      {graphData.map((entry: any, index: number) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={getColorForScore(entry.score)}
-                          className="hover:opacity-80 transition-opacity cursor-pointer"
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                  <FileCheck className="w-12 h-12 mb-2 opacity-20" />
-                  <p>No tests taken yet.</p>
+          {/* --- MAIN GRAPH: MARKS PER TEST --- */}
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-xl shadow-indigo-100/50 dark:shadow-none border border-gray-100 dark:border-gray-800">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+                  <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                 </div>
-              )}
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                  Test Performance History
+                </h2>
+              </div>
+
+              {/* Legend for color coding */}
+              <div className="hidden sm:flex gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400" />{" "}
+                  Excellent
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-indigo-500" /> Good
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-amber-400" /> Average
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-red-400" /> Low
+                </div>
+              </div>
             </div>
+
+            {/* SCROLL WRAPPER START */}
+            <div className="w-full overflow-x-auto pb-4">
+              <div
+                className="h-[400px]"
+                // Dynamic width: If > 6 items, use 60px per item. Else, fit to screen (100%).
+                style={{
+                  width:
+                    graphData.length > 6
+                      ? `${graphData.length * 60}px`
+                      : "100%",
+                  minWidth: "100%",
+                }}
+              >
+                {graphData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={graphData as any}
+                      margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        vertical={false}
+                        strokeOpacity={0.1}
+                      />
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#6b7280", fontSize: 12 }}
+                        dy={10}
+                        interval={0} // Forces all labels to show
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#6b7280", fontSize: 12 }}
+                        domain={[0, 100]}
+                      />
+                      <Tooltip
+                        content={<CustomTooltip />}
+                        cursor={{ fill: "transparent" }}
+                      />
+                      <ReferenceLine
+                        y={50}
+                        stroke="#ef4444"
+                        strokeDasharray="3 3"
+                        strokeOpacity={0.5}
+                      />
+                      <Bar
+                        dataKey="score"
+                        radius={[8, 8, 8, 8]}
+                        barSize={40} // Fixed bar size looks better when scrolling
+                        animationDuration={1500}
+                      >
+                        {graphData.map((entry: any, index: number) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={getColorForScore(entry.score)}
+                            className="hover:opacity-80 transition-opacity cursor-pointer"
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                    <FileCheck className="w-12 h-12 mb-2 opacity-20" />
+                    <p>No tests taken yet.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* SCROLL WRAPPER END */}
           </div>
-          {/* SCROLL WRAPPER END */}
         </div>
-      </div>
         <div className="lg:hidden">
           <BottomNav />
         </div>

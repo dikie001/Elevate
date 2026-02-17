@@ -456,28 +456,30 @@ const QuizApp: React.FC = () => {
   // No data available: Card-style message when quiz data is missing
   if (!state.quizData || state.quizData.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 dark:bg-gray-900 dark:from-transparent dark:via-transparent dark:to-transparent flex items-center justify-center p-4 transition-colors duration-300">
-        <div className="text-center max-w-md">
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 dark:border-gray-700/20">
-            <BookOpen className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              No Quiz Data Available
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Please ensure your RandomQuiz.json file is properly imported and
-              contains valid Quick Quizions.
-            </p>
-            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-left text-sm text-gray-600 dark:text-gray-400">
-              <p className="mb-2 font-medium">Expected format:</p>
-              <code className="text-indigo-600 dark:text-indigo-400">
-                [
-                {`{question: "...", options: {...}, correctAnswer: "A", explanation: "..."}`}
-                , ...]
-              </code>
+      <Sidebar>
+        <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center p-4">
+          <div className="text-center max-w-md">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-800">
+              <BookOpen className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                No Quiz Data Available
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Please ensure your RandomQuiz.json file is properly imported and
+                contains valid Quick Quizions.
+              </p>
+              <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-left text-sm text-gray-600 dark:text-gray-400">
+                <p className="mb-2 font-medium">Expected format:</p>
+                <code className="text-purple-600 dark:text-purple-400">
+                  [
+                  {`{question: "...", options: {...}, correctAnswer: "A", explanation: "..."}`}
+                  , ...]
+                </code>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Sidebar>
     );
   }
 

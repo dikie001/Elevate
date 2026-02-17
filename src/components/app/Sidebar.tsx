@@ -1,25 +1,19 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Home,
   BookOpen,
   Brain,
   Trophy,
   Settings,
   Menu,
   X,
-  GraduationCap,
   Moon,
   Sun,
-  User,
-  LogOut,
-  HelpCircle,
-  MessageCircle,
-  BarChart2,
+  Sparkles,
+  LayoutDashboard,
 } from "lucide-react";
 import { useTheme } from "@/hooks/useHook";
 import useSound from "@/hooks/useSound";
-import logo from "/images/logo.png";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -27,21 +21,13 @@ interface SidebarProps {
 
 const Sidebar = ({ children }: SidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const { playSend } = useSound();
-  const [user, setUser] = useState<{ name: string; grade?: string } | null>(null);
 
   useEffect(() => {
-    const rawUserDetails = localStorage.getItem("user-info");
-    if (rawUserDetails) {
-      setUser(JSON.parse(rawUserDetails));
-    }
-
     const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1024);
       if (window.innerWidth >= 1024) {
         setIsSidebarOpen(false);
       }
@@ -53,16 +39,10 @@ const Sidebar = ({ children }: SidebarProps) => {
   }, []);
 
   const navItems = [
-    { icon: Home, label: "Home", path: "/" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: BookOpen, label: "Subjects", path: "/subjects" },
     { icon: Brain, label: "Quick Quiz", path: "/quick-quiz" },
     { icon: Trophy, label: "Results", path: "/results" },
-    { icon: BarChart2, label: "Analytics", path: "/analytics" },
-  ];
-
-  const bottomNavItems = [
-    { icon: HelpCircle, label: "Help", path: "/help" },
-    { icon: MessageCircle, label: "Contact", path: "/contact-developer" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
@@ -89,10 +69,9 @@ const Sidebar = ({ children }: SidebarProps) => {
               <Menu className="w-6 h-6" />
             )}
           </button>
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Brillia" className="w-8 h-8" />
-            <span className="font-bold text-lg">Brillia</span>
-          </div>
+          <h1 className="text-xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Brillia<span className="text-purple-600">.</span>
+          </h1>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -107,100 +86,48 @@ const Sidebar = ({ children }: SidebarProps) => {
       </header>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-40">
-        {/* Logo */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Brillia" className="w-10 h-10" />
-            <div>
-              <h1 className="font-bold text-xl">Brillia</h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Learning Platform</p>
-            </div>
-          </div>
+      <aside className="hidden lg:flex w-64 flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 sticky top-0 h-screen overflow-y-auto">
+        {/* Logo/Branding */}
+        <div className="p-6">
+          <h1 className="text-2xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Brillia<span className="text-purple-600">.</span>
+          </h1>
         </div>
 
-        {/* User Profile */}
-        {user && (
-          <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate">{user.name}</p>
-                {user.grade && (
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-xs font-semibold text-purple-700 dark:text-purple-300">
-                    {user.grade}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path);
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => handleNav(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                    active
-                      ? "bg-purple-500 text-white shadow-lg shadow-purple-200 dark:shadow-none"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 space-y-1">
-            {bottomNavItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path);
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => handleNav(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                    active
-                      ? "bg-purple-500 text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
+        <nav className="flex-1 px-4 space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.path);
+            return (
+              <button
+                key={item.path}
+                onClick={() => handleNav(item.path)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
+                  active
+                    ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                {item.label}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Theme Toggle */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            {theme === "dark" ? (
-              <>
-                <Sun className="w-5 h-5" />
-                <span className="font-medium text-sm">Light Mode</span>
-              </>
-            ) : (
-              <>
-                <Moon className="w-5 h-5" />
-                <span className="font-medium text-sm">Dark Mode</span>
-              </>
-            )}
-          </button>
+        {/* Go Pro Card */}
+        <div className="p-4 mt-auto">
+          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white">
+            <Sparkles className="w-5 h-5 mb-2" />
+            <p className="font-bold text-sm mb-1">Go Pro</p>
+            <p className="text-xs text-purple-100 mb-3">
+              Get unlimited access to all subjects.
+            </p>
+            <button className="w-full bg-white text-purple-600 text-xs font-bold py-2 rounded-lg hover:bg-purple-50 transition-colors">
+              Upgrade Now
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -221,13 +148,9 @@ const Sidebar = ({ children }: SidebarProps) => {
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={logo} alt="Brillia" className="w-10 h-10" />
-              <div>
-                <h1 className="font-bold text-xl">Brillia</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Learning Platform</p>
-              </div>
-            </div>
+            <h1 className="text-xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Brillia<span className="text-purple-600">.</span>
+            </h1>
             <button
               onClick={() => setIsSidebarOpen(false)}
               className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -237,28 +160,9 @@ const Sidebar = ({ children }: SidebarProps) => {
           </div>
         </div>
 
-        {/* User Profile */}
-        {user && (
-          <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate">{user.name}</p>
-                {user.grade && (
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-xs font-semibold text-purple-700 dark:text-purple-300">
-                    {user.grade}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-1">
+          <div className="space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
@@ -266,64 +170,37 @@ const Sidebar = ({ children }: SidebarProps) => {
                 <button
                   key={item.path}
                   onClick={() => handleNav(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
                     active
-                      ? "bg-purple-500 text-white shadow-lg shadow-purple-200 dark:shadow-none"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                   }`}
                 >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 space-y-1">
-            {bottomNavItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path);
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => handleNav(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                    active
-                      ? "bg-purple-500 text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium text-sm">{item.label}</span>
+                  <Icon className="w-5 h-5" />
+                  {item.label}
                 </button>
               );
             })}
           </div>
         </nav>
 
-        {/* Theme Toggle */}
+        {/* Go Pro Card */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            {theme === "dark" ? (
-              <>
-                <Sun className="w-5 h-5" />
-                <span className="font-medium text-sm">Light Mode</span>
-              </>
-            ) : (
-              <>
-                <Moon className="w-5 h-5" />
-                <span className="font-medium text-sm">Dark Mode</span>
-              </>
-            )}
-          </button>
+          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white">
+            <Sparkles className="w-5 h-5 mb-2" />
+            <p className="font-bold text-sm mb-1">Go Pro</p>
+            <p className="text-xs text-purple-100 mb-3">
+              Get unlimited access to all subjects.
+            </p>
+            <button className="w-full bg-white text-purple-600 text-xs font-bold py-2 rounded-lg hover:bg-purple-50 transition-colors">
+              Upgrade Now
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-72">
+      <main className="flex-1 lg:ml-64">
         {children}
       </main>
     </div>
@@ -331,3 +208,4 @@ const Sidebar = ({ children }: SidebarProps) => {
 };
 
 export default Sidebar;
+
