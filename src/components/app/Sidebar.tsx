@@ -200,12 +200,9 @@ const Sidebar = ({ children }: SidebarProps) => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64">
-        {children}
-      </main>
+      <main className="flex-1 lg:ml-64">{children}</main>
     </div>
   );
 };
 
 export default Sidebar;
-
