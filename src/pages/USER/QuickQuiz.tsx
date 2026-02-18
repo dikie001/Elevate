@@ -18,7 +18,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 
 import Sidebar from "@/components/app/Sidebar";
-import BottomNav from "@/components/app/BottomNav";
 import { FIREBASE_TEST_RESULTS, STORAGE_KEYS } from "@/constants";
 import quizData from "@/jsons/quizData";
 import ResetModal from "@/modals/Delete";
@@ -998,9 +997,6 @@ const QuizApp: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="lg:hidden">
-          <BottomNav />
         </div>
       </div>
     </Sidebar>

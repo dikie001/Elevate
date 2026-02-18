@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Sidebar from "@/components/app/Sidebar";
-import BottomNav from "@/components/app/BottomNav";
+import { BackButton } from "@/components/layout";
 import { TEST_RESULTS } from "@/constants";
 import { FileCheck, Loader2, TrendingUp, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -97,6 +97,7 @@ const Results = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
         <div className="px-5 lg:px-8 py-6 border-b border-gray-200/50 dark:border-gray-800/50">
           <div className="flex items-center gap-3">
+            <BackButton />
             <Trophy className="w-7 h-7 text-purple-500" />
             <h1 className="text-xl lg:text-2xl font-bold">Learning Results</h1>
           </div>
@@ -238,9 +239,6 @@ const Results = () => {
             </div>
             {/* SCROLL WRAPPER END */}
           </div>
-        </div>
-        <div className="lg:hidden">
-          <BottomNav />
         </div>
       </div>
     </Sidebar>

@@ -1,5 +1,5 @@
 import Sidebar from "@/components/app/Sidebar";
-import BottomNav from "@/components/app/BottomNav";
+import { BackButton } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -149,6 +149,9 @@ export default function SettingsPage() {
         </div>
 
         <main className="relative max-w-5xl mx-auto px-5 lg:px-8 py-8 z-10">
+          <div className="flex items-center gap-3 mb-6">
+            <BackButton />
+          </div>
           <div className="flex flex-col gap-2 mb-10">
             <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
               Settings
@@ -471,10 +474,6 @@ export default function SettingsPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        <div className="lg:hidden">
-          <BottomNav />
-        </div>
       </div>
     </Sidebar>
   );

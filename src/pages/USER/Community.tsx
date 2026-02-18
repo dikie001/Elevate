@@ -1,5 +1,4 @@
 import Sidebar from "@/components/app/Sidebar";
-import BottomNav from "@/components/app/BottomNav";
 import { useState, useEffect } from "react";
 import {
   MessageCircle,
@@ -565,10 +564,6 @@ const Community = () => {
           </div>
         )}
 
-        {/* Bottom Nav */}
-        <div className="lg:hidden">
-          <BottomNav />
-        </div>
       </div>
     </Sidebar>
   );

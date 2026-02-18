@@ -35,7 +35,9 @@ export default function BottomNav() {
               }`}
             >
               <Icon className={`w-5 h-5 ${active ? "scale-110" : ""}`} />
-              <span className={`text-[10px] font-medium ${active ? "font-semibold" : ""}`}>
+              <span
+                className={`text-[10px] font-medium ${active ? "font-semibold" : ""}`}
+              >
                 {item.label}
               </span>
               {active && (

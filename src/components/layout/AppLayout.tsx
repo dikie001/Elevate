@@ -17,7 +17,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <MobileHeader onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
 
       {/* Mobile Sidebar Overlay */}
-      <MobileSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <MobileSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       <div className="lg:pl-64">
         {/* Desktop Sidebar - Hidden on mobile */}

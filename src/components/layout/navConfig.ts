@@ -25,11 +25,10 @@ export const sidebarNavItems: NavItem[] = [
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
-// Mobile bottom navigation (simplified)
+// Mobile bottom navigation (main features only)
 export const bottomNavItems: NavItem[] = [
   { icon: Home, label: "Home", path: "/" },
   { icon: BookOpen, label: "Subjects", path: "/subjects" },
-  { icon: Users, label: "Community", path: "/community" },
   { icon: Brain, label: "Quiz", path: "/quick-quiz" },
-  { icon: Trophy, label: "Results", path: "/results" },
+  { icon: Users, label: "Community", path: "/community" },
 ];

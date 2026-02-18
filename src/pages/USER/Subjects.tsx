@@ -1,5 +1,4 @@
 import Sidebar from "@/components/app/Sidebar";
-import BottomNav from "@/components/app/BottomNav";
 import { subjects } from "@/jsons/subjects";
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, BookOpen, Lightbulb, ArrowRight } from "lucide-react";
@@ -41,9 +40,6 @@ const SubjectsPage: React.FC = () => {
             ))}
           </div>
         </main>
-        <div className="lg:hidden">
-          <BottomNav />
-        </div>
       </div>
     </Sidebar>
   );
