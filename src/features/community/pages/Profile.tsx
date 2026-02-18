@@ -12,7 +12,6 @@ import {
   Bookmark,
 } from "lucide-react";
 import Sidebar from "../../../components/app/Sidebar";
-import BottomNav from "../../../components/app/BottomNav";
 import type { Post, User } from "../types";
 import { getPosts, getCurrentUser, formatTimeAgo, likePost } from "../utils";
 
@@ -91,7 +90,6 @@ export default function Profile() {
             Back to Community
           </button>
         </div>
-        <BottomNav />
       </Sidebar>
     );
   }
@@ -339,7 +337,6 @@ export default function Profile() {
           </div>
         </main>
       </div>
-      <BottomNav />
     </Sidebar>
   );
 }

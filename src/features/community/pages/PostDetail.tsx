@@ -11,7 +11,6 @@ import {
   Trash2,
 } from "lucide-react";
 import Sidebar from "../../../components/app/Sidebar";
-import BottomNav from "../../../components/app/BottomNav";
 import type { Post } from "../types";
 import {
   getPostById,
@@ -89,7 +88,6 @@ export default function PostDetail() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
         </div>
-        <BottomNav />
       </Sidebar>
     );
   }
@@ -111,7 +109,6 @@ export default function PostDetail() {
             Back to Community
           </button>
         </div>
-        <BottomNav />
       </Sidebar>
     );
   }
@@ -342,7 +339,6 @@ export default function PostDetail() {
           </form>
         </div>
       </div>
-      <BottomNav />
     </Sidebar>
   );
 }

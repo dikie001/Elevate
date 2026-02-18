@@ -9,7 +9,6 @@ import {
   CheckCheck,
 } from "lucide-react";
 import Sidebar from "../../../components/app/Sidebar";
-import BottomNav from "../../../components/app/BottomNav";
 import { getCurrentUser, formatTimeAgo } from "../utils";
 import type { Conversation } from "../types";
 
@@ -284,7 +283,6 @@ export default function Messages() {
           )}
         </main>
       </div>
-      <BottomNav />
     </Sidebar>
   );
 }

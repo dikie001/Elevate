@@ -13,7 +13,6 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import Sidebar from "../../../components/app/Sidebar";
-import BottomNav from "../../../components/app/BottomNav";
 import type { Post } from "../types";
 import {
   getPosts,
@@ -261,7 +260,6 @@ export default function Feed() {
           )}
         </main>
       </div>
-      <BottomNav />
     </Sidebar>
   );
 }

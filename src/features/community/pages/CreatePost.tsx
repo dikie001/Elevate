@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Image, X, HelpCircle, BookOpen } from "lucide-react";
 import Sidebar from "../../../components/app/Sidebar";
-import BottomNav from "../../../components/app/BottomNav";
 import { createPost, getCurrentUser } from "../utils";
 import { toast } from "sonner";
 
@@ -250,7 +249,6 @@ export default function CreatePost() {
           </div>
         </main>
       </div>
-      <BottomNav />
     </Sidebar>
   );
 }

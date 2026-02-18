@@ -1,5 +1,4 @@
 import Sidebar from "@/components/app/Sidebar";
-import BottomNav from "@/components/app/BottomNav";
 import { TEST_RESULTS } from "@/constants";
 import useSound from "@/hooks/useSound";
 import { subjects } from "@/jsons/subjects";
@@ -13,14 +12,12 @@ import {
   FlaskConical,
   Globe,
   GraduationCap,
-  LayoutDashboard,
   Lightbulb,
   Medal,
   Mic2,
   Palette,
   Pencil,
   Search,
-  Settings,
   Sparkles,
   Sprout,
   Star,
@@ -184,49 +181,12 @@ const HomePage: React.FC = () => {
   return (
     <Sidebar>
       <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:flex w-64 flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 sticky top-0 h-screen overflow-y-auto">
-          <div className="p-6">
-            <h1 className="text-2xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Dikie<span className="text-purple-600">.</span>
-            </h1>
-          </div>
-          <nav className="flex-1 px-4 space-y-2">
-            {[
-              { icon: LayoutDashboard, label: "Dashboard", active: true },
-              { icon: BookOpen, label: "Subjects", path: "/subjects" },
-              { icon: Trophy, label: "Results", path: "/results" },
-              { icon: Settings, label: "Settings", path: "/settings" },
-            ].map((item) => (
-              <button
-                key={item.label}
-                onClick={() => item.path && handleNav(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${item.active ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"}`}
-              >
-                <item.icon className="w-5 h-5" />
-                {item.label}
-              </button>
-            ))}
-          </nav>
-          <div className="p-4 mt-auto">
-            <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white">
-              <p className="font-bold text-sm mb-1">Go Pro</p>
-              <p className="text-xs text-purple-100 mb-3">
-                Get unlimited access to all subjects.
-              </p>
-              <button className="w-full bg-white text-purple-600 text-xs font-bold py-2 rounded-lg">
-                Upgrade Now
-              </button>
-            </div>
-          </div>
-        </aside>
-
         <div className="flex-1 min-h-screen relative flex flex-col">
           {/* Header */}
-          <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
+          <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 lg:top-0">
             <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="md:hidden w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                <div className="lg:hidden w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
                   {firstName.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -529,11 +489,6 @@ const HomePage: React.FC = () => {
               </div>
             </div>
           </main>
-
-          {/* Mobile Navigation - Hidden on Desktop */}
-          <div className="lg:hidden">
-            <BottomNav />
-          </div>
         </div>
 
         {openLearnerModal && (
