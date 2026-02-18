@@ -11,6 +11,7 @@ import {
   Sun,
   Sparkles,
   LayoutDashboard,
+  Users,
 } from "lucide-react";
 import { useTheme } from "@/hooks/useHook";
 import useSound from "@/hooks/useSound";
@@ -42,6 +43,7 @@ const Sidebar = ({ children }: SidebarProps) => {
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: BookOpen, label: "Subjects", path: "/subjects" },
     { icon: Brain, label: "Quick Quiz", path: "/quick-quiz" },
+    { icon: Users, label: "Community", path: "/community" },
     { icon: Trophy, label: "Results", path: "/results" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];

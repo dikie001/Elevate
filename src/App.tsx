@@ -26,6 +26,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const QuizQuest = lazy(() => import("./pages/USER/QuickQuiz"));
 const SettingsPage = lazy(() => import("./pages/USER/Settings"));
 const ContactDeveloper = lazy(() => import("./pages/SUPPORT/ContactDeveloper"));
+const Community = lazy(() => import("./pages/USER/Community"));
 
 const App = () => {
   //Initialize the listener
@@ -56,6 +57,7 @@ const App = () => {
           <Route path="/short-notes/:subject" element={<ShortNotesPage />} />
           <Route path="/quick-quiz" element={<QuizQuest />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/contact-developer" element={<ContactDeveloper />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/about" element={<About />} />

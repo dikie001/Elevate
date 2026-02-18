@@ -1,4 +1,4 @@
-import { Home, BookOpen, Trophy, Settings, Brain } from "lucide-react";
+import { Home, BookOpen, Trophy, Brain, Users } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useSound from "@/hooks/useSound";
 
@@ -10,9 +10,9 @@ const BottomNav = () => {
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
     { icon: BookOpen, label: "Subjects", path: "/subjects" },
+    { icon: Users, label: "Community", path: "/community" },
     { icon: Brain, label: "Quiz", path: "/quick-quiz" },
     { icon: Trophy, label: "Results", path: "/results" },
-    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   const handleNav = (path: string) => {

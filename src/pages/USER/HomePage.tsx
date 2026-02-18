@@ -9,7 +9,6 @@ import {
   BookOpen,
   Brain,
   Calculator,
-  ChevronRight,
   Flame,
   FlaskConical,
   Globe,
@@ -377,7 +376,7 @@ const HomePage: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-4">
-                    {subjects.slice(0, 6).map((sub, index) => {
+                    {subjects.slice(0, 6).map((sub) => {
                       const meta = subjectMeta[sub] || {
                         icon: <Lightbulb className="w-5 h-5" />,
                         color: "from-gray-500 to-gray-600",
@@ -397,7 +396,7 @@ const HomePage: React.FC = () => {
                             className={`w-12 h-12 rounded-xl ${meta.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
                           >
                             {React.cloneElement(
-                              meta.icon as React.ReactElement,
+                              meta.icon as React.ReactElement<{ className?: string }>,
                               {
                                 className: "w-6 h-6",
                               },
