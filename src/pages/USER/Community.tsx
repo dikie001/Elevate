@@ -59,21 +59,24 @@ const SAMPLE_POSTS: Post[] = [
   {
     id: "1",
     author: { name: "Sarah M.", avatar: "S", grade: "Grade 8" },
-    content: "Can someone explain the Pythagorean theorem in simple terms? I'm struggling with the math homework 😅",
+    content:
+      "Can someone explain the Pythagorean theorem in simple terms? I'm struggling with the math homework 😅",
     category: "question",
     likes: 12,
     comments: [
       {
         id: "c1",
         author: { name: "Alex K.", avatar: "A" },
-        content: "It's basically a² + b² = c² where c is the longest side of a right triangle! Think of it like finding the diagonal of a rectangle 📐",
+        content:
+          "It's basically a² + b² = c² where c is the longest side of a right triangle! Think of it like finding the diagonal of a rectangle 📐",
         timestamp: "2h ago",
         likes: 8,
       },
       {
         id: "c2",
         author: { name: "Mike R.", avatar: "M" },
-        content: "There's a great video on our resources page that explains it with animations!",
+        content:
+          "There's a great video on our resources page that explains it with animations!",
         timestamp: "1h ago",
         likes: 3,
       },
@@ -85,7 +88,8 @@ const SAMPLE_POSTS: Post[] = [
   {
     id: "2",
     author: { name: "James L.", avatar: "J", grade: "Grade 7" },
-    content: "💡 Study tip: I've found that studying for 25 minutes then taking a 5-minute break really helps me focus better. It's called the Pomodoro technique! Try it out!",
+    content:
+      "💡 Study tip: I've found that studying for 25 minutes then taking a 5-minute break really helps me focus better. It's called the Pomodoro technique! Try it out!",
     category: "tip",
     likes: 45,
     comments: [
@@ -104,7 +108,8 @@ const SAMPLE_POSTS: Post[] = [
   {
     id: "3",
     author: { name: "Emily W.", avatar: "E", grade: "Grade 8" },
-    content: "Who else is studying for the Science test next week? Let's create a study group! Drop a comment if you're interested 📚",
+    content:
+      "Who else is studying for the Science test next week? Let's create a study group! Drop a comment if you're interested 📚",
     category: "discussion",
     likes: 28,
     comments: [
@@ -123,7 +128,8 @@ const SAMPLE_POSTS: Post[] = [
   {
     id: "4",
     author: { name: "Chris P.", avatar: "C", grade: "Grade 6" },
-    content: "I'm really struggling with English grammar, especially commas and semicolons. Can anyone recommend good resources or explain when to use each? 🙏",
+    content:
+      "I'm really struggling with English grammar, especially commas and semicolons. Can anyone recommend good resources or explain when to use each? 🙏",
     category: "help",
     likes: 15,
     comments: [],
@@ -138,11 +144,14 @@ const Community = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [showNewPost, setShowNewPost] = useState(false);
   const [newPostContent, setNewPostContent] = useState("");
-  const [newPostCategory, setNewPostCategory] = useState<Post["category"]>("question");
+  const [newPostCategory, setNewPostCategory] =
+    useState<Post["category"]>("question");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedPost, setExpandedPost] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
-  const [user, setUser] = useState<{ name: string; grade?: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; grade?: string } | null>(
+    null,
+  );
 
   useEffect(() => {
     const rawUserDetails = localStorage.getItem("user-info");
@@ -158,26 +167,34 @@ const Community = () => {
   }, []);
 
   const filteredPosts = posts.filter((post) => {
-    const matchesCategory = activeCategory === "all" || post.category === activeCategory;
-    const matchesSearch = post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesCategory =
+      activeCategory === "all" || post.category === activeCategory;
+    const matchesSearch =
+      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.author.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   const handleLike = (postId: string) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 }
-        : post
-    ));
+    setPosts(
+      posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              liked: !post.liked,
+              likes: post.liked ? post.likes - 1 : post.likes + 1,
+            }
+          : post,
+      ),
+    );
   };
 
   const handleBookmark = (postId: string) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, bookmarked: !post.bookmarked }
-        : post
-    ));
+    setPosts(
+      posts.map((post) =>
+        post.id === postId ? { ...post, bookmarked: !post.bookmarked } : post,
+      ),
+    );
   };
 
   const handleNewPost = () => {
@@ -201,9 +218,11 @@ const Community = () => {
 
     const updatedPosts = [newPost, ...posts];
     setPosts(updatedPosts);
-    
+
     // Save user posts to localStorage
-    const userPosts = updatedPosts.filter(p => !SAMPLE_POSTS.find(sp => sp.id === p.id));
+    const userPosts = updatedPosts.filter(
+      (p) => !SAMPLE_POSTS.find((sp) => sp.id === p.id),
+    );
     localStorage.setItem("community-posts", JSON.stringify(userPosts));
 
     setNewPostContent("");
@@ -224,21 +243,28 @@ const Community = () => {
       likes: 0,
     };
 
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, comments: [...post.comments, comment] }
-        : post
-    ));
+    setPosts(
+      posts.map((post) =>
+        post.id === postId
+          ? { ...post, comments: [...post.comments, comment] }
+          : post,
+      ),
+    );
     setNewComment("");
   };
 
   const getCategoryColor = (category: Post["category"]) => {
     switch (category) {
-      case "question": return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
-      case "discussion": return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
-      case "tip": return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-      case "help": return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
-      default: return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+      case "question":
+        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+      case "discussion":
+        return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300";
+      case "tip":
+        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+      case "help":
+        return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300";
+      default:
+        return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
     }
   };
 
@@ -303,8 +329,12 @@ const Community = () => {
           {filteredPosts.length === 0 ? (
             <div className="text-center py-12">
               <MessageCircle className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-500 dark:text-gray-400 font-medium">No posts found</p>
-              <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Be the first to start a conversation!</p>
+              <p className="text-gray-500 dark:text-gray-400 font-medium">
+                No posts found
+              </p>
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
+                Be the first to start a conversation!
+              </p>
             </div>
           ) : (
             filteredPosts.map((post) => (
@@ -320,17 +350,24 @@ const Community = () => {
                         {post.author.avatar}
                       </div>
                       <div>
-                        <p className="font-semibold text-sm">{post.author.name}</p>
+                        <p className="font-semibold text-sm">
+                          {post.author.name}
+                        </p>
                         <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                          {post.author.grade && <span>{post.author.grade}</span>}
+                          {post.author.grade && (
+                            <span>{post.author.grade}</span>
+                          )}
                           <span>•</span>
                           <span>{post.timestamp}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getCategoryColor(post.category)}`}>
-                        {post.category.charAt(0).toUpperCase() + post.category.slice(1)}
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-medium ${getCategoryColor(post.category)}`}
+                      >
+                        {post.category.charAt(0).toUpperCase() +
+                          post.category.slice(1)}
                       </span>
                       <button className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                         <MoreHorizontal className="w-4 h-4 text-gray-400" />
@@ -341,7 +378,9 @@ const Community = () => {
 
                 {/* Post Content */}
                 <div className="p-4">
-                  <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{post.content}</p>
+                  <p className="text-gray-800 dark:text-gray-200 leading-relaxed">
+                    {post.content}
+                  </p>
                 </div>
 
                 {/* Post Actions */}
@@ -355,15 +394,23 @@ const Community = () => {
                           : "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
                       }`}
                     >
-                      <Heart className={`w-4 h-4 ${post.liked ? "fill-current" : ""}`} />
+                      <Heart
+                        className={`w-4 h-4 ${post.liked ? "fill-current" : ""}`}
+                      />
                       <span className="text-sm font-medium">{post.likes}</span>
                     </button>
                     <button
-                      onClick={() => setExpandedPost(expandedPost === post.id ? null : post.id)}
+                      onClick={() =>
+                        setExpandedPost(
+                          expandedPost === post.id ? null : post.id,
+                        )
+                      }
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <MessageSquare className="w-4 h-4" />
-                      <span className="text-sm font-medium">{post.comments.length}</span>
+                      <span className="text-sm font-medium">
+                        {post.comments.length}
+                      </span>
                     </button>
                     <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       <Share2 className="w-4 h-4" />
@@ -377,7 +424,9 @@ const Community = () => {
                         : "text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                   >
-                    <Bookmark className={`w-4 h-4 ${post.bookmarked ? "fill-current" : ""}`} />
+                    <Bookmark
+                      className={`w-4 h-4 ${post.bookmarked ? "fill-current" : ""}`}
+                    />
                   </button>
                 </div>
 
@@ -394,10 +443,16 @@ const Community = () => {
                             </div>
                             <div className="flex-1 bg-white dark:bg-gray-700/50 rounded-xl p-3">
                               <div className="flex items-center gap-2 mb-1">
-                                <span className="font-semibold text-xs">{comment.author.name}</span>
-                                <span className="text-xs text-gray-400">{comment.timestamp}</span>
+                                <span className="font-semibold text-xs">
+                                  {comment.author.name}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {comment.timestamp}
+                                </span>
                               </div>
-                              <p className="text-sm text-gray-700 dark:text-gray-300">{comment.content}</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
+                                {comment.content}
+                              </p>
                               <button className="flex items-center gap-1 mt-2 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                 <ThumbsUp className="w-3 h-3" />
                                 <span>{comment.likes}</span>
@@ -420,7 +475,9 @@ const Community = () => {
                             placeholder="Write a comment..."
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.id)}
+                            onKeyDown={(e) =>
+                              e.key === "Enter" && handleAddComment(post.id)
+                            }
                             className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           />
                           <button
@@ -466,7 +523,9 @@ const Community = () => {
                     {CATEGORIES.slice(1).map((cat) => (
                       <button
                         key={cat.id}
-                        onClick={() => setNewPostCategory(cat.id as Post["category"])}
+                        onClick={() =>
+                          setNewPostCategory(cat.id as Post["category"])
+                        }
                         className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                           newPostCategory === cat.id
                             ? "bg-purple-600 text-white"

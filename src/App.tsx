@@ -26,7 +26,21 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const QuizQuest = lazy(() => import("./pages/USER/QuickQuiz"));
 const SettingsPage = lazy(() => import("./pages/USER/Settings"));
 const ContactDeveloper = lazy(() => import("./pages/SUPPORT/ContactDeveloper"));
-const Community = lazy(() => import("./pages/USER/Community"));
+
+// Community Pages
+const CommunityFeed = lazy(() => import("./features/community/pages/Feed"));
+const CommunityPost = lazy(
+  () => import("./features/community/pages/PostDetail"),
+);
+const CommunityCreate = lazy(
+  () => import("./features/community/pages/CreatePost"),
+);
+const CommunityProfile = lazy(
+  () => import("./features/community/pages/Profile"),
+);
+const CommunityMessages = lazy(
+  () => import("./features/community/pages/Messages"),
+);
 
 const App = () => {
   //Initialize the listener
@@ -57,7 +71,15 @@ const App = () => {
           <Route path="/short-notes/:subject" element={<ShortNotesPage />} />
           <Route path="/quick-quiz" element={<QuizQuest />} />
           <Route path="/results" element={<Results />} />
-          <Route path="/community" element={<Community />} />
+          <Route path="/community" element={<CommunityFeed />} />
+          <Route path="/community/post/:postId" element={<CommunityPost />} />
+          <Route path="/community/create" element={<CommunityCreate />} />
+          <Route
+            path="/community/profile/:userId"
+            element={<CommunityProfile />}
+          />
+          <Route path="/community/profile" element={<CommunityProfile />} />
+          <Route path="/community/messages" element={<CommunityMessages />} />
           <Route path="/contact-developer" element={<ContactDeveloper />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/about" element={<About />} />

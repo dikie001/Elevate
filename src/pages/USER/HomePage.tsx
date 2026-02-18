@@ -396,7 +396,9 @@ const HomePage: React.FC = () => {
                             className={`w-12 h-12 rounded-xl ${meta.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
                           >
                             {React.cloneElement(
-                              meta.icon as React.ReactElement<{ className?: string }>,
+                              meta.icon as React.ReactElement<{
+                                className?: string;
+                              }>,
                               {
                                 className: "w-6 h-6",
                               },
