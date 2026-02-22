@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { Sparkles, X } from "lucide-react";
 import { sidebarNavItems } from "./navConfig";
 import useSound from "@/hooks/useSound";
 
@@ -7,6 +8,7 @@ export default function DesktopSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { playSend } = useSound();
+  const [showProCard, setShowProCard] = useState(true);
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -51,18 +53,85 @@ export default function DesktopSidebar() {
       </nav>
 
       {/* Go Pro Card */}
-      <div className="p-4">
-        <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-4 text-white">
-          <Sparkles className="w-5 h-5 mb-2" />
-          <p className="font-bold text-sm mb-1">Go Pro</p>
-          <p className="text-xs text-purple-100 mb-3">
-            Get unlimited access to all subjects.
-          </p>
-          <button className="w-full bg-white text-purple-600 text-xs font-bold py-2 rounded-lg hover:bg-purple-50 transition-colors">
-            Upgrade Now
-          </button>
+      {showProCard && (
+        <div className="p-4">
+          <div
+            className="relative rounded-2xl p-4 overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #1a1108 0%, #2d1f06 40%, #1c1508 100%)",
+              boxShadow: "0 0 0 1px rgba(212,175,55,0.25), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212,175,55,0.15)",
+            }}
+          >
+            {/* Subtle gold shimmer overlay */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none rounded-2xl"
+              style={{
+                background:
+                  "radial-gradient(ellipse at 20% 20%, rgba(212,175,55,0.5) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(184,134,11,0.3) 0%, transparent 60%)",
+              }}
+            />
+
+            {/* Dismiss button */}
+            <button
+              onClick={() => setShowProCard(false)}
+              className="absolute top-3 right-3 p-0.5 rounded-md transition-colors z-10"
+              style={{ color: "rgba(212,175,55,0.5)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(212,175,55,0.9)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(212,175,55,0.5)")}
+              aria-label="Dismiss"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Content */}
+            <div className="relative z-10">
+              {/* Icon */}
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                style={{
+                  background: "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(184,134,11,0.1))",
+                  border: "1px solid rgba(212,175,55,0.3)",
+                }}
+              >
+                <Sparkles className="w-4 h-4" style={{ color: "#D4AF37" }} />
+              </div>
+
+              {/* Text */}
+              <p
+                className="font-bold text-sm mb-1 tracking-wide"
+                style={{ color: "#F0D060" }}
+              >
+                Go Pro
+              </p>
+              <p className="text-xs mb-4 leading-relaxed" style={{ color: "rgba(212,175,55,0.55)" }}>
+                Unlock unlimited access to all subjects and premium features.
+              </p>
+
+              {/* CTA Button */}
+              <button
+                className="w-full text-xs font-bold py-2 rounded-lg transition-all tracking-wide"
+                style={{
+                  background: "linear-gradient(135deg, #C9A227 0%, #F0D060 50%, #B8860B 100%)",
+                  color: "#1a1108",
+                  boxShadow: "0 2px 12px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                    "0 4px 20px rgba(212,175,55,0.5), inset 0 1px 0 rgba(255,255,255,0.2)";
+                  (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                    "0 2px 12px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.2)";
+                  (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
+                }}
+              >
+                Upgrade Now ✦
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </aside>
   );
 }

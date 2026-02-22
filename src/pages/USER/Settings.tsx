@@ -47,7 +47,7 @@ export default function SettingsPage() {
   const navigate = useNavigate();
 
   // State
-  const [soundsEnabled, setSoundsEnabled] = useState(true);
+  const [soundsEnabled, setSoundsEnabled] = useState(false);
   const [name, setName] = useState("");
   const [hobby, setHobby] = useState("");
   const [subject, setSubject] = useState("");
