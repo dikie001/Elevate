@@ -25,6 +25,7 @@ const HomePage = lazy(() => import("./pages/USER/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const QuizQuest = lazy(() => import("./pages/USER/QuickQuiz"));
 const SettingsPage = lazy(() => import("./pages/USER/Settings"));
+const EditProfile = lazy(() => import("./pages/USER/EditProfile"));
 const ContactDeveloper = lazy(() => import("./pages/SUPPORT/ContactDeveloper"));
 
 // Community Pages
@@ -82,6 +83,7 @@ const App = () => {
           <Route path="/community/messages" element={<CommunityMessages />} />
           <Route path="/contact-developer" element={<ContactDeveloper />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/about" element={<About />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/help" element={<Help />} />

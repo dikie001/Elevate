@@ -224,7 +224,7 @@ const HomePage: React.FC = () => {
           </header>
 
           <main className="flex-1 max-w-7xl mx-auto px-5 pt-6 pb-24 md:pb-10 w-full space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+            <div className=" gap-6 md:gap-8">
               {/* Left Column: Stats & Main Actions */}
               <div className="lg:col-span-8 space-y-8">
                 {/* Hero Stats Cards */}
@@ -407,23 +407,7 @@ const HomePage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Study Tip */}
-                <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-3xl p-6 border border-purple-100 dark:border-purple-900/30">
-                  <div className="flex gap-4 items-start">
-                    <div className="flex-shrink-0 p-3 bg-purple-100 dark:bg-purple-900/30 rounded-2xl">
-                      <Lightbulb className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-purple-700 dark:text-purple-300 mb-1">
-                        Daily Tip
-                      </p>
-                      <p className="text-sm text-purple-600/80 dark:text-purple-300/70 leading-relaxed">
-                        Consistency beats intensity. Just 15 minutes daily makes
-                        a huge difference in retention!
-                      </p>
-                    </div>
-                  </div>
-                </div>
+
 
                 {/* Recent Activity List */}
                 {recentResults.length > 0 && (
@@ -463,12 +447,12 @@ const HomePage: React.FC = () => {
                                 <p className="text-[10px] text-gray-500 dark:text-gray-400">
                                   {r.date
                                     ? new Date(r.date).toLocaleDateString(
-                                        "en-GB",
-                                        {
-                                          day: "numeric",
-                                          month: "short",
-                                        },
-                                      )
+                                      "en-GB",
+                                      {
+                                        day: "numeric",
+                                        month: "short",
+                                      },
+                                    )
                                     : "—"}
                                 </p>
                               </div>

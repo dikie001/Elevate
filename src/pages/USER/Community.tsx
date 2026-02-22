@@ -563,7 +563,6 @@ const Community = () => {
             </div>
           </div>
         )}
-
       </div>
     </Sidebar>
   );

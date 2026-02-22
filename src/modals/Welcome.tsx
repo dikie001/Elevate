@@ -13,15 +13,19 @@ import {
   Sparkles,
   LogIn,
   UserPlus,
+  BookOpen,
+  CheckCircle2,
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { v4 as uuid } from "uuid";
+import { subjects } from "@/jsons/subjects";
 
 // Shadcn Imports
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,11 +37,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Card,
-  CardContent,
   CardHeader,
-  CardTitle, // Kept import, though removed from body usage
   CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 
 export interface LearnerInfo {
@@ -46,6 +47,7 @@ export interface LearnerInfo {
   grade: string;
   username: string;
   pin: string;
+  subjects: string[];
   loginCount: number;
 }
 
@@ -61,7 +63,7 @@ const SLIDE_UP =
   "animate-in slide-in-from-bottom-8 fade-in duration-700 ease-out";
 
 const LearnerModal = ({ onClose }: MainProps) => {
-  // Views: 'welcome' | 'login' | 'register-1' | 'register-2' | 'success'
+  // Views: 'welcome' | 'login' | 'register-1' | 'register-2' | 'register-3' | 'success'
   const [view, setView] = useState<string>("welcome");
   const [loading, setLoading] = useState(false);
   const [showPin, setShowPin] = useState(false);
@@ -73,6 +75,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
     grade: "",
     username: "",
     pin: "",
+    subjects: [],
     loginCount: 1,
   });
 
@@ -94,12 +97,21 @@ const LearnerModal = ({ onClose }: MainProps) => {
     }
   }, [formData.name, view]);
 
-  const handleInputChange = (field: keyof LearnerInfo, value: string) => {
-    if (field === "pin") {
+  const handleInputChange = (field: keyof LearnerInfo, value: string | string[]) => {
+    if (field === "pin" && typeof value === "string") {
       if (!/^\d*$/.test(value)) return;
       if (value.length > 4) return;
     }
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubjectToggle = (subject: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      subjects: prev.subjects.includes(subject)
+        ? prev.subjects.filter((s) => s !== subject)
+        : [...prev.subjects, subject],
+    }));
   };
 
   const handleLoginChange = (field: "username" | "pin", value: string) => {
@@ -116,6 +128,13 @@ const LearnerModal = ({ onClose }: MainProps) => {
       return toast.error("Enter your real name");
     if (!formData.grade) return toast.error("Select your Grade");
     setView("register-2");
+  };
+
+  const validateStep2 = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.subjects.length === 0)
+      return toast.error("Select at least one subject");
+    setView("register-3");
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -187,7 +206,8 @@ const LearnerModal = ({ onClose }: MainProps) => {
               variant="ghost"
               size="icon"
               onClick={() => {
-                if (view === "register-2") setView("register-1");
+                if (view === "register-3") setView("register-2");
+                else if (view === "register-2") setView("register-1");
                 else setView("welcome");
               }}
               className="h-10 w-10 rounded-full hover:bg-background"
@@ -196,7 +216,8 @@ const LearnerModal = ({ onClose }: MainProps) => {
             </Button>
             <h1 className="text-lg font-semibold tracking-tight">
               {view === "register-1" && "About You"}
-              {view === "register-2" && "Create Login"}
+              {view === "register-2" && "Your Subjects"}
+              {view === "register-3" && "Create Login"}
               {view === "login" && "Welcome Back"}
             </h1>
           </div>
@@ -330,8 +351,66 @@ const LearnerModal = ({ onClose }: MainProps) => {
             </div>
           )}
 
-          {/* VIEW: REGISTER STEP 2 */}
+          {/* VIEW: REGISTER STEP 2 - Subjects  */}
           {view === "register-2" && (
+            <div className={SLIDE_UP}>
+              <CardHeader className="px-0 pt-0 -mt-8">
+                <CardDescription>
+                  Select the subjects you're studying
+                </CardDescription>
+              </CardHeader>
+              <form onSubmit={validateStep2} className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      Your Subjects
+                    </Label>
+                    {formData.subjects.length > 0 && (
+                      <span className="text-xs text-primary font-medium">
+                        {formData.subjects.length} selected
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-2">
+                    {subjects.map((subject) => (
+                      <div
+                        key={subject}
+                        className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-accent transition-colors"
+                      >
+                        <Checkbox
+                          id={`subject-${subject}`}
+                          checked={formData.subjects.includes(subject)}
+                          onCheckedChange={() => handleSubjectToggle(subject)}
+                        />
+                        <label
+                          htmlFor={`subject-${subject}`}
+                          className="flex-1 text-sm font-medium leading-tight cursor-pointer"
+                        >
+                          {subject}
+                        </label>
+                        {formData.subjects.includes(subject) && (
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full mt-4 group rounded-xl h-14 text-lg"
+                  disabled={formData.subjects.length === 0}
+                >
+                  Continue{" "}
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </form>
+            </div>
+          )}
+
+          {/* VIEW: REGISTER STEP 3 - Login Credentials */}
+          {view === "register-3" && (
             <div className={SLIDE_UP}>
               <CardHeader className="px-0 pt-0 -mt-8">
                 <CardDescription>

@@ -184,7 +184,7 @@ export default function SettingsPage() {
                       size="icon"
                       variant="secondary"
                       className="rounded-full shadow-sm hover:bg-indigo-100 dark:hover:bg-slate-800"
-                      onClick={handleOpenEdit}
+                      onClick={() => navigate("/edit-profile")}
                     >
                       <Edit2 className="w-4 h-4 text-slate-600 dark:text-slate-300" />
                     </Button>

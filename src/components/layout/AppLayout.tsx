@@ -1,8 +1,8 @@
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
+import BottomNav from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
 import MobileHeader from "./MobileHeader";
 import MobileSidebar from "./MobileSidebar";
-import BottomNav from "./BottomNav";
 
 interface AppLayoutProps {
   children: ReactNode;
