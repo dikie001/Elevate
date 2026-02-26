@@ -24,7 +24,7 @@ export default function Profile() {
   const [isFollowing, setIsFollowing] = useState(false);
   const currentUser = getCurrentUser();
 
-  const isOwnProfile = !userId || userId === currentUser?.id;
+  const isOwnProfile = !userId || userId === currentUser?.id || userId === "me";
 
   useEffect(() => {
     loadProfile();

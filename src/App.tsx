@@ -42,6 +42,15 @@ const CommunityProfile = lazy(
 const CommunityMessages = lazy(
   () => import("./features/community/pages/Messages"),
 );
+const CommunityExplore = lazy(
+  () => import("./features/community/pages/Explore"),
+);
+const CommunityClasses = lazy(
+  () => import("./features/community/pages/Classes"),
+);
+const CommunityNotifications = lazy(
+  () => import("./features/community/pages/Notifications"),
+);
 
 const App = () => {
   //Initialize the listener
@@ -80,6 +89,12 @@ const App = () => {
             element={<CommunityProfile />}
           />
           <Route path="/community/profile" element={<CommunityProfile />} />
+          <Route path="/community/explore" element={<CommunityExplore />} />
+          <Route path="/community/classes" element={<CommunityClasses />} />
+          <Route
+            path="/community/notifications"
+            element={<CommunityNotifications />}
+          />
           <Route path="/community/messages" element={<CommunityMessages />} />
           <Route path="/contact-developer" element={<ContactDeveloper />} />
           <Route path="/settings" element={<SettingsPage />} />
