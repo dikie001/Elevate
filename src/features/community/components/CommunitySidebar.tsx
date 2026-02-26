@@ -1,91 +1,94 @@
-import { Users, ExternalLink } from "lucide-react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { communityNavItems } from "../navConfig";
+import useSound from "@/hooks/useSound";
+import { ArrowLeft, LogOut } from "lucide-react";
 
 export default function CommunitySidebar() {
-  const trendingTopics = [
-    { name: "Mathematics", posts: "1.2k", category: "Academic" },
-    { name: "StudyTips", posts: "850", category: "productivity" },
-    { name: "ScienceFair2024", posts: "420", category: "Event" },
-    { name: "Exams", posts: "2.1k", category: "Support" },
-  ];
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { playSend } = useSound();
 
-  const suggestedCommunities = [
-    { name: "Grade 8 Study Group", members: "150", icon: "📚" },
-    { name: "Science Enthusiasts", members: "89", icon: "🔬" },
-    { name: "Art & Creativity", members: "230", icon: "🎨" },
-  ];
+  const isActive = (path: string) => {
+    if (path === "/community") return location.pathname === "/community";
+    return location.pathname.startsWith(path) && path !== "/community";
+  };
+
+  const handleNav = (path: string) => {
+    playSend();
+    navigate(path);
+  };
 
   return (
-    <aside className="w-[300px] hidden xl:block space-y-4 sticky top-6 self-start">
-      {/* Trending Section */}
-      <div className="bg-card text-card-foreground rounded-lg border border-border p-4 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-base">Trending for you</h3>
+    <aside className="hidden lg:flex w-64 flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 fixed top-0 left-0 h-screen">
+      {/* Community Header */}
+      <div className="p-6 border-b border-gray-100 dark:border-gray-800 mb-4">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4 group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-xs font-bold uppercase tracking-wider text-[10px]">
+            Back to Dashboard
+          </span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+            <span className="text-xl">🤝</span>
+          </div>
+          <div>
+            <h1 className="text-lg font-black leading-none">Community</h1>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter mt-1">
+              Brillia Network
+            </p>
+          </div>
         </div>
-        <div className="space-y-4">
-          {trendingTopics.map((topic) => (
-            <div key={topic.name} className="group cursor-pointer">
-              <p className="text-[12px] text-muted-foreground">
-                {topic.category} · Trending
-              </p>
-              <p className="font-bold text-[14px] group-hover:underline">
-                #{topic.name}
-              </p>
-              <p className="text-[12px] text-muted-foreground">
-                {topic.posts} posts
-              </p>
-            </div>
-          ))}
-        </div>
-        <button className="w-full mt-4 py-2 text-sm font-semibold text-primary hover:bg-accent rounded-md transition-all text-left px-2">
-          Show more
-        </button>
       </div>
 
-      {/* Suggested Communities */}
-      <div className="bg-card text-card-foreground rounded-lg border border-border p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <h3 className="font-bold text-base">Suggested Groups</h3>
-        </div>
-        <div className="space-y-4">
-          {suggestedCommunities.map((community) => (
-            <div
-              key={community.name}
-              className="flex items-center gap-3 cursor-pointer group"
+      {/* Navigation */}
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+        {communityNavItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.path);
+
+          return (
+            <button
+              key={item.path}
+              onClick={() => handleNav(item.path)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-left group ${
+                active
+                  ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                  : "text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-foreground"
+              }`}
             >
-              <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center text-xl">
-                {community.icon}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-[14px] truncate group-hover:underline">
-                  {community.name}
-                </p>
-                <p className="text-[12px] text-muted-foreground">
-                  {community.members} members
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <button className="w-full mt-4 py-2 text-sm font-semibold text-primary hover:bg-accent rounded-md transition-all text-left px-2">
-          See all
-        </button>
-      </div>
+              <Icon
+                className={`w-5 h-5 flex-shrink-0 transition-colors ${active ? "text-purple-600 dark:text-purple-400" : "group-hover:text-purple-500"}`}
+              />
+              <span className="text-sm">{item.label}</span>
+              {active && (
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-600 dark:bg-purple-400 shadow-[0_0_8px_rgba(147,51,234,0.5)]" />
+              )}
+            </button>
+          );
+        })}
+      </nav>
 
       {/* Footer Info */}
-      <div className="px-2 text-[12px] text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
-        <a href="#" className="hover:underline">
-          Privacy
-        </a>
-        <a href="#" className="hover:underline">
-          Terms
-        </a>
-        <a href="#" className="hover:underline">
-          Ad Choices
-        </a>
-        <a href="#" className="hover:underline">
-          Cookies
-        </a>
-        <span>© 2024 Brillia</span>
+      <div className="p-4 mt-auto">
+        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 border border-gray-100 dark:border-gray-700/50">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-2">
+            My Stats
+          </p>
+          <div className="flex justify-between items-end">
+            <div>
+              <p className="text-lg font-black">2.4k</p>
+              <p className="text-[10px] text-muted-foreground">Followers</p>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-black">128</p>
+              <p className="text-[10px] text-muted-foreground">Posts</p>
+            </div>
+          </div>
+        </div>
       </div>
     </aside>
   );

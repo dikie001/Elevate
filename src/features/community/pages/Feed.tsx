@@ -8,10 +8,10 @@ import {
   initializeSampleData,
   getPosts,
 } from "../utils";
-import PostCard from "../components/PostCard";
-import CommunitySidebar from "../components/CommunitySidebar";
+import CommunityLayout from "../components/CommunityLayout";
+import CommunitySidebarWidget from "../components/CommunitySidebar";
 import CategoryFilter from "../components/CategoryFilter";
-import Sidebar from "@/components/app/Sidebar";
+import PostCard from "../components/PostCard";
 
 const CATEGORIES = [
   { id: "all", label: "All Posts", icon: Users },
@@ -61,7 +61,7 @@ export default function Feed() {
   });
 
   return (
-    <Sidebar>
+    <CommunityLayout>
       <div className="min-h-screen bg-muted/30 dark:bg-zinc-950/20 transition-colors duration-500 pb-20 lg:pb-10">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-6">
           <div className="flex gap-6">
@@ -137,11 +137,11 @@ export default function Feed() {
 
             {/* Right Column (Trending/Widgets) */}
             <aside className="hidden xl:block w-[300px] flex-shrink-0 sticky top-6 self-start">
-              <CommunitySidebar />
+              <CommunitySidebarWidget />
             </aside>
           </div>
         </div>
       </div>
-    </Sidebar>
+    </CommunityLayout>
   );
 }
