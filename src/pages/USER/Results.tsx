@@ -31,10 +31,10 @@ interface UserStats {
 
 // --- THEME UTILS ---
 const getColorForScore = (score: number) => {
-  if (score >= 90) return "#34d399"; // emerald-400 (Excellent)
-  if (score >= 70) return "#6366f1"; // indigo-500 (Good)
-  if (score >= 50) return "#fbbf24"; // amber-400 (Average)
-  return "#f87171"; // red-400 (Needs Improvement)
+  if (score >= 90) return "#10b981"; // emerald-500
+  if (score >= 70) return "#18181b"; // zinc-900 (Primary)
+  if (score >= 50) return "#f59e0b"; // amber-500
+  return "#ef4444"; // destructive
 };
 
 const Results = () => {
@@ -85,8 +85,8 @@ const Results = () => {
   if (loading) {
     return (
       <Sidebar>
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
-          <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </Sidebar>
     );
@@ -94,39 +94,33 @@ const Results = () => {
 
   return (
     <Sidebar>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
-        <div className="px-5 lg:px-8 py-6 border-b border-gray-200/50 dark:border-gray-800/50">
+      <div className="min-h-screen bg-background pb-24 lg:pb-8">
+        <div className="px-5 lg:px-8 py-6 border-b border-border">
           <div className="flex items-center gap-3">
             <BackButton />
-            <Trophy className="w-7 h-7 text-purple-500" />
+            <Trophy className="w-7 h-7 text-primary" />
             <h1 className="text-xl lg:text-2xl font-bold">Learning Results</h1>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-8">
+        <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-10 md:pt-16">
           {/* Header */}
           <div className="mb-10">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight">
               Learning Results
             </h1>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">
+            <p className="mt-2 text-muted-foreground text-lg">
               Overview of your tests and reading milestones.
             </p>
           </div>
 
           {/* --- STATS ROW --- */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6n mb-8">
+          <div className="grid grid-cols-2 gap-4 md:gap-6 mb-12">
             <StatCard
               title="Tests Completed"
               value={stats.testsDone}
               icon={FileCheck}
               color="indigo"
             />
-            {/* <StatCard
-            title="Stories Read"
-            value={stats.storiesRead}
-            icon={BookOpen}
-            color="pink"
-          /> */}
             <StatCard
               title="Average Score"
               value={`${stats.averageScore}%`}
@@ -136,31 +130,33 @@ const Results = () => {
           </div>
 
           {/* --- MAIN GRAPH: MARKS PER TEST --- */}
-          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-xl shadow-indigo-100/50 dark:shadow-none border border-gray-100 dark:border-gray-800">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-card rounded-2xl p-6 sm:p-8 shadow-sm border border-border">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                <div className="p-2 bg-muted rounded-lg">
+                  <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                  Test Performance History
+                <h2 className="text-2xl font-bold text-foreground">
+                  Performance History
                 </h2>
               </div>
 
               {/* Legend for color coding */}
-              <div className="hidden sm:flex gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />{" "}
+              <div className="flex flex-wrap gap-4 text-xs font-bold text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />{" "}
                   Excellent
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500" /> Good
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary" /> Good
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-amber-400" /> Average
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />{" "}
+                  Average
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-red-400" /> Low
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-destructive" />{" "}
+                  Low
                 </div>
               </div>
             </div>
@@ -247,55 +243,19 @@ const Results = () => {
 
 // --- SUB-COMPONENTS ---
 
-const StatCard = ({ title, value, icon: Icon, color }: any) => {
-  const styles: Record<string, any> = {
-    indigo: {
-      // Very soft background, professional slate-blue feel
-      bg: "bg-gradient-to-br from-white to-slate-50 dark:from-gray-900 dark:to-slate-900",
-      border: "border-indigo-100 dark:border-indigo-900/40",
-      // Icon is colored but not neon
-      iconColor: "text-indigo-600 dark:text-indigo-400",
-      // Subtle glow effect
-      shadow: "shadow-indigo-100/40 dark:shadow-none",
-      ring: "ring-indigo-50 dark:ring-indigo-900/20",
-    },
-    pink: {
-      bg: "bg-gradient-to-br from-white to-rose-50 dark:from-gray-900 dark:to-rose-950/20",
-      border: "border-rose-100 dark:border-rose-900/40",
-      iconColor: "text-rose-600 dark:text-rose-400",
-      shadow: "shadow-rose-100/40 dark:shadow-none",
-      ring: "ring-rose-50 dark:ring-rose-900/20",
-    },
-    amber: {
-      bg: "bg-gradient-to-br from-white to-amber-50 dark:from-gray-900 dark:to-amber-950/20",
-      border: "border-amber-100 dark:border-amber-900/40",
-      iconColor: "text-amber-600 dark:text-amber-400",
-      shadow: "shadow-amber-100/40 dark:shadow-none",
-      ring: "ring-amber-50 dark:ring-amber-900/20",
-    },
-  };
-
-  const s = styles[color] || styles.indigo;
-
+const StatCard = ({ title, value, icon: Icon }: any) => {
   return (
-    <div
-      className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-300 border ${s.bg} ${s.border} shadow-lg ${s.shadow} hover:shadow-xl hover:-translate-y-1`}
-    >
+    <div className="relative overflow-hidden rounded-xl p-6 transition-all duration-300 border bg-card border-border shadow-sm hover:border-primary/50 group">
       <div className="relative flex flex-col items-center text-center">
-        {/* Icon Box: White background makes it pop professionally without extra color noise */}
-        <div
-          className={`inline-flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 rounded-xl mb-4 shadow-sm ring-4 ${s.ring} transition-transform duration-300 group-hover:scale-105`}
-        >
-          <Icon className={`w-6 h-6 ${s.iconColor}`} />
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-muted rounded-xl mb-4 transition-transform duration-300 group-hover:scale-110">
+          <Icon className="w-6 h-6 text-primary" />
         </div>
 
-        {/* Value */}
-        <div className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
+        <div className="text-3xl font-black text-foreground tracking-tight mb-1">
           {value}
         </div>
 
-        {/* Title: Muted gray for better readability */}
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
           {title}
         </p>
       </div>
@@ -306,20 +266,18 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const score = payload[0].value;
     return (
-      <div className="bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 text-center min-w-[150px]">
-        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">
+      <div className="bg-card p-4 rounded-xl shadow-xl border border-border text-center min-w-[150px]">
+        <p className="text-muted-foreground text-xs font-black uppercase tracking-widest mb-1">
           {label}
         </p>
-        <p className="text-3xl font-bold text-gray-800 dark:text-white mb-1">
-          {score}%
-        </p>
+        <p className="text-3xl font-black text-foreground mb-1">{score}%</p>
         <span
-          className={`text-xs font-bold px-2 py-1 rounded-full ${
+          className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${
             score >= 90
-              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+              ? "bg-emerald-500/10 text-emerald-600"
               : score >= 70
-                ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
-                : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                ? "bg-primary/10 text-primary"
+                : "bg-destructive/10 text-destructive"
           }`}
         >
           {score >= 90

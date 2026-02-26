@@ -1,8 +1,6 @@
-import { useTheme } from "@/hooks/useHook";
 import {
   BookOpen,
   Calendar,
-  CheckCircle,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -15,16 +13,16 @@ import {
   Trophy,
   XCircle,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import Footer from "@/components/app/Footer";
+import Navbar from "@/components/app/Navbar";
 import Sidebar from "@/components/app/Sidebar";
-import { FIREBASE_TEST_RESULTS, STORAGE_KEYS } from "@/constants";
+import { STORAGE_KEYS } from "@/constants";
 import quizData from "@/jsons/quizData";
 import ResetModal from "@/modals/Delete";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import useSound from "../../hooks/useSound";
-import logo from "/images/logo.png";
 
 type Options = {
   A: string;
@@ -52,34 +50,18 @@ interface TestResult {
   timeTaken?: number;
 }
 
-interface QuizProgress {
-  currentTest: number;
-  currentQuestion: number;
-  score: number;
-  startTime?: number;
-  selectedAnswers: string[];
-  isActive: boolean;
-}
-
-type GameState = "home" | "quiz" | "results";
-
 interface QuizAppState {
   currentTest: number;
   currentQuestion: number;
   selectedAnswer: string;
   showFeedback: boolean;
   testResults: TestResult[];
-  gameState: GameState;
+  gameState: "home" | "quiz" | "results";
   score: number;
   loading: boolean;
   startTime?: number;
   quizData: QuizType[];
   error: string | null;
-}
-interface User {
-  name: string;
-  hobby: string;
-  subject: string;
 }
 
 const QuizApp: React.FC = () => {
@@ -95,217 +77,78 @@ const QuizApp: React.FC = () => {
     quizData: [],
     error: null,
   });
-  const [user, setUser] = useState<User>({
-    name: "",
-    hobby: "",
-    subject: "",
-  });
-  const navigate = useNavigate();
+
   const [openResetModal, setOpenResetModal] = useState(false);
-  const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  const { playSend, playSuccess, playError } = useSound();
+
   useEffect(() => {
-    console.log(theme);
-  }, []);
-  const quizResultsRef = useRef<TestResult | null>(null);
-
-  const QUESTIONS_PER_TEST = 20;
-
-  const { playError, playSuccess, playFinish, playSend } = useSound();
-
-  // Initialize app
-  useEffect(() => {
-    const initializeApp = async (): Promise<void> => {
+    const loadData = async () => {
       try {
-        // Try to load quiz data from  or show error
-        const loadedQuizData: QuizType[] = quizData;
+        // Use local data from quizData json
+        const data = quizData as QuizType[];
 
-        // Load saved data from localStorage
-        const savedResults = loadSavedResults();
-        const savedProgress = loadSavedProgress();
-        const savedTestIndex = loadCurrentTestIndex();
+        // Load results from localStorage
+        const savedResults = localStorage.getItem(STORAGE_KEYS.TEST_RESULTS);
+        const results = savedResults ? JSON.parse(savedResults) : [];
 
         setState((prev) => ({
           ...prev,
-          testResults: savedResults,
-          currentTest: savedTestIndex,
-          quizData: loadedQuizData,
+          quizData: data,
+          testResults: results,
+          currentTest: results.length,
           loading: false,
-          // Restore progress if there's an active quiz
-          ...(savedProgress.isActive && {
-            currentQuestion: savedProgress.currentQuestion,
-            score: savedProgress.score,
-            startTime: savedProgress.startTime,
-            gameState: "quiz" as GameState,
-          }),
         }));
-      } catch (error) {
-        console.error("Error initializing app:", error);
+      } catch (err) {
         setState((prev) => ({
           ...prev,
+          error: "Failed to load quiz data",
           loading: false,
-          error:
-            "Failed to initialize the quiz app. Please refresh and try again.",
         }));
       }
     };
-
-    initializeApp();
+    loadData();
   }, []);
 
-  // Fetch User details from stoarge
-  useEffect(() => {
-    const details = localStorage.getItem("user-info");
-    const parsesData = details && JSON.parse(details);
-    setUser(parsesData);
-  }, []);
-
-  // Save progress whenever quiz state changes
-  useEffect(() => {
-    if (state.gameState === "quiz" && !state.loading) {
-      const progress: QuizProgress = {
-        currentTest: state.currentTest,
-        currentQuestion: state.currentQuestion,
-        score: state.score,
-        startTime: state.startTime,
-        selectedAnswers: [], // Could be expanded to store all answers
-        isActive: true,
-      };
-      saveQuizProgress(progress);
-    }
-  }, [
-    state.currentTest,
-    state.currentQuestion,
-    state.score,
-    state.startTime,
-    state.gameState,
-    state.loading,
-  ]);
-
-  // localStorage functions
-  const loadSavedResults = (): TestResult[] => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.TEST_RESULTS);
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error("Error loading saved results:", error);
-      return [];
-    }
+  const setGameState = (gameState: "home" | "quiz" | "results") => {
+    setState((prev) => ({ ...prev, gameState }));
   };
 
-  // Save the results
-  const saveResults = (results: TestResult[]): void => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.TEST_RESULTS, JSON.stringify(results));
-
-      const firebaseData = localStorage.getItem(FIREBASE_TEST_RESULTS);
-      if (!firebaseData) {
-        localStorage.setItem(FIREBASE_TEST_RESULTS, JSON.stringify(results));
-        console.log(results);
-      }
-
-      const parsedData = firebaseData ? JSON.parse(firebaseData) : [];
-      const updatedData = [...parsedData, quizResultsRef.current];
-      console.log(quizResultsRef.current);
-      localStorage.setItem(FIREBASE_TEST_RESULTS, JSON.stringify(updatedData));
-      console.log(updatedData);
-    } catch (error) {
-      console.error("Error saving results:", error);
-    }
+  const getTotalTests = () => {
+    const questionsPerTest = 10;
+    return Math.ceil(state.quizData.length / questionsPerTest);
   };
 
-  // Load saved progress
-  const loadSavedProgress = (): QuizProgress => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.QUIZ_PROGRESS);
-      return saved
-        ? JSON.parse(saved)
-        : {
-            currentTest: 0,
-            currentQuestion: 0,
-            score: 0,
-            selectedAnswers: [],
-            isActive: false,
-          };
-    } catch (error) {
-      console.error("Error loading saved progress:", error);
-      return {
-        currentTest: 0,
-        currentQuestion: 0,
-        score: 0,
-        selectedAnswers: [],
-        isActive: false,
-      };
-    }
+  const getCurrentTestQuestions = () => {
+    const questionsPerTest = 10;
+    const startIdx = state.currentTest * questionsPerTest;
+    return state.quizData.slice(startIdx, startIdx + questionsPerTest);
   };
 
-  // Save quiz progress
-  const saveQuizProgress = (progress: QuizProgress): void => {
-    try {
-      localStorage.setItem(
-        STORAGE_KEYS.QUIZ_PROGRESS,
-        JSON.stringify(progress)
-      );
-    } catch (error) {
-      console.error("Error saving quiz progress:", error);
-    }
+  const startTest = (testIdx: number) => {
+    playSend();
+    setState((prev) => ({
+      ...prev,
+      currentTest: testIdx,
+      currentQuestion: 0,
+      score: 0,
+      selectedAnswer: "",
+      showFeedback: false,
+      gameState: "quiz",
+      startTime: Date.now(),
+    }));
   };
 
-  // Clear progress
-  const clearQuizProgress = (): void => {
-    try {
-      localStorage.removeItem(STORAGE_KEYS.QUIZ_PROGRESS);
-    } catch (error) {
-      console.error("Error clearing quiz progress:", error);
-    }
-  };
-
-  // Load current test index
-  const loadCurrentTestIndex = (): number => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_TEST_INDEX);
-      return saved ? parseInt(saved, 10) : 0;
-    } catch (error) {
-      console.error("Error loading current test index:", error);
-      return 0;
-    }
-  };
-
-  // Save current text index
-  const saveCurrentTestIndex = (testIndex: number): void => {
-    try {
-      localStorage.setItem(
-        STORAGE_KEYS.CURRENT_TEST_INDEX,
-        testIndex.toString()
-      );
-    } catch (error) {
-      console.error("Error saving current test index:", error);
-    }
-  };
-
-  // Get current test questions
-  const getCurrentTestQuestions = (): QuizType[] => {
-    if (!state.quizData || state.quizData.length === 0) return [];
-    const startIndex = state.currentTest * QUESTIONS_PER_TEST;
-    return state.quizData.slice(startIndex, startIndex + QUESTIONS_PER_TEST);
-  };
-
-  // Get total number of tests
-  const getTotalTests = (): number => {
-    if (!state.quizData || state.quizData.length === 0) return 0;
-    return Math.ceil(state.quizData.length / QUESTIONS_PER_TEST);
-  };
-
-  // Handle answer selection
-  const handleAnswerSelect = (answer: "A" | "B" | "C" | "D"): void => {
+  const handleAnswerSelect = (answer: string) => {
     if (state.showFeedback) return;
 
     const currentQuestions = getCurrentTestQuestions();
     const currentQ = currentQuestions[state.currentQuestion];
-    if (!currentQ) return;
-
     const isCorrect = answer === currentQ.correctAnswer;
+
     if (isCorrect) playSuccess();
-    if (!isCorrect) playError();
+    else playError();
 
     setState((prev) => ({
       ...prev,
@@ -315,8 +158,7 @@ const QuizApp: React.FC = () => {
     }));
   };
 
-  // Handle next question
-  const handleNext = (): void => {
+  const handleNext = () => {
     const currentQuestions = getCurrentTestQuestions();
 
     if (state.currentQuestion < currentQuestions.length - 1) {
@@ -331,679 +173,454 @@ const QuizApp: React.FC = () => {
     }
   };
 
-  // Complete current test
-  const completeTest = (): void => {
-    toast.success("Quiz completed!");
-    playFinish();
+  const completeTest = () => {
     const currentQuestions = getCurrentTestQuestions();
     const timeTaken = state.startTime
       ? Math.floor((Date.now() - state.startTime) / 1000)
-      : undefined;
+      : 0;
 
-    const testResult: TestResult = {
+    const newResult: TestResult = {
       testNumber: state.currentTest + 1,
       score: state.score,
       totalQuestions: currentQuestions.length,
       percentage: Math.round((state.score / currentQuestions.length) * 100),
       date: new Date().toLocaleDateString(),
-      subject: getCurrentTestSubjects(),
-      timeTaken,
+      subject: currentQuestions[0]?.subject || "General",
+      timeTaken: timeTaken,
     };
-    const updatedResults = [...state.testResults, testResult];
-    quizResultsRef.current = testResult;
-    const nextTestIndex = state.currentTest + 1;
+
+    const updatedResults = [...state.testResults, newResult];
+    localStorage.setItem(
+      STORAGE_KEYS.TEST_RESULTS,
+      JSON.stringify(updatedResults),
+    );
 
     setState((prev) => ({
       ...prev,
       testResults: updatedResults,
       gameState: "results",
-      currentTest: nextTestIndex,
     }));
-
-    saveResults(updatedResults);
-    saveCurrentTestIndex(nextTestIndex);
-    clearQuizProgress(); // Clear progress as test is completed
   };
 
-  // Get subjects for current test
-  const getCurrentTestSubjects = (): string => {
-    const currentQuestions = getCurrentTestQuestions();
-    const subjects = [
-      ...new Set(currentQuestions.map((q: QuizType) => q.subject)),
-    ];
-    return subjects.join(", ");
-  };
-
-  // Start new test
-  const startTest = (testIndex: number = state.currentTest): void => {
-    setState((prev) => ({
-      ...prev,
-      currentTest: testIndex,
-      currentQuestion: 0,
-      selectedAnswer: "",
-      showFeedback: false,
-      score: 0,
-      gameState: "quiz",
-      startTime: Date.now(),
-    }));
-    saveCurrentTestIndex(testIndex);
-  };
-
-  // Update game state
-  const setGameState = (newState: GameState): void => {
-    setState((prev) => ({ ...prev, gameState: newState }));
-    if (newState !== "quiz") {
-      clearQuizProgress();
-    }
-  };
-
-  // Format time helper
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Get performance message
   const getPerformanceMessage = (percentage: number): string => {
-    if (percentage >= 90) return "E.E. Outstanding! You're a quiz master! 🌟";
-    if (percentage >= 80) return "M.E. Excellent work! Keep it up! 🎉";
-    if (percentage >= 70) return "M.E. Great job! You're doing well! 👏";
-    if (percentage >= 60) return "A.E. Good effort! Keep practicing! 💪";
-    return "B.E. Keep studying and you'll improve! 📚 ";
+    if (percentage >= 90) return "Outstanding! Master level achievement! 🌟";
+    if (percentage >= 80) return "Excellent work! You're brilliant! 🎉";
+    if (percentage >= 70) return "Great job! Keep the momentum going! 👏";
+    if (percentage >= 60) return "Good effort! Practice makes perfect! 💪";
+    return "Keep studying! You'll get it next time! 📚";
   };
 
-  // Loading screen: Centered spinner with consistent background
   if (state.loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 dark:bg-gray-900 dark:from-transparent dark:via-transparent dark:to-transparent flex items-center justify-center transition-colors duration-300">
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 dark:border-gray-700/20">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-indigo-600 dark:text-indigo-400 text-lg font-semibold">
-            Loading Quiz Data...
-          </p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="bg-card rounded-3xl p-8 border border-border flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mb-4"></div>
+          <p className="text-foreground font-bold text-lg">Loading Quiz...</p>
         </div>
       </div>
     );
   }
 
-  // Error screen: Card-style error display with retry option
   if (state.error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 dark:bg-gray-900 dark:from-transparent dark:via-transparent dark:to-transparent flex items-center justify-center p-4 transition-colors duration-300">
-        <div className="text-center max-w-md">
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 dark:border-gray-700/20">
-            <XCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              Error Loading Quiz
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {state.error}
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-gradient-to-r from-indigo-700 to-indigo-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg transition-all duration-300 hover:scale-105"
-            >
-              Retry Loading
-            </button>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="bg-card rounded-3xl p-10 border border-border max-w-md text-center">
+          <XCircle className="w-16 h-16 text-destructive mx-auto mb-6" />
+          <h2 className="text-2xl font-black text-foreground mb-2 text-center">
+            Load Error
+          </h2>
+          <p className="text-muted-foreground mb-8 text-center">
+            {state.error}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full bg-primary text-primary-foreground font-black py-4 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
   }
 
-  // No data available: Card-style message when quiz data is missing
-  if (!state.quizData || state.quizData.length === 0) {
+  if (state.gameState === "home") {
     return (
       <Sidebar>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center p-4">
-          <div className="text-center max-w-md">
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-800">
-              <BookOpen className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                No Quiz Data Available
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Please ensure your RandomQuiz.json file is properly imported and
-                contains valid Quick Quizions.
+        <div className="min-h-screen bg-background flex flex-col">
+          <Navbar currentPage="Quick Quiz" />
+          <main className="flex-1 max-w-5xl mx-auto w-full px-6 pt-24 pb-12">
+            {openResetModal && (
+              <ResetModal open={openResetModal} setOpen={setOpenResetModal} />
+            )}
+
+            <div className="text-center mb-16 space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted border border-border text-primary text-xs font-black uppercase tracking-widest">
+                <Sparkles className="w-4 h-4" />
+                <span>Assessment Hub</span>
+              </div>
+              <h1 className="text-4xl sm:text-6xl font-black text-foreground tracking-tight">
+                Master Your{" "}
+                <span className="text-primary border-b-4 border-primary/20">
+                  Studies
+                </span>
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
+                Take timed tests, track your scores, and identify areas for
+                improvement.
               </p>
-              <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-left text-sm text-gray-600 dark:text-gray-400">
-                <p className="mb-2 font-medium">Expected format:</p>
-                <code className="text-purple-600 dark:text-purple-400">
-                  [
-                  {`{question: "...", options: {...}, correctAnswer: "A", explanation: "..."}`}
-                  , ...]
-                </code>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+              {[
+                {
+                  icon: <BookOpen />,
+                  label: "Questions",
+                  value: state.quizData.length,
+                },
+                {
+                  icon: <Target />,
+                  label: "Total Tests",
+                  value: getTotalTests(),
+                },
+                {
+                  icon: <Trophy />,
+                  label: "Completed",
+                  value: state.testResults.length,
+                },
+                {
+                  icon: <TrendingUp />,
+                  label: "Avg Score",
+                  value:
+                    state.testResults.length > 0
+                      ? Math.round(
+                          state.testResults.reduce(
+                            (a, b) => a + b.percentage,
+                            0,
+                          ) / state.testResults.length,
+                        )
+                      : 0,
+                  unit: "%",
+                },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center transition-all hover:border-primary/50"
+                >
+                  <div className="mb-4 p-3 rounded-xl bg-muted text-primary">
+                    {stat.icon}
+                  </div>
+                  <div className="text-3xl font-black text-foreground">
+                    {stat.value}
+                    {stat.unit}
+                  </div>
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-2">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="max-w-xl mx-auto space-y-6">
+              {state.currentTest < getTotalTests() ? (
+                <button
+                  onClick={() => startTest(state.currentTest)}
+                  className="w-full bg-primary text-primary-foreground p-6 rounded-2xl shadow-xl hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-between group"
+                >
+                  <div className="text-left">
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-80">
+                      Next Session
+                    </p>
+                    <p className="text-2xl font-black">
+                      Test {state.currentTest + 1}
+                    </p>
+                  </div>
+                  <div className="bg-primary-foreground/20 p-4 rounded-full group-hover:bg-primary-foreground/30 transition-all">
+                    <Play className="fill-current w-6 h-6" />
+                  </div>
+                </button>
+              ) : (
+                <div className="w-full bg-muted p-6 rounded-2xl border border-border text-center">
+                  <p className="text-xl font-black text-muted-foreground">
+                    All tests completed!
+                  </p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => navigate("/results")}
+                  className="flex items-center justify-center gap-3 p-4 bg-secondary text-foreground rounded-xl font-bold border border-border hover:bg-secondary/80 transition-all"
+                >
+                  <Trophy className="w-5 h-5 text-primary" /> Analytics
+                </button>
+                <button
+                  onClick={() => setOpenResetModal(true)}
+                  className="flex items-center justify-center gap-3 p-4 bg-secondary text-destructive rounded-xl font-bold border border-border hover:bg-destructive/5 transition-all"
+                >
+                  <RotateCcw className="w-5 h-5" /> Reset
+                </button>
               </div>
             </div>
-          </div>
+          </main>
+          <Footer />
         </div>
       </Sidebar>
     );
   }
 
-  // Home Screen: Displays welcome, user stats, and action buttons for starting or viewing results
-  if (state.gameState === "home") {
-    return (
-      <Sidebar>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
-          {openResetModal && (
-            <ResetModal open={openResetModal} setOpen={setOpenResetModal} />
-          )}
-
-          <main className="max-w-5xl mx-auto px-5 lg:px-8 py-8">
-          {/* Header Section */}
-          <div className="text-center mb-10 sm:mb-12 space-y-4 animate-in fade-in slide-in-from-top-4 duration-700">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span> Assessment Dashboard</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-              Welcome back,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-                {user.name}
-              </span>
-            </h1>
-
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Track your progress, challenge yourself, and master new topics
-              today.
-            </p>
-          </div>
-
-          {/* Stats Grid - Enhanced with Lift and Glow */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10 sm:mb-12">
-            {[
-              {
-                icon: (
-                  <BookOpen className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                ),
-                label: "Questions",
-                value: state.quizData.length,
-                sub: "Quizes available",
-              },
-              {
-                icon: (
-                  <Target className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                ),
-                label: "Tests",
-                value: getTotalTests(),
-                sub: "Tests ready",
-              },
-              {
-                icon: (
-                  <Trophy className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                ),
-                label: "Completed",
-                value: state.testResults.length,
-                sub: "Tests Done",
-              },
-              {
-                icon: (
-                  <TrendingUp className="w-5 h-5 text-rose-600 dark:text-rose-400" />
-                ),
-                label: "Success Rate",
-                value:
-                  state.testResults.length > 0
-                    ? Math.round(
-                        state.testResults.reduce(
-                          (acc, r) => acc + r.percentage,
-                          0
-                        ) / state.testResults.length
-                      )
-                    : 0,
-                sub: "Average Score",
-                isPercent: true,
-              },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                className="bg-white/60 dark:bg-gray-800/40 backdrop-blur-md rounded-3xl p-5 border border-gray-200/50 dark:border-gray-700/50 shadow-sm flex flex-col items-center text-center justify-center group transition-all duration-300 hover:-translate-y-1  hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-200/50 dark:hover:border-indigo-500/30"
-              >
-                <div className="mb-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 group-hover:scale-110 group-hover:bg-white dark:group-hover:bg-gray-700 transition-all duration-300 ring-1 ring-transparent group-hover:ring-indigo-100 dark:group-hover:ring-indigo-500/20">
-                  {stat.icon}
-                </div>
-                <div className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {stat.value}
-                  {stat.isPercent && (
-                    <span className="text-lg align-top opacity-60">%</span>
-                  )}
-                </div>
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
-                  {stat.sub}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Main Actions Area */}
-          <div className="max-w-2xl mx-auto w-full space-y-6">
-            {/* Primary CTA: Start Test */}
-            {state.currentTest < getTotalTests() && (
-              <button
-                onClick={() => {
-                  playSend();
-                  startTest(state.currentTest);
-                }}
-                className="group relative w-full cursor-pointer overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-indigo-700 p-1 shadow-xl transition-all duration-300 hover:scale-[1.01] hover:shadow-indigo-500/25"
-              >
-                <div className="relative flex items-center justify-between rounded-[14px] bg-indigo-600/10 px-6 py-5 sm:px-8 sm:py-6 transition-colors group-hover:bg-indigo-600/0">
-                  <div className="flex flex-col text-left">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-indigo-200">
-                      {state.testResults.length === 0
-                        ? "Get Started"
-                        : "Up Next"}
-                    </span>
-                    <span className="text-2xl sm:text-3xl font-bold text-white mt-1">
-                      {state.testResults.length === 0
-                        ? "Start First Quiz"
-                        : `Continue Test ${state.currentTest + 1}`}
-                    </span>
-                  </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-transform duration-300 group-hover:translate-x-1 group-hover:bg-white text-white group-hover:text-indigo-600">
-                    <Play className="w-6 h-6 ml-1 fill-current" />
-                  </div>
-                </div>
-              </button>
-            )}
-
-            {/* Secondary Actions - Enhanced with Scale and Icon Animation */}
-            {state.testResults.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button
-                  onClick={() => {
-                    playSend();
-                    navigate("/results");
-                  }}
-                  className="group flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-[1.02] hover:shadow-md transition-all duration-200"
-                >
-                  <Trophy className="w-5 h-5 text-amber-500 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110" />
-                  View Analytics
-                </button>
-
-                <button
-                  onClick={() => setOpenResetModal(true)}
-                  className="group flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold text-rose-600 dark:text-rose-400 bg-transparent border border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:border-rose-300 dark:hover:border-rose-800 transition-all duration-200"
-                >
-                  <RotateCcw className="w-5 h-5 transition-transform duration-500 group-hover:-rotate-180" />
-                  Reset Progress
-                </button>
-              </div>
-            )}
-          </div>
-        </main>
-
-        <Footer />
-      </div>
-    );
-  }
-
-  // Quiz Screen: Handles the active quiz session with questions, options, and feedback
   if (state.gameState === "quiz") {
     const currentQuestions = getCurrentTestQuestions();
     const currentQ = currentQuestions[state.currentQuestion];
 
-    if (!currentQ) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 dark:bg-gray-900 dark:from-transparent dark:via-transparent dark:to-transparent flex items-center justify-center transition-colors duration-300">
-          <Navbar currentPage="Quick Quiz" />
-          <div className="text-center pt-16">
-            <p className="text-gray-900 dark:text-white text-xl font-semibold mb-4">
-              No questions available for this test.
-            </p>
-            <button
-              onClick={() => {
-                playSend();
-                setGameState("home");
-              }}
-              className="flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-semibold"
-            >
-              <ChevronLeft className="w-5 h-5 mr-2" />
-              Home
-            </button>
-          </div>
-        </div>
-      );
-    }
+    if (!currentQ) return null;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 dark:bg-gray-900 dark:from-transparent dark:via-transparent dark:to-transparent p-4 transition-colors duration-300">
-        <Navbar currentPage="Quick Quiz" />
-        <div className="max-w-4xl mx-auto pt-14 ">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-2 mt-1">
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar currentPage="Live Quiz" />
+        <main className="flex-1 max-w-4xl mx-auto w-full px-6 pt-24 pb-12">
+          <div className="flex items-center justify-between mb-8">
             <button
-              onClick={() => {
-                playSend();
-                setGameState("home");
-              }}
-              className="flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-semibold"
+              onClick={() => setGameState("home")}
+              className="flex items-center text-muted-foreground hover:text-foreground font-black text-sm"
             >
-              <ChevronLeft className="w-5 h-5 mr-2" />
-              Home
+              <ChevronLeft className="w-5 h-5 mr-1" /> EXIT
             </button>
-
             <div className="text-center">
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Test {state.currentTest + 1}
-                </h2>
-                <img src={logo} className="h-10" alt="logo" />
-              </div>
-              <p className="text-indigo-600 dark:text-indigo-400 font-medium">
+              <h2 className="text-2xl font-black">
+                Test {state.currentTest + 1}
+              </h2>
+              <p className="text-[10px] font-black uppercase text-primary tracking-widest">
                 {currentQ.subject}
               </p>
             </div>
-
             <div className="text-right">
-              <p className="text-indigo-500 dark:text-indigo-400 font-semibold">
-                Question {state.currentQuestion + 1}/{currentQuestions.length}
+              <p className="text-foreground font-black text-sm">
+                Q{state.currentQuestion + 1}/{currentQuestions.length}
               </p>
               {state.startTime && (
-                <p className="text-gray-500 dark:text-gray-400 text-xs">
-                  Time:{" "}
+                <p className="text-muted-foreground text-xs font-bold tabular-nums">
                   {formatTime(
-                    Math.floor((Date.now() - state.startTime) / 1000)
+                    Math.floor((Date.now() - state.startTime) / 1000),
                   )}
                 </p>
               )}
             </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-8 overflow-hidden">
+          <div className="bg-muted h-2 rounded-full mb-12 overflow-hidden border border-border">
             <div
-              className="bg-indigo-500 h-full transition-all duration-500 ease-out"
+              className="bg-primary h-full transition-all duration-500 ease-out"
               style={{
-                width: `${
-                  ((state.currentQuestion + 1) / currentQuestions.length) * 100
-                }%`,
+                width: `${((state.currentQuestion + 1) / currentQuestions.length) * 100}%`,
               }}
-            ></div>
+            />
           </div>
 
-          {/* Question Card */}
-          <div className="bg-gray-100 dark:bg-gray-800/70 backdrop-blur-md rounded-3xl px-6 py-6 border border-indigo-300 dark:border-indigo-700 shadow-lg shadow-indigo-200/20 dark:shadow-indigo-900/40 transition-all duration-300">
-            {/* Question */}
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-white leading-relaxed mb-4">
+          <div className="bg-card p-8 md:p-12 rounded-3xl border border-border shadow-xl relative overflow-hidden">
+            <h3 className="text-2xl md:text-3xl font-black text-foreground leading-tight mb-10">
               {currentQ.question}
             </h3>
 
-            {/* Options */}
-            <div className="grid gap-3">
-              {(
-                Object.entries(currentQ.options) as [
-                  keyof typeof currentQ.options,
-                  string
-                ][]
-              ).map(([key, value]) => {
-                let base =
-                  "w-full p-3 rounded-2xl text-start font-medium transition-all duration-300 transform hover:scale-[1.01] border-2 flex items-center";
+            <div className="grid gap-4">
+              {Object.entries(currentQ.options).map(([key, value]) => {
+                const isSelected = state.selectedAnswer === key;
+                const isCorrect = key === currentQ.correctAnswer;
+
+                let btnStyle =
+                  "w-full p-5 rounded-xl text-left font-bold border-2 transition-all flex items-center group ";
 
                 if (!state.showFeedback) {
-                  base +=
-                    state.selectedAnswer === key
-                      ? " bg-indigo-500 border-indigo-500 text-white shadow-md"
-                      : " bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-indigo-50 dark:hover:bg-indigo-900 hover:border-indigo-400";
+                  btnStyle += isSelected
+                    ? "bg-primary border-primary text-primary-foreground shadow-lg"
+                    : "bg-muted/50 border-border text-foreground hover:border-primary/50 hover:bg-accent";
                 } else {
-                  if (key === currentQ.correctAnswer) {
-                    base +=
-                      " bg-green-600/20 border-green-500 text-green-800 dark:text-green-100 shadow-md ring-1 ring-green-500";
-                  } else if (
-                    key === state.selectedAnswer &&
-                    key !== currentQ.correctAnswer
-                  ) {
-                    base +=
-                      " bg-red-600/20 border-red-500 text-red-800 dark:text-red-100 shadow-md";
-                  } else {
-                    base +=
-                      " bg-gray-100 dark:bg-gray-700/50 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 opacity-70";
-                  }
+                  if (isCorrect)
+                    btnStyle +=
+                      "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400";
+                  else if (isSelected)
+                    btnStyle +=
+                      "bg-destructive/10 border-destructive text-destructive";
+                  else
+                    btnStyle +=
+                      "bg-muted/20 border-border text-muted-foreground opacity-50";
                 }
 
                 return (
                   <button
                     key={key}
                     onClick={() => handleAnswerSelect(key)}
-                    className={base}
                     disabled={state.showFeedback}
+                    className={btnStyle}
                   >
-                    <span className="min-w-8 min-h-8 rounded-full bg-gray-300/20 dark:bg-gray-600/20 flex items-center justify-center mr-3 font-bold">
+                    <span
+                      className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center mr-4 text-xs font-black transition-colors ${
+                        isSelected && !state.showFeedback
+                          ? "bg-primary-foreground text-primary border-primary-foreground"
+                          : "bg-background border-border"
+                      }`}
+                    >
                       {key}
                     </span>
                     <span className="flex-1">{value}</span>
-                    {state.showFeedback && key === currentQ.correctAnswer && (
-                      <CheckCircle className="w-6 h-6 text-green-500 ml-2" />
+                    {state.showFeedback && isCorrect && (
+                      <CheckCircle2 className="w-6 h-6 ml-2 text-emerald-500" />
                     )}
-                    {state.showFeedback &&
-                      key === state.selectedAnswer &&
-                      key !== currentQ.correctAnswer && (
-                        <XCircle className="w-6 h-6 text-red-500 ml-2" />
-                      )}
+                    {state.showFeedback && isSelected && !isCorrect && (
+                      <XCircle className="w-6 h-6 ml-2 text-destructive" />
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            {/* Next Button */}
             {state.showFeedback && (
               <button
                 onClick={handleNext}
-                className="w-full mt-4 bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-700 dark:to-indigo-800 text-white font-bold py-4 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-indigo-200/20 dark:shadow-indigo-900/40 flex items-center justify-center gap-2"
+                className="w-full mt-10 bg-primary text-primary-foreground font-black py-5 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-lg hover:opacity-90 active:scale-[0.98] transition-all"
               >
                 {state.currentQuestion < currentQuestions.length - 1
                   ? "Next Question"
-                  : "Complete Test"}
-                <ChevronRight className="w-5 h-5" />
+                  : "View Results"}
+                <ChevronRight className="w-6 h-6" />
               </button>
             )}
           </div>
-        </div>
-        {/* Feedback */}
-        {state.showFeedback && (
-          <div className="fixed top-6 left-4  right-4 md:left-1/2 md:-translate-x-1/2 md:max-w-3xl z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-5 rounded-2xl border border-indigo-200 dark:border-indigo-700 shadow-2xl shadow-indigo-500/20 dark:shadow-black/50 ring-1 ring-black/5">
-              <div className="flex items-start gap-4">
-                {state.selectedAnswer === currentQ.correctAnswer ? (
-                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full flex-shrink-0">
-                    <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-                  </div>
-                ) : (
-                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
-                    <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                  </div>
-                )}
 
-                <div className="flex-1">
-                  <h4
-                    className={`font-bold text-lg mb-1 ${
-                      state.selectedAnswer === currentQ.correctAnswer
-                        ? "text-green-700 dark:text-green-400"
-                        : "text-red-600 dark:text-red-400"
-                    }`}
+          {state.showFeedback && (
+            <div className="mt-8 animate-in slide-in-from-bottom-4 duration-300">
+              <div className="bg-card p-6 rounded-2xl border border-border shadow-md">
+                <div className="flex gap-4">
+                  <div
+                    className={`p-2 rounded-full h-fit ${state.selectedAnswer === currentQ.correctAnswer ? "bg-emerald-500/10 text-emerald-600" : "bg-destructive/10 text-destructive"}`}
                   >
-                    {state.selectedAnswer === currentQ.correctAnswer
-                      ? "Correct!"
-                      : "Incorrect"}
-                  </h4>
-
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
-                    {currentQ.explanation}
-                  </p>
-
-                  {state.selectedAnswer !== currentQ.correctAnswer && (
-                    <div className="mt-3 text-sm font-medium text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700/50 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 inline-block">
-                      Correct answer:{" "}
-                      <span className="text-green-600 dark:text-green-400 font-bold">
-                        {currentQ.correctAnswer}
-                      </span>
-                    </div>
-                  )}
+                    {state.selectedAnswer === currentQ.correctAnswer ? (
+                      <CheckCircle2 />
+                    ) : (
+                      <XCircle />
+                    )}
+                  </div>
+                  <div>
+                    <h4
+                      className={`font-black mb-1 ${state.selectedAnswer === currentQ.correctAnswer ? "text-emerald-600" : "text-destructive"}`}
+                    >
+                      {state.selectedAnswer === currentQ.correctAnswer
+                        ? "CORRECT"
+                        : "INCORRECT"}
+                    </h4>
+                    <p className="text-muted-foreground font-medium leading-relaxed">
+                      {currentQ.explanation}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </main>
       </div>
     );
   }
 
-  // Single Test Results Screen: Displays the outcome of the just completed test
   if (state.gameState === "results") {
     const latestResult = state.testResults[state.testResults.length - 1];
+    if (!latestResult) return null;
 
-    // Logic for styling based on score
-    // const isPassing = latestResult.percentage >= 60;
     const isExcellent = latestResult.percentage >= 80;
 
-    const themeColor =
-      latestResult.percentage >= 90
-        ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200"
-        : latestResult.percentage >= 70
-        ? "text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-200"
-        : latestResult.percentage >= 50
-        ? "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200"
-        : "text-red-600 bg-red-50 dark:bg-red-900/20 border-red-200";
-
-    const accentColor = themeColor.split(" ")[0]; // Extract text color for icons
-
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 transition-colors duration-300">
-        <Navbar currentPage="Test Results" />
-
-        <div className="flex-1 flex items-center  mt-16 justify-center p-4 sm:p-6 animate-fade-in-up">
-          <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-            {/* Header Section */}
-            <div className="pt-4 pb-6 px-8 text-center">
-              <div
-                className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${themeColor
-                  .split(" ")
-                  .slice(1)
-                  .join(" ")}`}
-              >
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar currentPage="Results" />
+        <main className="flex-1 flex items-center justify-center p-6 pt-24 pb-12">
+          <div className="w-full max-w-md bg-card rounded-3xl border border-border shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="p-10 text-center">
+              <div className="w-24 h-24 rounded-full bg-muted mx-auto mb-6 flex items-center justify-center text-primary">
                 {isExcellent ? (
-                  <Trophy className={`w-8 h-8 ${accentColor}`} />
+                  <Trophy className="w-12 h-12" />
                 ) : (
-                  <CheckCircle2 className={`w-8 h-8 ${accentColor}`} />
+                  <CheckCircle2 className="w-12 h-12" />
                 )}
               </div>
-              <h1 className="text-2xl font-bold tracking-tight mb-1">
-                {isExcellent ? "Outstanding Job!" : "Test Completed"}
-              </h1>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                You finished Test #{latestResult.testNumber}
+              <h2 className="text-3xl font-black text-foreground mb-1">
+                {isExcellent ? "Heroic Effort!" : "Test Complete!"}
+              </h2>
+              <p className="text-muted-foreground font-bold">
+                Session #{latestResult.testNumber} • {latestResult.subject}
               </p>
             </div>
 
-            {/* Score Display */}
-            <div className="px-8 pb-8 text-center border-b border-gray-100 dark:border-gray-800">
-              <div className="relative inline-flex flex-col items-center">
-                <span
-                  className={`text-6xl font-black tracking-tighter ${accentColor}`}
-                >
-                  {latestResult.percentage}%
-                </span>
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mt-2 ${themeColor}`}
-                >
-                  {getPerformanceMessage(latestResult.percentage)}
-                </span>
-                <p className="mt-3 text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {latestResult.score} out of {latestResult.totalQuestions}{" "}
-                  Correct
+            <div className="px-10 pb-10 text-center border-b border-border">
+              <span className="text-8xl font-black tracking-tighter text-primary">
+                {latestResult.percentage}%
+              </span>
+              <div className="mt-6 px-4 py-2 rounded-full bg-muted border border-border text-[10px] font-black uppercase tracking-widest">
+                {getPerformanceMessage(latestResult.percentage)}
+              </div>
+              <p className="mt-6 font-bold text-muted-foreground">
+                {latestResult.score} / {latestResult.totalQuestions} Correct
+                Answers
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 divide-x divide-border bg-muted/20">
+              <div className="p-6 text-center">
+                <Clock className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
+                  Duration
+                </p>
+                <p className="font-black">
+                  {formatTime(latestResult.timeTaken || 0)}
                 </p>
               </div>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-gray-800 bg-gray-50/50 dark:bg-gray-800/20">
-              <div className="p-4 flex flex-col items-center text-center">
-                <BookOpen className="w-4 h-4 text-gray-400 mb-1" />
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                  Subject
-                </span>
-                <span
-                  className="text-sm font-semibold truncate w-full"
-                  title={latestResult.subject}
-                >
-                  {latestResult.subject.length > 10
-                    ? latestResult.subject.substring(0, 10) + ".."
-                    : latestResult.subject}
-                </span>
-              </div>
-              <div className="p-4 flex flex-col items-center text-center">
-                <Clock className="w-4 h-4 text-gray-400 mb-1" />
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                  Time
-                </span>
-                <span className="text-sm font-semibold">
-                  {latestResult.timeTaken
-                    ? formatTime(latestResult.timeTaken)
-                    : "--:--"}
-                </span>
-              </div>
-              <div className="p-4 flex flex-col items-center text-center">
-                <Calendar className="w-4 h-4 text-gray-400 mb-1" />
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
+              <div className="p-6 text-center">
+                <Calendar className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">
                   Date
-                </span>
-                <span className="text-sm font-semibold whitespace-nowrap">
-                  {latestResult.date}
-                </span>
+                </p>
+                <p className="font-black">{latestResult.date}</p>
               </div>
             </div>
 
-            {/* Actions Footer */}
-            <div className="p-6 space-y-3 bg-white dark:bg-gray-900">
-              {state.currentTest < getTotalTests() ? (
-                <button
-                  onClick={() => {
-                    playSend();
-                    startTest(state.currentTest);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold h-12 rounded-xl transition-all transform active:scale-[0.98] shadow-md shadow-indigo-200 dark:shadow-none"
-                >
-                  Start Next Test <Play className="w-4 h-4" />
-                </button>
-              ) : (
-                <div className="w-full h-12 flex items-center justify-center text-gray-400 font-medium bg-gray-100 dark:bg-gray-800 rounded-xl cursor-not-allowed">
-                  All Tests Completed
-                </div>
-              )}
+            <div className="p-8 space-y-4">
+              <button
+                onClick={() =>
+                  startTest(
+                    state.currentTest < getTotalTests() ? state.currentTest : 0,
+                  )
+                }
+                className="w-full bg-primary text-primary-foreground font-black h-16 rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all"
+              >
+                {state.currentTest < getTotalTests()
+                  ? "Begin Next Test"
+                  : "Retake All Tests"}{" "}
+                <Play className="fill-current w-4 h-4" />
+              </button>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <button
-                  onClick={() => {
-                    playSend();
-                    setGameState("home");
-                  }}
-                  className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium h-10 rounded-xl transition-colors"
+                  onClick={() => setGameState("home")}
+                  className="bg-secondary text-foreground font-bold h-12 rounded-xl border border-border flex items-center justify-center gap-2 hover:bg-secondary/80 transition-all"
                 >
-                  <ChevronLeft className="w-4 h-4" /> Home
+                  <ChevronLeft className="w-4 h-4" /> Menu
                 </button>
-
-                {state.testResults.length > 1 && (
-                  <button
-                    onClick={() => {
-                      playSend();
-                      navigate("/results");
-                    }}
-                    className="w-full flex items-center justify-center gap-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium h-10 rounded-xl transition-colors"
-                  >
-                    <Trophy className="w-4 h-4" /> History
-                  </button>
-                )}
+                <button
+                  onClick={() => navigate("/results")}
+                  className="bg-secondary text-foreground font-bold h-12 rounded-xl border border-border flex items-center justify-center gap-2 hover:bg-secondary/80 transition-all"
+                >
+                  <Trophy className="w-4 h-4" /> History
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
-    </Sidebar>
     );
   }
 
-  // Fallback return
   return null;
 };
 

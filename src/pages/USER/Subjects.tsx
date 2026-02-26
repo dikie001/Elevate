@@ -7,10 +7,10 @@ const SubjectsPage: React.FC = () => {
   const navigate = useNavigate();
   return (
     <Sidebar>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
-        <header className="px-5 lg:px-8 py-6 border-b border-gray-200/50 dark:border-gray-800/50">
+      <div className="min-h-screen bg-background text-foreground pb-24 lg:pb-8">
+        <header className="px-5 lg:px-8 py-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <GraduationCap className="w-7 h-7 text-purple-500" />
+            <GraduationCap className="w-7 h-7 text-primary" />
             <h1 className="text-xl lg:text-2xl font-bold">Subjects</h1>
           </div>
         </header>
@@ -22,16 +22,16 @@ const SubjectsPage: React.FC = () => {
                 onClick={() =>
                   navigate(`/subject/${encodeURIComponent(subject)}`)
                 }
-                className="group bg-white dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 transition-all text-left flex flex-col items-start"
+                className="group bg-card text-card-foreground rounded-lg p-6 border border-border shadow-sm hover:bg-accent transition-all text-left flex flex-col items-start"
                 style={{ animationDelay: `${idx * 40}ms` }}
               >
-                <div className="mb-3 w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-purple-500" />
+                <div className="mb-3 w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-foreground" />
                 </div>
                 <p className="font-bold text-base leading-tight mb-1">
                   {subject}
                 </p>
-                <div className="flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 font-semibold mt-auto">
+                <div className="flex items-center gap-1 text-xs text-primary font-semibold mt-auto">
                   <Lightbulb className="w-3 h-3" />
                   <span>Learn</span>
                   <ArrowRight className="w-3 h-3" />
