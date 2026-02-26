@@ -18,7 +18,6 @@ import {
   Palette,
   Pencil,
   Search,
-  Sparkles,
   Sprout,
   Star,
   Target,
@@ -26,7 +25,7 @@ import {
   Trophy,
   Utensils,
   Wrench,
-  Zap,
+  Zap
 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -183,19 +182,19 @@ const HomePage: React.FC = () => {
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
         <div className="flex-1 min-h-screen relative flex flex-col">
           {/* Header */}
-          <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border lg:top-0">
-            <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="lg:hidden w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
+          <header className="sticky top-0 z-40 glass !bg-background/40 backdrop-blur-2xl border-b border-border transition-all duration-500">
+            <div className="max-w-7xl mx-auto px-5 py-5 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="lg:hidden w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary font-bold text-xl border border-primary/20 shadow-inner">
                   {firstName.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs font-semibold text-primary/70 uppercase tracking-widest mb-0.5">
                     {getGreeting()}
                   </p>
-                  <h1 className="text-lg md:text-xl font-bold">
-                    {firstName}{" "}
-                    <span className="inline-block animate-[wave_1.5s_ease-in-out_infinite]">
+                  <h1 className="text-xl md:text-2xl font-black tracking-tight">
+                    Hey, {firstName}{" "}
+                    <span className="inline-block animate-[wave_2s_ease-in-out_infinite] origin-bottom-right">
                       👋
                     </span>
                   </h1>
@@ -204,17 +203,17 @@ const HomePage: React.FC = () => {
 
               <div className="flex items-center gap-4">
                 {/* Search Bar - Desktop Only */}
-                <div className="hidden md:flex items-center bg-muted px-4 py-2.5 rounded-lg w-64 ring-offset-background focus-within:ring-2 ring-ring transition-all">
+                <div className="hidden md:flex items-center bg-muted/50 border border-border/50 px-4 py-2.5 rounded-xl w-72 focus-within:w-80 focus-within:ring-2 ring-primary/20 transition-all duration-300">
                   <Search className="w-4 h-4 text-muted-foreground mr-2" />
                   <input
                     placeholder="Search for a topic..."
-                    className="bg-transparent border-none outline-none text-sm w-full"
+                    className="bg-transparent border-none outline-none text-sm w-full placeholder:text-muted-foreground/50"
                   />
                 </div>
 
                 {user?.grade && (
-                  <div className="px-3 py-1.5 rounded-full bg-muted border border-border">
-                    <span className="text-xs font-bold text-foreground">
+                  <div className="px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 shadow-sm">
+                    <span className="text-xs font-black text-primary">
                       {user.grade}
                     </span>
                   </div>
@@ -228,45 +227,56 @@ const HomePage: React.FC = () => {
               {/* Left Column: Stats & Main Actions */}
               <div className="space-y-8">
                 {/* Hero Stats Cards */}
-                <div className="grid grid-cols-3 gap-3 md:gap-5">
+                <div className="grid grid-cols-3 gap-3 md:gap-6">
                   <div
                     onClick={() => handleNav("/results")}
-                    className="group bg-card text-card-foreground border border-border rounded-xl p-4 md:p-6 shadow-sm cursor-pointer active:scale-95 transition-all hover:bg-accent"
+                    className="group glass relative overflow-hidden rounded-2xl p-4 md:p-6 cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1"
                   >
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-muted flex items-center justify-center mb-3">
-                      <Target className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 border border-primary/20 group-hover:scale-110 transition-transform duration-500">
+                        <Target className="w-6 h-6 text-primary" />
+                      </div>
+                      <p className="text-3xl md:text-4xl font-black tracking-tighter">
+                        {totalTests}
+                      </p>
+                      <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                        Tests Taken
+                      </p>
                     </div>
-                    <p className="text-2xl md:text-3xl font-black">
-                      {totalTests}
-                    </p>
-                    <p className="text-xs md:text-sm font-medium text-muted-foreground mt-0.5">
-                      Tests Taken
-                    </p>
+                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
                   </div>
 
                   <div
                     onClick={() => handleNav("/results")}
-                    className="group bg-card text-card-foreground border border-border rounded-xl p-4 md:p-6 shadow-sm cursor-pointer active:scale-95 transition-all hover:bg-accent"
+                    className="group glass relative overflow-hidden rounded-2xl p-4 md:p-6 cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-chart-2/5 hover:-translate-y-1"
                   >
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-muted flex items-center justify-center mb-3">
-                      <Trophy className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-chart-2/10 flex items-center justify-center mb-4 border border-chart-2/20 group-hover:scale-110 transition-transform duration-500">
+                        <Trophy className="w-6 h-6 text-chart-2" />
+                      </div>
+                      <p className="text-3xl md:text-4xl font-black tracking-tighter">
+                        {avgScore}%
+                      </p>
+                      <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                        Avg Score
+                      </p>
                     </div>
-                    <p className="text-2xl md:text-3xl font-black">
-                      {avgScore}%
-                    </p>
-                    <p className="text-xs md:text-sm font-medium text-muted-foreground mt-0.5">
-                      Avg Score
-                    </p>
+                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-chart-2/5 rounded-full blur-3xl group-hover:bg-chart-2/10 transition-colors" />
                   </div>
 
-                  <div className="group bg-card text-card-foreground border border-border rounded-xl p-4 md:p-6 shadow-sm">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-muted flex items-center justify-center mb-3">
-                      <Flame className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
+                  <div className="group glass relative overflow-hidden rounded-2xl p-4 md:p-6 hover:shadow-2xl hover:shadow-chart-4/5 hover:-translate-y-1 transition-all duration-300">
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-chart-4/10 flex items-center justify-center mb-4 border border-chart-4/20 group-hover:scale-110 transition-transform duration-500">
+                        <Flame className="w-6 h-6 text-chart-4 animate-pulse" />
+                      </div>
+                      <p className="text-3xl md:text-4xl font-black tracking-tighter">
+                        {streak}
+                      </p>
+                      <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                        Day Streak
+                      </p>
                     </div>
-                    <p className="text-2xl md:text-3xl font-black">{streak}</p>
-                    <p className="text-xs md:text-sm font-medium text-muted-foreground mt-0.5">
-                      Day Streak
-                    </p>
+                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-chart-4/5 rounded-full blur-3xl group-hover:bg-chart-4/10 transition-colors" />
                   </div>
                 </div>
 
@@ -274,40 +284,42 @@ const HomePage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
                   <button
                     onClick={() => handleNav("/quick-quiz")}
-                    className="group relative overflow-hidden rounded-xl bg-primary text-primary-foreground p-6 md:p-8 text-left shadow-sm hover:opacity-90 transition-all active:scale-[0.98]"
+                    className="group relative overflow-hidden rounded-2xl bg-primary text-primary-foreground p-7 md:p-10 text-left shadow-lg hover:shadow-primary/20 transition-all duration-300 active:scale-[0.98]"
                   >
-                    <div className="relative flex items-center justify-between">
+                    <div className="absolute inset-0 mesh-gradient opacity-20 group-hover:opacity-30 transition-opacity" />
+                    <div className="relative flex items-center justify-between z-10">
                       <div>
-                        <div className="w-12 h-12 rounded-lg bg-primary-foreground/10 flex items-center justify-center mb-4 text-primary-foreground">
-                          <Brain className="w-6 h-6" />
+                        <div className="w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-5 text-white border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                          <Brain className="w-7 h-7" />
                         </div>
-                        <h3 className="text-xl font-bold mb-1">Quick Quiz</h3>
-                        <p className="text-sm opacity-80">
-                          Test your knowledge now
+                        <h3 className="text-2xl font-black mb-1">Quick Quiz</h3>
+                        <p className="text-sm font-medium opacity-70">
+                          Test your limits right now
                         </p>
                       </div>
-                      <div className="h-12 w-12 rounded-full border border-primary-foreground/20 flex items-center justify-center group-hover:bg-primary-foreground/10 transition-colors">
-                        <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                      <div className="h-14 w-14 rounded-full border-2 border-white/20 flex items-center justify-center group-hover:bg-white/10 transition-all duration-300">
+                        <ArrowRight className="w-6 h-6 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
                       </div>
                     </div>
                   </button>
 
                   <button
                     onClick={() => handleNav("/subjects")}
-                    className="group relative overflow-hidden rounded-xl bg-card text-card-foreground border border-border p-6 md:p-8 text-left shadow-sm hover:bg-accent transition-all active:scale-[0.98]"
+                    className="group relative overflow-hidden rounded-2xl glass p-7 md:p-10 text-left transition-all duration-300 active:scale-[0.98] hover:shadow-xl hover:shadow-black/5"
                   >
-                    <div className="relative flex items-center justify-between">
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-muted/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex items-center justify-between z-10">
                       <div>
-                        <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4 text-foreground">
-                          <BookOpen className="w-6 h-6" />
+                        <div className="w-14 h-14 rounded-xl bg-muted/50 flex items-center justify-center mb-5 text-foreground border border-border shadow-sm group-hover:scale-110 transition-transform duration-500">
+                          <BookOpen className="w-7 h-7" />
                         </div>
-                        <h3 className="text-xl font-bold mb-1">Study Mode</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="text-2xl font-black mb-1">Study Mode</h3>
+                        <p className="text-sm font-medium text-muted-foreground">
                           Explore all subjects
                         </p>
                       </div>
-                      <div className="h-12 w-12 rounded-full border border-border flex items-center justify-center group-hover:bg-muted transition-colors">
-                        <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                      <div className="h-14 w-14 rounded-full border-2 border-border flex items-center justify-center group-hover:bg-muted transition-all duration-300">
+                        <ArrowRight className="w-6 h-6 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
                       </div>
                     </div>
                   </button>
@@ -328,7 +340,7 @@ const HomePage: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 md:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 md:gap-6">
                     {subjects.slice(0, 6).map((sub) => {
                       const meta = subjectMeta[sub] || {
                         icon: <Lightbulb className="w-5 h-5" />,
@@ -343,31 +355,31 @@ const HomePage: React.FC = () => {
                           onClick={() =>
                             handleNav(`/subject/${encodeURIComponent(sub)}`)
                           }
-                          className="group bg-card text-card-foreground rounded-xl p-4 border border-border shadow-sm hover:shadow-md hover:border-primary transition-all text-left"
+                          className="group glass relative overflow-hidden rounded-2xl p-5 transition-all duration-300 text-left hover:shadow-2xl hover:-translate-y-1.5 active:scale-95"
                         >
                           <div
-                            className={`w-12 h-12 rounded-lg ${meta.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
+                            className={`w-14 h-14 rounded-2xl ${meta.bg}/50 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm border border-border/50`}
                           >
                             {React.cloneElement(
                               meta.icon as React.ReactElement<{
                                 className?: string;
                               }>,
                               {
-                                className: "w-6 h-6 text-foreground",
+                                className: "w-7 h-7 text-foreground",
                               },
                             )}
                           </div>
-                          <p className="font-bold text-sm leading-tight line-clamp-2 mb-2 h-10 flex items-center">
+                          <p className="font-black text-sm md:text-base leading-tight mb-3 h-12 flex items-center tracking-tight">
                             {sub}
                           </p>
                           {quizCount > 0 ? (
-                            <div className="flex items-center gap-1.5 text-xs text-primary font-bold bg-muted px-2 py-1 rounded-md w-fit">
+                            <div className="flex items-center gap-2 text-xs text-primary font-black bg-primary/10 px-3 py-1.5 rounded-xl w-fit border border-primary/10">
                               <Zap className="w-3 h-3 fill-current" />
-                              <span>{quizCount}</span>
+                              <span>{quizCount} Sessions</span>
                             </div>
                           ) : (
-                            <div className="text-xs text-muted-foreground px-2 py-1">
-                              Start
+                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted/50 px-3 py-1.5 rounded-xl border border-border/50">
+                              New Topic
                             </div>
                           )}
                         </button>
@@ -421,9 +433,7 @@ const HomePage: React.FC = () => {
                             className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors cursor-default"
                           >
                             <div className="flex items-center gap-3">
-                              <div
-                                className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center"
-                              >
+                              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                                 {subjectMeta[r.subject]?.icon || (
                                   <BookOpen className="w-5 h-5 text-muted-foreground" />
                                 )}

@@ -93,8 +93,11 @@
   --sidebar-accent: oklch(0.95 0.025 280);
   --sidebar-accent-foreground: oklch(0.3 0.08 280);
 
-  --sidebar-border: oklch(0.93 0.008 265);
-  --sidebar-ring: oklch(0.55 0.25 275);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.6 0.23 275);
+
+  --glass-bg: oklch(1 0 0 / 70%);
+  --glass-border: oklch(1 0 0 / 15%);
 }
 
 /* ================= DARK ================= */
@@ -144,6 +147,9 @@
 
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.6 0.23 275);
+
+  --glass-bg: oklch(0.15 0.018 270 / 70%);
+  --glass-border: oklch(1 0 0 / 10%);
 }
 
 @layer base {
@@ -156,5 +162,34 @@
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] shadow-sm;
+  }
+
+  .mesh-gradient {
+    background-image:
+      radial-gradient(at 0% 0%, var(--primary) 0, transparent 50%),
+      radial-gradient(at 100% 0%, var(--chart-2) 0, transparent 50%),
+      radial-gradient(at 100% 100%, var(--chart-1) 0, transparent 50%),
+      radial-gradient(at 0% 100%, var(--chart-4) 0, transparent 50%);
+    background-size: 100% 100%;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 }
