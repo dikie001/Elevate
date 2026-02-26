@@ -35,11 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Card,
-  CardHeader,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardDescription } from "@/components/ui/card";
 
 export interface LearnerInfo {
   id: string;
@@ -99,7 +95,10 @@ const LearnerModal = ({ onClose }: MainProps) => {
     }
   }, [formData.name, view]);
 
-  const handleInputChange = (field: keyof LearnerInfo, value: string | string[]) => {
+  const handleInputChange = (
+    field: keyof LearnerInfo,
+    value: string | string[],
+  ) => {
     if (field === "pin" && typeof value === "string") {
       if (!/^\d*$/.test(value)) return;
       if (value.length > 4) return;
@@ -279,7 +278,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
           {view === "register-1" && (
             <div className={SLIDE_UP}>
               <CardHeader className="px-0 pt-0 -mt-8">
-                <CardDescription >
+                <CardDescription>
                   Let's personalize your learning journey.
                 </CardDescription>
               </CardHeader>
@@ -439,9 +438,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
           {view === "register-3" && (
             <div className={SLIDE_UP}>
               <CardHeader className="px-0 pt-0 -mt-8">
-                <CardDescription>
-                  Secure your account
-                </CardDescription>
+                <CardDescription>Secure your account</CardDescription>
               </CardHeader>
               <form onSubmit={handleRegister} className="space-y-6">
                 <div className="space-y-2">
