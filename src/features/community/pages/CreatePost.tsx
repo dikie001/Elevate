@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Image, X, HelpCircle, BookOpen } from "lucide-react";
-import Sidebar from "../../../components/app/Sidebar";
+import Sidebar from "@/components/app/Sidebar";
 import { createPost, getCurrentUser } from "../utils";
 import { toast } from "sonner";
 
@@ -21,7 +21,7 @@ export default function CreatePost() {
   const [content, setContent] = useState("");
   const [isQuestion, setIsQuestion] = useState(false);
   const [subject, setSubject] = useState<string | undefined>();
-  const [image, setImage] = useState<string | undefined>();
+  const [images, setImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentUser = getCurrentUser();
 
@@ -40,12 +40,12 @@ export default function CreatePost() {
         content: content.trim(),
         isQuestion,
         subject: subject || undefined,
-        image,
+        images,
       });
 
       toast.success(isQuestion ? "Question posted!" : "Post shared!");
       navigate("/community");
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to create post");
     } finally {
       setIsSubmitting(false);
@@ -53,14 +53,18 @@ export default function CreatePost() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = Array.from(e.target.files || []);
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result as string);
+        setImages((prev) => [...prev, reader.result as string]);
       };
       reader.readAsDataURL(file);
-    }
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const getInitials = (name: string) => {
@@ -190,20 +194,24 @@ export default function CreatePost() {
             </div>
           )}
 
-          {/* Image Preview */}
-          {image && (
-            <div className="mb-6 relative">
-              <img
-                src={image}
-                alt="Upload preview"
-                className="w-full max-h-96 object-cover rounded-2xl"
-              />
-              <button
-                onClick={() => setImage(undefined)}
-                className="absolute top-3 right-3 p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
+          {/* Images Preview */}
+          {images.length > 0 && (
+            <div className="mb-6 grid grid-cols-2 gap-2">
+              {images.map((img, idx) => (
+                <div key={idx} className="relative group aspect-square">
+                  <img
+                    src={img}
+                    alt={`Upload ${idx + 1}`}
+                    className="w-full h-full object-cover rounded-2xl border border-border"
+                  />
+                  <button
+                    onClick={() => removeImage(idx)}
+                    className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
             </div>
           )}
 
@@ -217,6 +225,7 @@ export default function CreatePost() {
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleImageUpload}
                 className="hidden"
               />

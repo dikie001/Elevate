@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft,
-  Heart,
   MessageCircle,
   Share2,
-  Bookmark,
   Send,
   MoreHorizontal,
   Trash2,
+  Heart,
+  X,
 } from "lucide-react";
-import Sidebar from "../../../components/app/Sidebar";
+import Sidebar from "@/components/app/Sidebar";
 import type { Post } from "../types";
 import {
   getPostById,
   getCurrentUser,
-  likePost,
+  reactToPost,
   addComment,
+  addReply,
   deletePost,
   formatTimeAgo,
 } from "../utils";
+import ReactionButton from "../components/ReactionButton";
+import ImageGrid from "../components/ImageGrid";
 import { toast } from "sonner";
 
 export default function PostDetail() {
@@ -27,24 +30,27 @@ export default function PostDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [newComment, setNewComment] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const currentUser = getCurrentUser();
+
+  const loadPost = useCallback(() => {
+    const foundPost = getPostById(postId!);
+    setPost(foundPost || null);
+    setLoading(false);
+  }, [postId]);
 
   useEffect(() => {
     if (postId) {
       loadPost();
     }
-  }, [postId]);
+  }, [postId, loadPost]);
 
-  const loadPost = () => {
-    const foundPost = getPostById(postId!);
-    setPost(foundPost || null);
-    setLoading(false);
-  };
-
-  const handleLike = () => {
-    if (!currentUser || !post) return;
-    likePost(post.id, currentUser.id);
+  const handleReact = (postId: string, reactionType: string) => {
+    if (!currentUser) return;
+    reactToPost(postId, currentUser.id, reactionType);
     loadPost();
   };
 
@@ -52,12 +58,22 @@ export default function PostDetail() {
     e.preventDefault();
     if (!currentUser || !post || !newComment.trim()) return;
 
-    addComment(post.id, {
-      authorId: currentUser.id,
-      authorName: currentUser.name,
-      authorAvatar: currentUser.avatar,
-      content: newComment.trim(),
-    });
+    if (replyTo) {
+      addReply(post.id, replyTo.id, {
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorAvatar: currentUser.avatar,
+        content: newComment.trim(),
+      });
+      setReplyTo(null);
+    } else {
+      addComment(post.id, {
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorAvatar: currentUser.avatar,
+        content: newComment.trim(),
+      });
+    }
 
     setNewComment("");
     loadPost();
@@ -197,48 +213,53 @@ export default function PostDetail() {
               </div>
             </div>
 
-            {/* Post Image */}
-            {post.image && (
-              <img
-                src={post.image}
-                alt="Post attachment"
-                className="w-full max-h-[500px] object-cover"
-              />
-            )}
+            {/* Post Images */}
+            {post.images && post.images.length > 0 ? (
+              <ImageGrid images={post.images} />
+            ) : post.image ? (
+              <ImageGrid images={[post.image]} />
+            ) : null}
 
             {/* Post Stats */}
-            <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-              <span>{post.likes.length} likes</span>
-              <span>{post.comments.length} comments</span>
+            <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-1">
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {(post.likes.length || 0) +
+                    (post.reactions
+                      ? Object.values(post.reactions).reduce(
+                          (acc, users) => acc + users.length,
+                          0,
+                        )
+                      : 0)}
+                </span>
+                <span>reactions</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span>{post.comments.length} comments</span>
+                <span>{Math.floor(Math.random() * 10)} shares</span>
+              </div>
             </div>
 
             {/* Post Actions */}
-            <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <button
-                  onClick={handleLike}
-                  className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  <Heart
-                    className={`h-5 w-5 ${
-                      currentUser && post.likes.includes(currentUser.id)
-                        ? "fill-red-500 text-red-500"
-                        : ""
-                    }`}
-                  />
-                  <span>Like</span>
-                </button>
-                <button className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-purple-500 transition-colors">
-                  <MessageCircle className="h-5 w-5" />
-                  <span>Comment</span>
-                </button>
-                <button className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-blue-500 transition-colors">
-                  <Share2 className="h-5 w-5" />
-                  <span>Share</span>
-                </button>
-              </div>
-              <button className="text-gray-500 dark:text-gray-400 hover:text-purple-500 transition-colors">
-                <Bookmark className="h-5 w-5" />
+            <div className="px-1 py-1 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+              <ReactionButton
+                currentReaction={
+                  currentUser && post.reactions
+                    ? Object.keys(post.reactions).find((type) =>
+                        post.reactions![type].includes(currentUser.id),
+                      )
+                    : undefined
+                }
+                isLiked={!!(currentUser && post.likes.includes(currentUser.id))}
+                onReact={(type) => handleReact(post.id, type)}
+              />
+              <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-purple-500 transition-colors">
+                <MessageCircle className="h-5 w-5" />
+                <span className="font-semibold text-sm">Comment</span>
+              </button>
+              <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-500 transition-colors">
+                <Share2 className="h-5 w-5" />
+                <span className="font-semibold text-sm">Share</span>
               </button>
             </div>
           </article>
@@ -290,12 +311,50 @@ export default function PostDetail() {
                         <div className="flex items-center gap-4 mt-2">
                           <button className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors">
                             <Heart className="h-3.5 w-3.5" />
-                            <span>{comment.likes.length}</span>
+                            <span>{comment.likes?.length || 0}</span>
                           </button>
-                          <button className="text-xs text-gray-500 dark:text-gray-400 hover:text-purple-500 transition-colors">
+                          <button
+                            onClick={() => {
+                              setReplyTo({
+                                id: comment.id,
+                                name: comment.authorName,
+                              });
+                              document.querySelector("input")?.focus();
+                            }}
+                            className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-500 transition-colors"
+                          >
                             Reply
                           </button>
                         </div>
+
+                        {/* Recursive Replies */}
+                        {comment.replies && comment.replies.length > 0 && (
+                          <div className="mt-3 space-y-3 pl-4 border-l-2 border-gray-100 dark:border-gray-700">
+                            {comment.replies.map((reply) => (
+                              <div
+                                key={reply.id}
+                                className="flex items-start gap-2"
+                              >
+                                <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">
+                                  {getInitials(reply.authorName)}
+                                </div>
+                                <div className="flex-1 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-xl">
+                                  <div className="flex items-center gap-2 mb-0.5">
+                                    <span className="font-semibold text-xs">
+                                      {reply.authorName}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground">
+                                      {formatTimeAgo(reply.createdAt)}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-gray-700 dark:text-gray-300">
+                                    {reply.content}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -306,37 +365,52 @@ export default function PostDetail() {
         </main>
 
         {/* Comment Input - Fixed at bottom */}
-        <div className="fixed bottom-16 lg:bottom-0 left-0 lg:left-64 right-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
-          <form
-            onSubmit={handleComment}
-            className="max-w-2xl mx-auto flex items-center gap-3"
-          >
-            {currentUser?.avatar ? (
-              <img
-                src={currentUser.avatar}
-                alt={currentUser.name}
-                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-xs flex-shrink-0">
-                {currentUser ? getInitials(currentUser.name) : "?"}
+        <div className="fixed bottom-0 left-0 lg:left-64 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-100 dark:border-gray-700 p-4 z-40">
+          <div className="max-w-2xl mx-auto">
+            {replyTo && (
+              <div className="flex items-center justify-between px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-t-xl border-x border-t border-purple-100 dark:border-purple-800 text-xs">
+                <span className="text-purple-700 dark:text-purple-300">
+                  Replying to <span className="font-bold">{replyTo.name}</span>
+                </span>
+                <button
+                  onClick={() => setReplyTo(null)}
+                  className="text-purple-500 hover:text-purple-700"
+                >
+                  <X className="h-3 w-3" />
+                </button>
               </div>
             )}
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Write a comment..."
-              className="flex-1 px-4 py-2.5 rounded-full bg-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-purple-500 text-sm"
-            />
-            <button
-              type="submit"
-              disabled={!newComment.trim()}
-              className="p-2.5 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+            <form
+              onSubmit={handleComment}
+              className={`flex items-center gap-3 bg-white dark:bg-gray-800 p-2 ${replyTo ? "rounded-b-2xl border" : "rounded-full border border-gray-200 dark:border-gray-700 shadow-sm"}`}
             >
-              <Send className="h-4 w-4" />
-            </button>
-          </form>
+              {currentUser?.avatar ? (
+                <img
+                  src={currentUser.avatar}
+                  alt={currentUser.name}
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-xs flex-shrink-0">
+                  {currentUser ? getInitials(currentUser.name) : "?"}
+                </div>
+              )}
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Write a comment..."
+                className="flex-1 px-4 py-2.5 rounded-full bg-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-purple-500 text-sm"
+              />
+              <button
+                type="submit"
+                disabled={!newComment.trim()}
+                className="p-2.5 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </Sidebar>

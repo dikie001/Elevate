@@ -63,6 +63,41 @@ export const likePost = (postId: string, userId: string): void => {
   }
 };
 
+export const reactToPost = (
+  postId: string,
+  userId: string,
+  reactionType: string,
+): void => {
+  const posts = getPosts();
+  const postIndex = posts.findIndex((p) => p.id === postId);
+  if (postIndex !== -1) {
+    const post = posts[postIndex];
+    if (!post.reactions) post.reactions = {};
+
+    // Remove user's previous reaction if any
+    Object.keys(post.reactions).forEach((type) => {
+      post.reactions![type] = post.reactions![type].filter(
+        (id) => id !== userId,
+      );
+      if (post.reactions![type].length === 0) delete post.reactions![type];
+    });
+
+    // Add new reaction (if it's not a toggle off)
+    // If the user clicks the same reaction, we just leave it removed (toggle)
+    // But usually in social apps, clicking another reaction replaces the old one.
+    // If clicking the SAME reaction, it toggles it off.
+    const alreadyHadThisReaction =
+      post.reactions[reactionType]?.includes(userId);
+
+    if (!alreadyHadThisReaction) {
+      if (!post.reactions[reactionType]) post.reactions[reactionType] = [];
+      post.reactions[reactionType].push(userId);
+    }
+
+    localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+  }
+};
+
 export const addComment = (
   postId: string,
   comment: Omit<Comment, "id" | "createdAt" | "likes">,
@@ -77,6 +112,31 @@ export const addComment = (
       likes: [],
     });
     localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+  }
+};
+
+export const addReply = (
+  postId: string,
+  commentId: string,
+  reply: Omit<Comment, "id" | "createdAt" | "likes">,
+): void => {
+  const posts = getPosts();
+  const postIndex = posts.findIndex((p) => p.id === postId);
+  if (postIndex !== -1) {
+    const post = posts[postIndex];
+    const commentIndex = post.comments.findIndex((c) => c.id === commentId);
+    if (commentIndex !== -1) {
+      if (!post.comments[commentIndex].replies) {
+        post.comments[commentIndex].replies = [];
+      }
+      post.comments[commentIndex].replies!.push({
+        ...reply,
+        id: `reply_${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        likes: [],
+      });
+      localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+    }
   }
 };
 

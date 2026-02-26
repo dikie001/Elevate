@@ -21,6 +21,7 @@ export interface Post {
   images?: string[];
   subject?: string;
   likes: string[];
+  reactions?: Record<string, string[]>;
   comments: Comment[];
   createdAt: string;
   isQuestion?: boolean;
@@ -33,6 +34,7 @@ export interface Comment {
   authorAvatar?: string;
   content: string;
   likes: string[];
+  reactions?: Record<string, string[]>;
   createdAt: string;
   replies?: Comment[];
 }

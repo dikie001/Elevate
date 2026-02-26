@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Users, HelpCircle, Lightbulb, BookOpen, Search } from "lucide-react";
 import type { Post } from "../types";
 import {
-  getPosts,
   getCurrentUser,
-  likePost,
+  reactToPost,
   initializeSampleData,
+  getPosts,
 } from "../utils";
 import PostCard from "../components/PostCard";
 import CommunitySidebar from "../components/CommunitySidebar";
@@ -37,9 +37,9 @@ export default function Feed() {
     setPosts(allPosts);
   };
 
-  const handleLike = (postId: string) => {
+  const handleReact = (postId: string, reactionType: string) => {
     if (!currentUser) return;
-    likePost(postId, currentUser.id);
+    reactToPost(postId, currentUser.id, reactionType);
     loadPosts();
   };
 
@@ -128,7 +128,7 @@ export default function Feed() {
                       key={post.id}
                       post={post}
                       currentUser={currentUser}
-                      onLike={handleLike}
+                      onReact={handleReact}
                     />
                   ))}
                 </div>
