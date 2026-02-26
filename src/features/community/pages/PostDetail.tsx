@@ -9,6 +9,9 @@ import {
   Trash2,
   Heart,
   X,
+  Image as ImageIcon,
+  Smile,
+  Camera,
 } from "lucide-react";
 import Sidebar from "@/components/app/Sidebar";
 import type { Post } from "../types";
@@ -273,45 +276,57 @@ export default function PostDetail() {
             </div>
 
             {/* Comments List */}
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            <div className="bg-white dark:bg-gray-800">
               {post.comments.length === 0 ? (
                 <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-                  No comments yet. Be the first to comment!
+                  <div className="mb-2 flex justify-center">
+                    <MessageCircle className="h-10 w-10 opacity-20" />
+                  </div>
+                  <p className="text-sm font-medium">No comments yet</p>
+                  <p className="text-xs opacity-60">
+                    Be the first to share your thoughts!
+                  </p>
                 </div>
               ) : (
-                post.comments.map((comment) => (
-                  <div key={comment.id} className="p-4">
-                    <div className="flex items-start gap-3">
-                      {comment.authorAvatar ? (
-                        <img
-                          src={comment.authorAvatar}
-                          alt={comment.authorName}
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-xs">
-                          {getInitials(comment.authorName)}
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
+                <div className="px-4 py-2 space-y-4">
+                  {post.comments.map((comment) => (
+                    <div key={comment.id} className="flex gap-2">
+                      {/* Avatar */}
+                      <Link
+                        to={`/community/profile/${comment.authorId}`}
+                        className="flex-shrink-0 mt-1"
+                      >
+                        {comment.authorAvatar ? (
+                          <img
+                            src={comment.authorAvatar}
+                            alt={comment.authorName}
+                            className="w-8 h-8 rounded-full object-cover border border-gray-100 dark:border-gray-700"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-xs">
+                            {getInitials(comment.authorName)}
+                          </div>
+                        )}
+                      </Link>
+
+                      {/* Comment Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="inline-flex flex-col bg-gray-100 dark:bg-gray-700/70 rounded-2xl px-3 py-2 max-w-[95%] shadow-sm transition-colors hover:bg-gray-200 dark:hover:bg-gray-700">
                           <Link
                             to={`/community/profile/${comment.authorId}`}
-                            className="font-medium text-gray-900 dark:text-white text-sm hover:underline"
+                            className="font-bold text-gray-900 dark:text-gray-100 text-xs hover:underline truncate"
                           >
                             {comment.authorName}
                           </Link>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatTimeAgo(comment.createdAt)}
-                          </span>
+                          <p className="text-gray-800 dark:text-gray-200 text-[13px] leading-snug break-words">
+                            {comment.content}
+                          </p>
                         </div>
-                        <p className="text-gray-700 dark:text-gray-300 text-sm">
-                          {comment.content}
-                        </p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <button className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors">
-                            <Heart className="h-3.5 w-3.5" />
-                            <span>{comment.likes?.length || 0}</span>
+
+                        {/* Interaction Bar */}
+                        <div className="flex items-center gap-3 mt-1 ml-2 text-[11px] font-bold text-gray-500 dark:text-gray-400">
+                          <button className="hover:underline hover:text-purple-600 transition-colors">
+                            Like
                           </button>
                           <button
                             onClick={() => {
@@ -321,35 +336,67 @@ export default function PostDetail() {
                               });
                               document.querySelector("input")?.focus();
                             }}
-                            className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-500 transition-colors"
+                            className="hover:underline hover:text-purple-600 transition-colors"
                           >
                             Reply
                           </button>
+                          <span className="font-normal opacity-70">
+                            {formatTimeAgo(comment.createdAt)}
+                          </span>
+                          {comment.likes && comment.likes.length > 0 && (
+                            <div className="flex items-center gap-0.5 ml-auto bg-white dark:bg-gray-800 shadow-sm rounded-full px-1.5 py-0.5 border border-gray-100 dark:border-gray-700">
+                              <Heart className="h-2.5 w-2.5 text-red-500 fill-red-500" />
+                              <span className="text-[10px]">
+                                {comment.likes.length}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Recursive Replies */}
+                        {/* Replies */}
                         {comment.replies && comment.replies.length > 0 && (
-                          <div className="mt-3 space-y-3 pl-4 border-l-2 border-gray-100 dark:border-gray-700">
+                          <div className="mt-3 space-y-3 pl-2 border-l-2 border-gray-100 dark:border-gray-700 ml-1">
                             {comment.replies.map((reply) => (
-                              <div
-                                key={reply.id}
-                                className="flex items-start gap-2"
-                              >
-                                <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">
-                                  {getInitials(reply.authorName)}
-                                </div>
-                                <div className="flex-1 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-xl">
-                                  <div className="flex items-center gap-2 mb-0.5">
-                                    <span className="font-semibold text-xs">
+                              <div key={reply.id} className="flex gap-2">
+                                <Link
+                                  to={`/community/profile/${reply.authorId}`}
+                                  className="flex-shrink-0 mt-1"
+                                >
+                                  <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-[10px] font-bold border border-white dark:border-gray-800">
+                                    {getInitials(reply.authorName)}
+                                  </div>
+                                </Link>
+                                <div className="flex-1 min-w-0">
+                                  <div className="inline-flex flex-col bg-gray-50 dark:bg-gray-900/40 rounded-2xl px-3 py-1.5 max-w-[95%] border border-gray-100 dark:border-gray-800/50">
+                                    <span className="font-bold text-[11px] text-gray-900 dark:text-gray-100 truncate">
                                       {reply.authorName}
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground">
+                                    <p className="text-[12px] text-gray-700 dark:text-gray-300 leading-snug break-words">
+                                      {reply.content}
+                                    </p>
+                                  </div>
+                                  <div className="flex items-center gap-3 mt-1 ml-2 text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                                    <button className="hover:underline hover:text-purple-600 transition-colors">
+                                      Like
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setReplyTo({
+                                          id: comment.id,
+                                          name: reply.authorName,
+                                        });
+                                        document
+                                          .querySelector("input")
+                                          ?.focus();
+                                      }}
+                                      className="hover:underline hover:text-purple-600 transition-colors"
+                                    >
+                                      Reply
+                                    </button>
+                                    <span className="font-normal opacity-70">
                                       {formatTimeAgo(reply.createdAt)}
                                     </span>
                                   </div>
-                                  <p className="text-xs text-gray-700 dark:text-gray-300">
-                                    {reply.content}
-                                  </p>
                                 </div>
                               </div>
                             ))}
@@ -357,8 +404,8 @@ export default function PostDetail() {
                         )}
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </div>
@@ -382,33 +429,76 @@ export default function PostDetail() {
             )}
             <form
               onSubmit={handleComment}
-              className={`flex items-center gap-3 bg-white dark:bg-gray-800 p-2 ${replyTo ? "rounded-b-2xl border" : "rounded-full border border-gray-200 dark:border-gray-700 shadow-sm"}`}
+              className={`flex items-start gap-3 bg-white dark:bg-gray-800 p-3 ${replyTo ? "rounded-b-2xl border-x border-b border-gray-100 dark:border-gray-700 shadow-lg" : "rounded-2xl border border-gray-200 dark:border-gray-700 shadow-md"}`}
             >
-              {currentUser?.avatar ? (
-                <img
-                  src={currentUser.avatar}
-                  alt={currentUser.name}
-                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-xs flex-shrink-0">
-                  {currentUser ? getInitials(currentUser.name) : "?"}
+              <div className="flex-shrink-0 mt-1">
+                {currentUser?.avatar ? (
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    className="w-9 h-9 rounded-full object-cover border border-gray-100 dark:border-gray-700"
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-sm">
+                    {currentUser ? getInitials(currentUser.name) : "?"}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="relative">
+                  <textarea
+                    rows={1}
+                    value={newComment}
+                    onChange={(e) => {
+                      setNewComment(e.target.value);
+                      e.target.style.height = "auto";
+                      e.target.style.height = e.target.scrollHeight + "px";
+                    }}
+                    placeholder={
+                      replyTo
+                        ? `Reply to ${replyTo.name}...`
+                        : "Write a comment..."
+                    }
+                    className="w-full pl-4 pr-12 py-2.5 rounded-2xl bg-gray-100 dark:bg-gray-700/50 border-0 focus:ring-2 focus:ring-purple-500 text-sm resize-none scrollbar-hide min-h-[42px] max-h-[120px]"
+                    style={{ overflow: "hidden" }}
+                  />
+                  <div className="absolute right-2 bottom-1.5 flex items-center gap-1">
+                    <button
+                      type="button"
+                      className="p-1.5 rounded-full text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    >
+                      <Smile className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
-              )}
-              <input
-                type="text"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Write a comment..."
-                className="flex-1 px-4 py-2.5 rounded-full bg-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-purple-500 text-sm"
-              />
-              <button
-                type="submit"
-                disabled={!newComment.trim()}
-                className="p-2.5 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
-              >
-                <Send className="h-4 w-4" />
-              </button>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <Camera className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <ImageIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={!newComment.trim()}
+                    className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-600 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple-700 transition-all shadow-sm active:scale-95"
+                  >
+                    <span>Post</span>
+                    <Send className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
