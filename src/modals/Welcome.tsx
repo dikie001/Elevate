@@ -48,6 +48,7 @@ export interface LearnerInfo {
   username: string;
   pin: string;
   subjects: string[];
+  hobby: string;
   loginCount: number;
 }
 
@@ -76,6 +77,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
     username: "",
     pin: "",
     subjects: [],
+    hobby: "",
     loginCount: 1,
   });
 
@@ -134,6 +136,8 @@ const LearnerModal = ({ onClose }: MainProps) => {
     e.preventDefault();
     if (formData.subjects.length === 0)
       return toast.error("Select at least one subject");
+    if (!formData.hobby.trim() || formData.hobby.length < 3)
+      return toast.error("Enter your hobby");
     setView("register-3");
   };
 
@@ -351,7 +355,7 @@ const LearnerModal = ({ onClose }: MainProps) => {
             </div>
           )}
 
-          {/* VIEW: REGISTER STEP 2 - Subjects  */}
+          {/* VIEW: REGISTER STEP 2 - Subjects & Hobby */}
           {view === "register-2" && (
             <div className={SLIDE_UP}>
               <CardHeader className="px-0 pt-0 -mt-8">
@@ -396,6 +400,28 @@ const LearnerModal = ({ onClose }: MainProps) => {
                     ))}
                   </div>
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="hobby">Favorite Hobby</Label>
+                  <Input
+                    id="hobby"
+                    list="hobbies"
+                    placeholder="e.g., Reading, Gaming, Drawing"
+                    value={formData.hobby}
+                    onChange={(e) => handleInputChange("hobby", e.target.value)}
+                    className="h-12 rounded-xl"
+                  />
+                  <datalist id="hobbies">
+                    <option value="Playing Football" />
+                    <option value="Reading" />
+                    <option value="Drawing" />
+                    <option value="Dancing" />
+                    <option value="Coding" />
+                    <option value="Gaming" />
+                    <option value="Swimming" />
+                  </datalist>
+                </div>
+
                 <Button
                   type="submit"
                   size="lg"
