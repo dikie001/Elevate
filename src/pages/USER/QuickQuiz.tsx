@@ -100,7 +100,7 @@ const QuizApp: React.FC = () => {
           currentTest: results.length,
           loading: false,
         }));
-      } catch (err) {
+      } catch {
         setState((prev) => ({
           ...prev,
           error: "Failed to load quiz data",
@@ -279,22 +279,22 @@ const QuizApp: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
               {[
                 {
-                  icon: <BookOpen />,
+                  icon: <BookOpen className="w-6 h-6" />,
                   label: "Questions",
                   value: state.quizData.length,
                 },
                 {
-                  icon: <Target />,
+                  icon: <Target className="w-6 h-6" />,
                   label: "Total Tests",
                   value: getTotalTests(),
                 },
                 {
-                  icon: <Trophy />,
+                  icon: <Trophy className="w-6 h-6" />,
                   label: "Completed",
                   value: state.testResults.length,
                 },
                 {
-                  icon: <TrendingUp />,
+                  icon: <TrendingUp className="w-6 h-6" />,
                   label: "Avg Score",
                   value:
                     state.testResults.length > 0
@@ -310,12 +310,12 @@ const QuizApp: React.FC = () => {
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center transition-all hover:border-primary/50"
+                  className="glass p-6 rounded-3xl border border-border shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30"
                 >
-                  <div className="mb-4 p-3 rounded-xl bg-muted text-primary">
+                  <div className="mb-4 p-4 rounded-2xl bg-primary/10 text-primary border border-primary/10">
                     {stat.icon}
                   </div>
-                  <div className="text-3xl font-black text-foreground">
+                  <div className="text-3xl font-black text-foreground tracking-tighter">
                     {stat.value}
                     {stat.unit}
                   </div>
@@ -330,24 +330,25 @@ const QuizApp: React.FC = () => {
               {state.currentTest < getTotalTests() ? (
                 <button
                   onClick={() => startTest(state.currentTest)}
-                  className="w-full bg-primary text-primary-foreground p-6 rounded-2xl shadow-xl hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-between group"
+                  className="w-full relative overflow-hidden bg-primary text-primary-foreground p-8 rounded-3xl shadow-2xl hover:shadow-primary/30 active:scale-[0.98] transition-all flex items-center justify-between group"
                 >
-                  <div className="text-left">
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-80">
-                      Next Session
+                  <div className="absolute inset-0 mesh-gradient opacity-20 group-hover:opacity-30 transition-opacity" />
+                  <div className="relative z-10 text-left">
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">
+                      Ready for Session
                     </p>
-                    <p className="text-2xl font-black">
-                      Test {state.currentTest + 1}
+                    <p className="text-3xl font-black tracking-tight">
+                      Start Test {state.currentTest + 1}
                     </p>
                   </div>
-                  <div className="bg-primary-foreground/20 p-4 rounded-full group-hover:bg-primary-foreground/30 transition-all">
-                    <Play className="fill-current w-6 h-6" />
+                  <div className="relative z-10 bg-white/20 backdrop-blur-md p-5 rounded-full group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 border border-white/20">
+                    <Play className="fill-current w-7 h-7" />
                   </div>
                 </button>
               ) : (
-                <div className="w-full bg-muted p-6 rounded-2xl border border-border text-center">
-                  <p className="text-xl font-black text-muted-foreground">
-                    All tests completed!
+                <div className="w-full glass p-8 rounded-3xl border border-border text-center">
+                  <p className="text-2xl font-black text-muted-foreground tracking-tight">
+                    All Missions Completed! 🚀
                   </p>
                 </div>
               )}
@@ -355,15 +356,21 @@ const QuizApp: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => navigate("/results")}
-                  className="flex items-center justify-center gap-3 p-4 bg-secondary text-foreground rounded-xl font-bold border border-border hover:bg-secondary/80 transition-all"
+                  className="flex items-center justify-center gap-3 p-5 glass text-foreground rounded-2xl font-black border border-border hover:bg-accent hover:-translate-y-1 transition-all duration-300"
                 >
-                  <Trophy className="w-5 h-5 text-primary" /> Analytics
+                  <Trophy className="w-5 h-5 text-primary" />
+                  <span className="uppercase tracking-widest text-xs">
+                    Analytics
+                  </span>
                 </button>
                 <button
                   onClick={() => setOpenResetModal(true)}
-                  className="flex items-center justify-center gap-3 p-4 bg-secondary text-destructive rounded-xl font-bold border border-border hover:bg-destructive/5 transition-all"
+                  className="flex items-center justify-center gap-3 p-5 glass text-destructive rounded-2xl font-black border border-border hover:bg-destructive/5 hover:-translate-y-1 transition-all duration-300"
                 >
-                  <RotateCcw className="w-5 h-5" /> Reset
+                  <RotateCcw className="w-5 h-5" />
+                  <span className="uppercase tracking-widest text-xs">
+                    Reset Progress
+                  </span>
                 </button>
               </div>
             </div>
@@ -422,33 +429,33 @@ const QuizApp: React.FC = () => {
             />
           </div>
 
-          <div className="bg-card p-8 md:p-12 rounded-3xl border border-border shadow-xl relative overflow-hidden">
-            <h3 className="text-2xl md:text-3xl font-black text-foreground leading-tight mb-10">
+          <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden">
+            <h3 className="text-2xl md:text-4xl font-black text-foreground leading-[1.1] mb-12 tracking-tight">
               {currentQ.question}
             </h3>
 
-            <div className="grid gap-4">
+            <div className="grid gap-5">
               {Object.entries(currentQ.options).map(([key, value]) => {
                 const isSelected = state.selectedAnswer === key;
                 const isCorrect = key === currentQ.correctAnswer;
 
                 let btnStyle =
-                  "w-full p-5 rounded-xl text-left font-bold border-2 transition-all flex items-center group ";
+                  "w-full p-6 rounded-3xl text-left font-bold border-2 transition-all duration-300 flex items-center group relative overflow-hidden ";
 
                 if (!state.showFeedback) {
                   btnStyle += isSelected
-                    ? "bg-primary border-primary text-primary-foreground shadow-lg"
-                    : "bg-muted/50 border-border text-foreground hover:border-primary/50 hover:bg-accent";
+                    ? "bg-primary border-primary text-primary-foreground shadow-2xl scale-[1.02]"
+                    : "glass !bg-transparent border-border text-foreground hover:border-primary/50 hover:bg-primary/5 hover:-translate-y-1";
                 } else {
                   if (isCorrect)
                     btnStyle +=
                       "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400";
                   else if (isSelected)
                     btnStyle +=
-                      "bg-destructive/10 border-destructive text-destructive";
+                      "bg-destructive/10 border-destructive text-destructive opacity-100";
                   else
                     btnStyle +=
-                      "bg-muted/20 border-border text-muted-foreground opacity-50";
+                      "bg-muted/10 border-border/50 text-muted-foreground opacity-40";
                 }
 
                 return (
@@ -459,20 +466,22 @@ const QuizApp: React.FC = () => {
                     className={btnStyle}
                   >
                     <span
-                      className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center mr-4 text-xs font-black transition-colors ${
+                      className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center mr-5 text-sm font-black transition-all duration-300 ${
                         isSelected && !state.showFeedback
                           ? "bg-primary-foreground text-primary border-primary-foreground"
-                          : "bg-background border-border"
+                          : "bg-background border-border group-hover:border-primary/50"
                       }`}
                     >
                       {key}
                     </span>
-                    <span className="flex-1">{value}</span>
+                    <span className="flex-1 text-lg tracking-tight">
+                      {value}
+                    </span>
                     {state.showFeedback && isCorrect && (
-                      <CheckCircle2 className="w-6 h-6 ml-2 text-emerald-500" />
+                      <CheckCircle2 className="w-7 h-7 ml-2 text-emerald-500 animate-in zoom-in duration-300" />
                     )}
                     {state.showFeedback && isSelected && !isCorrect && (
-                      <XCircle className="w-6 h-6 ml-2 text-destructive" />
+                      <XCircle className="w-7 h-7 ml-2 text-destructive animate-in zoom-in duration-300" />
                     )}
                   </button>
                 );
@@ -482,12 +491,12 @@ const QuizApp: React.FC = () => {
             {state.showFeedback && (
               <button
                 onClick={handleNext}
-                className="w-full mt-10 bg-primary text-primary-foreground font-black py-5 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-lg hover:opacity-90 active:scale-[0.98] transition-all"
+                className="w-full mt-12 bg-primary text-primary-foreground font-black py-6 rounded-[1.5rem] shadow-2xl flex items-center justify-center gap-3 text-xl hover:opacity-90 active:scale-[0.98] transition-all group scale-[1.02]"
               >
                 {state.currentQuestion < currentQuestions.length - 1
                   ? "Next Question"
                   : "View Results"}
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
               </button>
             )}
           </div>

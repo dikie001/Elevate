@@ -94,82 +94,99 @@ const Results = () => {
 
   return (
     <Sidebar>
-      <div className="min-h-screen bg-background pb-24 lg:pb-8">
-        <div className="px-5 lg:px-8 py-6 border-b border-border">
-          <div className="flex items-center gap-3">
+      <div className="min-h-screen bg-background pb-24 lg:pb-8 transition-colors duration-500">
+        <header className="sticky top-0 z-40 glass !bg-background/40 backdrop-blur-2xl border-b border-border transition-all duration-500">
+          <div className="max-w-7xl mx-auto px-5 lg:px-8 py-6 flex items-center gap-4">
             <BackButton />
-            <Trophy className="w-7 h-7 text-primary" />
-            <h1 className="text-xl lg:text-2xl font-bold">Learning Results</h1>
+            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+              <Trophy className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-xl lg:text-3xl font-black tracking-tight text-foreground">
+                Analytics
+              </h1>
+              <p className="text-xs font-bold text-primary/70 uppercase tracking-widest mt-0.5">
+                Your Performance Hub
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-10 md:pt-16">
+        </header>
+
+        <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-10">
           {/* Header */}
-          <div className="mb-10">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight">
-              Learning Results
-            </h1>
-            <p className="mt-2 text-muted-foreground text-lg">
-              Overview of your tests and reading milestones.
+          <div className="mb-12">
+            <h2 className="text-4xl sm:text-6xl font-black text-foreground tracking-tight leading-[1.1]">
+              Learning <span className="text-primary">Results</span>
+            </h2>
+            <p className="mt-4 text-muted-foreground text-lg font-medium max-w-2xl">
+              Track your growth, celebrate your milestones, and keep pushing
+              your boundaries.
             </p>
           </div>
 
           {/* --- STATS ROW --- */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6 mb-12">
+          <div className="grid grid-cols-2 gap-6 md:gap-8 mb-12">
             <StatCard
               title="Tests Completed"
               value={stats.testsDone}
               icon={FileCheck}
-              color="indigo"
             />
             <StatCard
               title="Average Score"
               value={`${stats.averageScore}%`}
               icon={Trophy}
-              color="amber"
+              isPrimary
             />
           </div>
 
           {/* --- MAIN GRAPH: MARKS PER TEST --- */}
-          <div className="bg-card rounded-2xl p-6 sm:p-8 shadow-sm border border-border">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-muted rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-primary" />
+          <div className="glass rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-border relative overflow-hidden">
+            <div className="absolute inset-0 mesh-gradient opacity-5" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-6">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-primary/10 rounded-2xl border border-primary/10 transition-transform hover:scale-110">
+                  <TrendingUp className="w-8 h-8 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">
-                  Performance History
-                </h2>
+                <div>
+                  <h3 className="text-2xl font-black text-foreground tracking-tight">
+                    Performance History
+                  </h3>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                    Consistency is key
+                  </p>
+                </div>
               </div>
 
               {/* Legend for color coding */}
-              <div className="flex flex-wrap gap-4 text-xs font-bold text-muted-foreground">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />{" "}
+              <div className="flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted/30 p-4 rounded-2xl border border-border/50">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-md bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />{" "}
                   Excellent
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-primary" /> Good
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-md bg-primary shadow-[0_0_10px_rgba(var(--primary),0.3)]" />{" "}
+                  Good
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />{" "}
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-md bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]" />{" "}
                   Average
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-destructive" />{" "}
-                  Low
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-md bg-destructive shadow-[0_0_10px_rgba(239,68,68,0.3)]" />{" "}
+                  Critical
                 </div>
               </div>
             </div>
 
             {/* SCROLL WRAPPER START */}
-            <div className="w-full overflow-x-auto pb-4">
+            <div className="relative z-10 w-full overflow-x-auto pb-6 scrollbar-hide">
               <div
-                className="h-[400px]"
-                // Dynamic width: If > 6 items, use 60px per item. Else, fit to screen (100%).
+                className="h-[450px]"
                 style={{
                   width:
-                    graphData.length > 6
-                      ? `${graphData.length * 60}px`
+                    graphData.length > 8
+                      ? `${graphData.length * 80}px`
                       : "100%",
                   minWidth: "100%",
                 }}
@@ -181,54 +198,69 @@ const Results = () => {
                       margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                     >
                       <CartesianGrid
-                        strokeDasharray="3 3"
+                        strokeDasharray="4 4"
                         vertical={false}
-                        strokeOpacity={0.1}
+                        stroke="currentColor"
+                        className="text-border/50"
                       />
                       <XAxis
                         dataKey="name"
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "#6b7280", fontSize: 12 }}
-                        dy={10}
-                        interval={0} // Forces all labels to show
+                        tick={{
+                          fill: "currentColor",
+                          fontSize: 10,
+                          fontWeight: 900,
+                        }}
+                        className="text-muted-foreground uppercase tracking-widest"
+                        dy={15}
+                        interval={0}
                       />
                       <YAxis
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "#6b7280", fontSize: 12 }}
+                        tick={{
+                          fill: "currentColor",
+                          fontSize: 10,
+                          fontWeight: 900,
+                        }}
+                        className="text-muted-foreground uppercase tracking-widest"
                         domain={[0, 100]}
                       />
                       <Tooltip
                         content={<CustomTooltip />}
-                        cursor={{ fill: "transparent" }}
+                        cursor={{ fill: "rgba(0,0,0,0.03)" }}
                       />
                       <ReferenceLine
                         y={50}
-                        stroke="#ef4444"
-                        strokeDasharray="3 3"
-                        strokeOpacity={0.5}
+                        stroke="currentColor"
+                        className="text-destructive/30"
+                        strokeDasharray="6 6"
                       />
                       <Bar
                         dataKey="score"
-                        radius={[8, 8, 8, 8]}
-                        barSize={40} // Fixed bar size looks better when scrolling
-                        animationDuration={1500}
+                        radius={[12, 12, 12, 12]}
+                        barSize={45}
+                        animationDuration={2000}
                       >
                         {graphData.map((entry: any, index: number) => (
                           <Cell
                             key={`cell-${index}`}
                             fill={getColorForScore(entry.score)}
-                            className="hover:opacity-80 transition-opacity cursor-pointer"
+                            className="hover:opacity-80 transition-opacity cursor-pointer shadow-xl"
                           />
                         ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                    <FileCheck className="w-12 h-12 mb-2 opacity-20" />
-                    <p>No tests taken yet.</p>
+                  <div className="h-full flex flex-col items-center justify-center text-muted-foreground/30">
+                    <div className="w-24 h-24 rounded-full bg-muted/30 flex items-center justify-center mb-6">
+                      <FileCheck className="w-12 h-12" />
+                    </div>
+                    <p className="text-xl font-black uppercase tracking-widest">
+                      No Data Available
+                    </p>
                   </div>
                 )}
               </div>

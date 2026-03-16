@@ -85,13 +85,6 @@ export default function SettingsPage() {
     toast.success(`Sounds ${checked ? "enabled" : "muted"}`);
   };
 
-  const handleOpenEdit = () => {
-    setTempName(name);
-    setTempHobby(hobby);
-    setTempSubject(subject);
-    setIsDialogOpen(true);
-  };
-
   const handleSaveProfile = () => {
     playSend();
     const newData = { name: tempName, hobby: tempHobby, subject: tempSubject };
@@ -139,81 +132,89 @@ export default function SettingsPage() {
 
   return (
     <Sidebar>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pb-24 lg:pb-8">
+      <div className="min-h-screen bg-background pb-24 lg:pb-8 transition-colors duration-500 overflow-hidden">
         <Toaster richColors position="top-center" />
+
+        <header className="sticky top-0 z-40 glass !bg-background/40 backdrop-blur-2xl border-b border-border transition-all duration-500">
+          <div className="max-w-7xl mx-auto px-5 lg:px-8 py-6 flex items-center gap-4">
+            <BackButton />
+            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+              <Sparkles className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-xl lg:text-3xl font-black tracking-tight text-foreground">
+                Settings
+              </h1>
+              <p className="text-xs font-bold text-primary/70 uppercase tracking-widest mt-0.5">
+                Personalization Hub
+              </p>
+            </div>
+          </div>
+        </header>
 
         {/* Background Decor */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px]" />
         </div>
 
-        <main className="relative max-w-5xl mx-auto px-5 lg:px-8 py-8 z-10">
-          <div className="flex items-center gap-3 mb-6">
-            <BackButton />
-          </div>
-          <div className="flex flex-col gap-2 mb-10">
-            <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
-              Settings
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 font-medium">
-              Manage your digital identity and preferences.
-            </p>
-          </div>
-
+        <main className="relative max-w-5xl mx-auto px-5 lg:px-8 py-10 z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* LEFT COLUMN: Profile Card */}
-            <div className="lg:col-span-4 space-y-6">
-              <Card className="rounded-[2rem] border-0 shadow-xl shadow-slate-200/50 dark:shadow-black/40 overflow-hidden bg-white dark:bg-slate-900">
+            <div className="lg:col-span-4 space-y-8">
+              <Card className="rounded-[2.5rem] border-border/50 shadow-2xl overflow-hidden glass transition-all duration-500">
                 {/* Artistic Header */}
-                <div className="h-32 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative">
+                <div className="h-32 relative overflow-hidden">
+                  <div className="absolute inset-0 mesh-gradient opacity-80" />
                   <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
                 </div>
 
-                <CardContent className="px-6 pb-8 relative">
+                <CardContent className="px-8 pb-10 relative">
                   {/* Avatar */}
-                  <div className="relative -mt-12 mb-4 flex justify-between items-end">
-                    <div className="h-24 w-24 rounded-3xl border-4 border-white dark:border-slate-900 bg-white shadow-sm overflow-hidden p-1">
+                  <div className="relative -mt-14 mb-6 flex justify-between items-end">
+                    <div className="h-28 w-28 rounded-[2rem] border-4 border-background bg-card shadow-2xl overflow-hidden p-1 transition-transform hover:scale-105 duration-500">
                       <img
                         src="/images/icon.png"
                         alt="User"
-                        className="w-full h-full object-cover rounded-2xl"
+                        className="w-full h-full object-cover rounded-[1.75rem]"
                       />
                     </div>
                     <Button
                       size="icon"
                       variant="secondary"
-                      className="rounded-full shadow-sm hover:bg-indigo-100 dark:hover:bg-slate-800"
+                      className="rounded-2xl w-12 h-12 glass shadow-xl hover:bg-primary/20 transition-all active:scale-90"
                       onClick={() => navigate("/edit-profile")}
                     >
-                      <Edit2 className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                      <Edit2 className="w-5 h-5 text-primary" />
                     </Button>
                   </div>
 
-                  <div className="space-y-1">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                  <div className="space-y-2">
+                    <h2 className="text-3xl font-black text-foreground tracking-tight leading-none">
                       {name || "Guest User"}
                     </h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium text-sm flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                      {hobby || "Explorer of things"}
+                    <p className="text-muted-foreground font-black text-xs flex items-center gap-2 uppercase tracking-widest bg-primary/5 w-fit px-3 py-1 rounded-full border border-primary/5">
+                      <Sparkles className="w-3 h-3 text-primary" />
+                      {hobby || "Explorer"}
                     </p>
                   </div>
 
-                  <div className="mt-6 flex flex-wrap gap-2">
+                  <div className="mt-8">
                     {subject ? (
-                      <Badge
-                        variant="secondary"
-                        className="px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 border-indigo-100 dark:border-indigo-800"
-                      >
-                        {subject}
-                      </Badge>
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/10 text-primary border border-primary/10 shadow-sm w-fit">
+                        <Badge
+                          variant="secondary"
+                          className="bg-transparent text-primary p-0 border-0 text-sm font-black uppercase tracking-tight"
+                        >
+                          {subject}
+                        </Badge>
+                      </div>
                     ) : (
                       <Badge
                         variant="outline"
-                        className="rounded-full opacity-50 border-dashed"
+                        className="rounded-xl opacity-30 border-dashed border-2 py-2 px-4"
                       >
-                        No Subject
+                        No Subject Selected
                       </Badge>
                     )}
                   </div>
@@ -221,52 +222,54 @@ export default function SettingsPage() {
               </Card>
 
               {/* App Info Widget */}
-              <div className="rounded-3xl bg-slate-100/50 dark:bg-slate-900/50 p-5 flex items-center justify-between border border-slate-200/50 dark:border-slate-800/50">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                    <Smartphone className="w-5 h-5 text-emerald-500" />
+              <div className="glass rounded-3xl p-6 flex items-center justify-between border border-border shadow-lg transition-transform hover:-translate-y-1">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/10">
+                    <Smartphone className="w-6 h-6" />
                   </div>
-                  <div className="text-sm">
-                    <p className="font-bold text-slate-700 dark:text-slate-200">
-                      Mini App
+                  <div>
+                    <p className="font-black text-foreground tracking-tight">
+                      Version
                     </p>
-                    <p className="text-slate-400 text-xs">v1.0.2 Stable</p>
+                    <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest">
+                      v1.2.0 Production
+                    </p>
                   </div>
                 </div>
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                </div>
+                <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
               </div>
             </div>
 
             {/* RIGHT COLUMN: Settings List */}
-            <div className="lg:col-span-8 space-y-6">
+            <div className="lg:col-span-8 space-y-8">
               {/* Preferences Group */}
-              <Card className="rounded-[2rem] border-slate-100 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg flex items-center gap-2">
+              <Card className="rounded-[2.5rem] border-border/50 shadow-xl glass overflow-hidden">
+                <CardHeader className="p-8 pb-4">
+                  <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
                     Preferences
                   </CardTitle>
-                  <CardDescription>
-                    Customize your viewing and listening experience.
+                  <CardDescription className="text-sm font-medium">
+                    Customize your experience across the platform.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="grid gap-6">
+                <CardContent className="p-8 pt-4 space-y-8">
                   {/* Theme Row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-blue-950/30 text-orange-500 dark:text-blue-400">
+                  <div className="flex items-center justify-between group">
+                    <div className="flex items-center gap-5">
+                      <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary/10 transition-transform group-hover:rotate-12 duration-300">
                         {theme === "light" ? (
-                          <Sun className="w-5 h-5" />
+                          <Sun className="w-6 h-6" />
                         ) : (
-                          <Moon className="w-5 h-5" />
+                          <Moon className="w-6 h-6" />
                         )}
                       </div>
-                      <div className="space-y-0.5">
-                        <Label className="text-base">Appearance</Label>
-                        <p className="text-xs text-slate-500 font-medium">
+                      <div className="space-y-1">
+                        <Label className="text-lg font-black tracking-tight">
+                          Appearance
+                        </Label>
+                        <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">
                           {theme === "light" ? "Light Mode" : "Dark Mode"}{" "}
-                          active
+                          enabled
                         </p>
                       </div>
                     </div>
@@ -276,28 +279,31 @@ export default function SettingsPage() {
                         playSend();
                         toggleTheme();
                       }}
-                      className="rounded-full border-slate-200 dark:border-slate-700 h-9"
+                      className="rounded-2xl border-border/50 hover:bg-primary/10 hover:border-primary/50 font-black uppercase tracking-widest h-12 px-6 text-xs transition-all active:scale-95"
                     >
-                      Toggle Theme
+                      Change Theme
                     </Button>
                   </div>
 
-                  <Separator />
+                  <Separator className="bg-border/30" />
 
                   {/* Sound Row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between group">
+                    <div className="flex items-center gap-5">
                       <div
-                        className={`p-2.5 rounded-xl transition-colors ${soundsEnabled ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500" : "bg-slate-100 dark:bg-slate-800 text-slate-400"}`}
+                        className={`p-4 rounded-2xl transition-all duration-300 group-hover:scale-110 ${soundsEnabled ? "bg-primary/10 text-primary border border-primary/10" : "bg-muted text-muted-foreground"}`}
                       >
-                        <Volume2 className="w-5 h-5" />
+                        <Volume2 className="w-6 h-6" />
                       </div>
-                      <div className="space-y-0.5">
-                        <Label htmlFor="sound-mode" className="text-base">
+                      <div className="space-y-1">
+                        <Label
+                          htmlFor="sound-mode"
+                          className="text-lg font-black tracking-tight"
+                        >
                           Sound Effects
                         </Label>
-                        <p className="text-xs text-slate-500 font-medium">
-                          UI interaction sounds
+                        <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">
+                          Haptic UI Feedback
                         </p>
                       </div>
                     </div>
@@ -305,67 +311,73 @@ export default function SettingsPage() {
                       id="sound-mode"
                       checked={soundsEnabled}
                       onCheckedChange={handleSoundToggle}
-                      className="data-[state=checked]:bg-emerald-500"
+                      className="data-[state=checked]:bg-primary h-7 w-12"
                     />
                   </div>
 
-                  <Separator />
+                  <Separator className="bg-border/30" />
 
                   {/* Notifications (Dummy) */}
-                  <div className="flex items-center justify-between opacity-60">
-                    <div className="flex items-center gap-4">
-                      <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400">
-                        <Bell className="w-5 h-5" />
+                  <div className="flex items-center justify-between opacity-40 group grayscale hover:grayscale-0 transition-all duration-500">
+                    <div className="flex items-center gap-5">
+                      <div className="p-4 rounded-2xl bg-muted text-muted-foreground">
+                        <Bell className="w-6 h-6" />
                       </div>
-                      <div className="space-y-0.5">
-                        <Label className="text-base">Notifications</Label>
-                        <p className="text-xs text-slate-500 font-medium">
-                          Coming soon
+                      <div className="space-y-1">
+                        <Label className="text-lg font-black tracking-tight">
+                          Email Alerts
+                        </Label>
+                        <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">
+                          Feature Coming Soon
                         </p>
                       </div>
                     </div>
-                    <Switch disabled />
+                    <div className="w-12 h-7 bg-muted rounded-full cursor-not-allowed" />
                   </div>
                 </CardContent>
               </Card>
 
               {/* Danger Zone */}
               <Card
-                className={`rounded-[2rem] border-2 shadow-none transition-all duration-300 ${isAdminUnlocked ? "border-red-100 dark:border-red-900/30 bg-red-50/10" : "border-dashed border-slate-200 dark:border-slate-800 bg-transparent"}`}
+                className={`rounded-[2.5rem] border-2 shadow-2xl transition-all duration-500 relative overflow-hidden ${isAdminUnlocked ? "border-destructive bg-destructive/5" : "border-dashed border-border glass"}`}
               >
-                <CardHeader className="pb-2">
+                {isAdminUnlocked && (
+                  <div className="absolute inset-0 bg-destructive/5 animate-pulse" />
+                )}
+
+                <CardHeader className="p-8 pb-4 relative z-10">
                   <CardTitle
-                    className={`text-base font-bold flex items-center gap-2 ${isAdminUnlocked ? "text-red-600 dark:text-red-400" : "text-slate-400"}`}
+                    className={`text-xl font-black tracking-tight flex items-center gap-3 ${isAdminUnlocked ? "text-destructive" : "text-muted-foreground/60"}`}
                   >
                     {isAdminUnlocked ? (
-                      <ShieldAlert className="w-5 h-5" />
+                      <ShieldAlert className="w-6 h-6 animate-bounce" />
                     ) : (
-                      <Lock className="w-5 h-5" />
+                      <Lock className="w-6 h-6" />
                     )}
                     {isAdminUnlocked
-                      ? "Admin Controls Unlocked"
-                      : "Restricted Area"}
+                      ? "Critical Controls Active"
+                      : "Restricted Access"}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-8 pt-4 relative z-10">
                   {!isAdminUnlocked ? (
-                    <div className="flex flex-col sm:flex-row gap-3 items-center mt-2">
-                      <div className="relative flex-1 w-full">
+                    <div className="flex flex-col sm:flex-row gap-4 items-center mt-2">
+                      <div className="relative flex-1 w-full group">
                         <Input
                           type="password"
-                          placeholder="Enter admin password..."
-                          className="rounded-xl pl-10 h-11 bg-white dark:bg-slate-900"
+                          placeholder="Admin Passcode..."
+                          className="rounded-2xl pl-12 h-14 bg-background/50 border-border group-hover:border-primary/30 transition-all font-black tracking-widest"
                           value={adminPassword}
                           onChange={(e) => setAdminPassword(e.target.value)}
                           onKeyDown={(e) =>
                             e.key === "Enter" && handleAdminUnlock()
                           }
                         />
-                        <Lock className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+                        <Lock className="w-5 h-5 absolute left-4 top-[18px] text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
                       <Button
                         onClick={handleAdminUnlock}
-                        className="w-full sm:w-auto rounded-xl h-11 px-6 font-bold"
+                        className="w-full sm:w-auto rounded-2xl h-14 px-8 font-black uppercase tracking-widest active:scale-95 transition-all shadow-xl"
                       >
                         Unlock
                       </Button>
@@ -375,30 +387,34 @@ export default function SettingsPage() {
                       <Button
                         variant="outline"
                         onClick={handleResetToDefaults}
-                        className="h-auto py-4 justify-start px-4 rounded-xl border-slate-200 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                        className="h-auto py-6 justify-start px-6 rounded-2xl border-border/50 hover:bg-background/80 hover:shadow-xl transition-all active:scale-[0.98]"
                       >
-                        <RotateCcw className="w-5 h-5 mr-3 text-slate-500" />
+                        <div className="p-3 bg-muted rounded-xl mr-5">
+                          <RotateCcw className="w-6 h-6 text-muted-foreground" />
+                        </div>
                         <div className="text-left">
-                          <span className="block font-bold text-slate-700 dark:text-slate-200">
-                            Reset Defaults
+                          <span className="block font-black text-foreground tracking-tight">
+                            Restore Defaults
                           </span>
-                          <span className="block text-xs text-slate-500 font-normal">
-                            Restore settings only
+                          <span className="block text-xs text-muted-foreground font-black uppercase tracking-widest mt-1">
+                            Reset UI State
                           </span>
                         </div>
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="destructive"
                         onClick={handleClearAllData}
-                        className="h-auto py-4 justify-start px-4 rounded-xl border-red-200 bg-red-50 hover:bg-red-100 dark:bg-red-950/10 dark:border-red-900/50 dark:hover:bg-red-900/20 group"
+                        className="h-auto py-6 justify-start px-6 rounded-2xl shadow-xl transition-all active:scale-[0.98] group"
                       >
-                        <Trash2 className="w-5 h-5 mr-3 text-red-500 group-hover:text-red-600" />
+                        <div className="p-3 bg-white/10 rounded-xl mr-5 group-hover:bg-white/20 transition-colors">
+                          <Trash2 className="w-6 h-6 text-white" />
+                        </div>
                         <div className="text-left">
-                          <span className="block font-bold text-red-600 dark:text-red-400">
-                            Wipe Data
+                          <span className="block font-black text-white tracking-tight">
+                            System Wipe
                           </span>
-                          <span className="block text-xs text-red-400/70 font-normal">
-                            Permanent deletion
+                          <span className="block text-xs text-white/70 font-black uppercase tracking-widest mt-1">
+                            Clear Memory
                           </span>
                         </div>
                       </Button>

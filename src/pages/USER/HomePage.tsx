@@ -25,7 +25,7 @@ import {
   Trophy,
   Utensils,
   Wrench,
-  Zap
+  Zap,
 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -227,99 +227,99 @@ const HomePage: React.FC = () => {
               {/* Left Column: Stats & Main Actions */}
               <div className="space-y-8">
                 {/* Hero Stats Cards */}
-                <div className="grid grid-cols-3 gap-3 md:gap-6">
+                <div className="grid grid-cols-3 gap-6">
                   <div
                     onClick={() => handleNav("/results")}
-                    className="group glass relative overflow-hidden rounded-2xl p-4 md:p-6 cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1"
+                    className="group glass relative overflow-hidden rounded-[2rem] p-6 cursor-pointer active:scale-95 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 border-border/50"
                   >
                     <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 border border-primary/20 group-hover:scale-110 transition-transform duration-500">
-                        <Target className="w-6 h-6 text-primary" />
+                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 border border-primary/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <Target className="w-7 h-7 text-primary" />
                       </div>
-                      <p className="text-3xl md:text-4xl font-black tracking-tighter">
+                      <p className="text-4xl font-black tracking-tighter text-foreground">
                         {totalTests}
                       </p>
-                      <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                      <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mt-1.5 opacity-70">
                         Tests Taken
                       </p>
                     </div>
-                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+                    <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
                   </div>
 
                   <div
                     onClick={() => handleNav("/results")}
-                    className="group glass relative overflow-hidden rounded-2xl p-4 md:p-6 cursor-pointer active:scale-95 transition-all duration-300 hover:shadow-2xl hover:shadow-chart-2/5 hover:-translate-y-1"
+                    className="group glass relative overflow-hidden rounded-[2rem] p-6 cursor-pointer active:scale-95 transition-all duration-500 hover:shadow-2xl hover:shadow-chart-2/10 hover:-translate-y-1.5 border-border/50"
                   >
                     <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-xl bg-chart-2/10 flex items-center justify-center mb-4 border border-chart-2/20 group-hover:scale-110 transition-transform duration-500">
-                        <Trophy className="w-6 h-6 text-chart-2" />
+                      <div className="w-14 h-14 rounded-2xl bg-chart-2/10 flex items-center justify-center mb-6 border border-chart-2/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <Trophy className="w-7 h-7 text-chart-2" />
                       </div>
-                      <p className="text-3xl md:text-4xl font-black tracking-tighter">
+                      <p className="text-4xl font-black tracking-tighter text-foreground">
                         {avgScore}%
                       </p>
-                      <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
-                        Avg Score
+                      <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mt-1.5 opacity-70">
+                        Average Score
                       </p>
                     </div>
-                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-chart-2/5 rounded-full blur-3xl group-hover:bg-chart-2/10 transition-colors" />
+                    <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-chart-2/5 rounded-full blur-3xl group-hover:bg-chart-2/10 transition-colors" />
                   </div>
 
-                  <div className="group glass relative overflow-hidden rounded-2xl p-4 md:p-6 hover:shadow-2xl hover:shadow-chart-4/5 hover:-translate-y-1 transition-all duration-300">
+                  <div className="group glass relative overflow-hidden rounded-[2rem] p-6 transition-all duration-500 hover:shadow-2xl hover:shadow-chart-4/10 hover:-translate-y-1.5 border-border/50">
                     <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-xl bg-chart-4/10 flex items-center justify-center mb-4 border border-chart-4/20 group-hover:scale-110 transition-transform duration-500">
-                        <Flame className="w-6 h-6 text-chart-4 animate-pulse" />
+                      <div className="w-14 h-14 rounded-2xl bg-chart-4/10 flex items-center justify-center mb-6 border border-chart-4/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <Flame className="w-7 h-7 text-chart-4" />
                       </div>
-                      <p className="text-3xl md:text-4xl font-black tracking-tighter">
+                      <p className="text-4xl font-black tracking-tighter text-foreground">
                         {streak}
                       </p>
-                      <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                      <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mt-1.5 opacity-70">
                         Day Streak
                       </p>
                     </div>
-                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-chart-4/5 rounded-full blur-3xl group-hover:bg-chart-4/10 transition-colors" />
+                    <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-chart-4/5 rounded-full blur-3xl group-hover:bg-chart-4/10 transition-colors" />
                   </div>
                 </div>
 
                 {/* Quick Actions */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <button
                     onClick={() => handleNav("/quick-quiz")}
-                    className="group relative overflow-hidden rounded-2xl bg-primary text-primary-foreground p-7 md:p-10 text-left shadow-lg hover:shadow-primary/20 transition-all duration-300 active:scale-[0.98]"
+                    className="group relative overflow-hidden rounded-[2.5rem] bg-primary text-primary-foreground p-10 text-left shadow-2xl hover:shadow-primary/30 transition-all duration-500 active:scale-[0.98] border border-primary/20"
                   >
-                    <div className="absolute inset-0 mesh-gradient opacity-20 group-hover:opacity-30 transition-opacity" />
+                    <div className="absolute inset-0 mesh-gradient opacity-30 group-hover:opacity-50 transition-opacity" />
                     <div className="relative flex items-center justify-between z-10">
                       <div>
-                        <div className="w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-5 text-white border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
-                          <Brain className="w-7 h-7" />
+                        <div className="w-16 h-16 rounded-[1.5rem] bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 text-white border border-white/20 shadow-2xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                          <Brain className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-black mb-1">Quick Quiz</h3>
-                        <p className="text-sm font-medium opacity-70">
-                          Test your limits right now
+                        <h3 className="text-3xl font-black mb-1 leading-none tracking-tight">Quick Quiz</h3>
+                        <p className="text-sm font-black uppercase tracking-widest opacity-70">
+                          Instant Challenge
                         </p>
                       </div>
-                      <div className="h-14 w-14 rounded-full border-2 border-white/20 flex items-center justify-center group-hover:bg-white/10 transition-all duration-300">
-                        <ArrowRight className="w-6 h-6 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+                      <div className="h-16 w-16 rounded-full border-2 border-white/20 flex items-center justify-center group-hover:bg-white/10 transition-all duration-500">
+                        <ArrowRight className="w-8 h-8 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
                       </div>
                     </div>
                   </button>
 
                   <button
                     onClick={() => handleNav("/subjects")}
-                    className="group relative overflow-hidden rounded-2xl glass p-7 md:p-10 text-left transition-all duration-300 active:scale-[0.98] hover:shadow-xl hover:shadow-black/5"
+                    className="group relative overflow-hidden rounded-[2.5rem] glass p-10 text-left transition-all duration-500 active:scale-[0.98] hover:shadow-2xl hover:shadow-black/5 border-border/50"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-muted/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="relative flex items-center justify-between z-10">
                       <div>
-                        <div className="w-14 h-14 rounded-xl bg-muted/50 flex items-center justify-center mb-5 text-foreground border border-border shadow-sm group-hover:scale-110 transition-transform duration-500">
-                          <BookOpen className="w-7 h-7" />
+                        <div className="w-16 h-16 rounded-[1.5rem] bg-muted flex items-center justify-center mb-6 text-foreground border border-border shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                          <BookOpen className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-black mb-1">Study Mode</h3>
-                        <p className="text-sm font-medium text-muted-foreground">
-                          Explore all subjects
+                        <h3 className="text-3xl font-black mb-1 leading-none tracking-tight">Study Mode</h3>
+                        <p className="text-sm font-black uppercase tracking-widest text-muted-foreground">
+                          Explore Subjects
                         </p>
                       </div>
-                      <div className="h-14 w-14 rounded-full border-2 border-border flex items-center justify-center group-hover:bg-muted transition-all duration-300">
-                        <ArrowRight className="w-6 h-6 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+                      <div className="h-16 w-16 rounded-full border-2 border-border flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-primary-foreground transition-all duration-500">
+                        <ArrowRight className="w-8 h-8 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
                       </div>
                     </div>
                   </button>
@@ -355,31 +355,31 @@ const HomePage: React.FC = () => {
                           onClick={() =>
                             handleNav(`/subject/${encodeURIComponent(sub)}`)
                           }
-                          className="group glass relative overflow-hidden rounded-2xl p-5 transition-all duration-300 text-left hover:shadow-2xl hover:-translate-y-1.5 active:scale-95"
+                          className="group glass relative overflow-hidden rounded-[2rem] p-6 transition-all duration-500 text-left hover:shadow-2xl hover:-translate-y-2 active:scale-95 border-border/50"
                         >
                           <div
-                            className={`w-14 h-14 rounded-2xl ${meta.bg}/50 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm border border-border/50`}
+                            className={`w-16 h-16 rounded-[1.25rem] ${meta.bg}/50 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm border border-border/50`}
                           >
                             {React.cloneElement(
                               meta.icon as React.ReactElement<{
                                 className?: string;
                               }>,
                               {
-                                className: "w-7 h-7 text-foreground",
+                                className: "w-8 h-8 text-foreground",
                               },
                             )}
                           </div>
-                          <p className="font-black text-sm md:text-base leading-tight mb-3 h-12 flex items-center tracking-tight">
+                          <p className="font-black text-base md:text-lg leading-tight mb-4 h-14 flex items-center tracking-tight text-foreground">
                             {sub}
                           </p>
                           {quizCount > 0 ? (
-                            <div className="flex items-center gap-2 text-xs text-primary font-black bg-primary/10 px-3 py-1.5 rounded-xl w-fit border border-primary/10">
+                            <div className="flex items-center gap-2 text-[10px] text-primary font-black bg-primary/10 px-4 py-2 rounded-xl w-fit border border-primary/20 uppercase tracking-widest">
                               <Zap className="w-3 h-3 fill-current" />
                               <span>{quizCount} Sessions</span>
                             </div>
                           ) : (
-                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted/50 px-3 py-1.5 rounded-xl border border-border/50">
-                              New Topic
+                            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/50 px-4 py-2 rounded-xl border border-border/50">
+                              New Path
                             </div>
                           )}
                         </button>
